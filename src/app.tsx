@@ -28,6 +28,7 @@ export async function getInitialState(): Promise<{
       const msg = await queryCurrentUser();
       return msg.data;
     } catch (error) {
+      // 回登陆界面
       history.push(loginPath);
     }
     return undefined;
@@ -37,8 +38,8 @@ export async function getInitialState(): Promise<{
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
-      currentUser,
-      settings: {},
+      currentUser, // 获取了user信息
+      settings: {}, // 设置信息
     };
   }
   return {
@@ -52,14 +53,16 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
+    // 加水印
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      // content: initialState?.currentUser?.name,
     },
-    footerRender: () => <Footer />,
+    footerRender: () => '', // <Footer />
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath) {
+        console.log('layout-onPageChange------');
         history.push(loginPath);
       }
     },
