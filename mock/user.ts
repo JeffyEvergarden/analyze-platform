@@ -81,6 +81,7 @@ export default {
         unreadCount: 11,
         country: 'China',
         access: getAccess(),
+        routerAuth: ['1', '2', '3'],
         geographic: {
           province: {
             label: '浙江省',
