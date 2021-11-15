@@ -1,43 +1,18 @@
 export default [
   {
-    path: '/user',
+    path: '/analyzehome',
     layout: false,
+    component: './analyze-home/home',
+    noAuth: true,
     routes: [
-      { path: '/user', routes: [{ name: '登录', path: '/user/login', component: './user/Login' }] },
+      {
+        name: '敏捷分析-留存分析',
+        path: '/analyzehome/retained',
+        component: './analyze-home/retained-analyze',
+      },
       { component: './404' },
     ],
   },
-  { path: '/welcome', name: '欢迎', icon: 'smile', component: './Welcome' },
-  {
-    path: '/admin',
-    name: '管理页',
-    icon: 'crown',
-    access: 'canAdmin',
-    component: './Admin',
-    routes: [
-      { path: '/admin/sub-page', name: '二级管理页', icon: 'smile', component: './Welcome' },
-      { component: './404' },
-    ],
-  },
-  { name: '查询表格', icon: 'table', path: '/list', component: './TableList' },
-  {
-    name: '测试页面',
-    icon: 'QuestionCircleOutlined',
-    path: '/test',
-    noAuth: true,
-    component: './TestPage',
-    layout: false,
-  },
-  {
-    name: '测试页面2',
-    icon: 'QuestionCircleOutlined',
-    path: '/test2',
-    noAuth: true,
-    access: 'routerAuth',
-    code: '4',
-    component: './TestPage',
-    layout: false,
-  },
-  { path: '/', redirect: '/welcome' },
+  { path: '/', redirect: '/analyzehome/retained' },
   { component: './404' },
 ];

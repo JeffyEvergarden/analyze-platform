@@ -1,0 +1,42 @@
+.zy-row {
+  display: flex;
+  align-items: center;
+}
+
+
+.extra-box {
+  .zy-row;
+  position: relative;
+
+  .layout_left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    flex-shrink: 0;
+
+    .relation-button {
+      position: relative;
+      z-index: 10;
+      box-sizing: border-box;
+      width: 25px;
+      height: 25px;
+      background: #e6f7ff;
+      border: none;
+      color: #1890FF;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    &::after {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 12px;
+      content: '';
+      width: 1px;
+      height: 100%;
+      background: #E6F7FF;
+    }
+  }
+}

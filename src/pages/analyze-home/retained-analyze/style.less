@@ -1,0 +1,62 @@
+.anaylze-page {
+
+  // 全局样式 防止污染
+  :global {
+
+    // Collapse 修改 样式
+    .ant-collapse-header {
+      // 标题
+      font-size: 16px;
+      line-height: 22px !important;
+      font-weight: bolder;
+      padding: 0 !important;
+      padding-top: 16px !important;
+      padding-bottom: 24px !important;
+
+      .ant-collapse-arrow {
+        // 箭头
+        font-size: 14px !important;
+      }
+    }
+
+    .ant-collapse-content-box {
+      // 内容
+      padding: 0 !important;
+      padding-bottom: 24px !important;
+    }
+
+    .ant-collapse-item {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .ant-form-item {
+      margin-bottom: 12px;
+    }
+  }
+}
+
+// 筛选条件
+.search-box {
+  width: 100%;
+  background: #FFF;
+  padding: 16px 32px;
+  border-radius: 2px;
+
+  .label {
+    width: 90px;
+    text-align: right;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+
+  .search-content {
+    width: 200px;
+  }
+}
+
+
+// 
+.zy-row {
+  display: flex;
+  align-items: center;
+}
