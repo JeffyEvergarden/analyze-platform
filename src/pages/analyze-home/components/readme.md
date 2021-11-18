@@ -1,3 +1,5 @@
 statistics-search // 选择统计组件
 
-compare-search // 对比查看组件
+model // 数据层 包含加载数据、静态数据
+
+common // 通用组件

@@ -31,96 +31,54 @@ export const userTypeList: any[] = [
   },
 ];
 
-// 筛选框 - 数据库属性 - 可选统计方式
-
-export const statisticNumbericList: any[] = [
+// 对比查看 - 分组
+export const groupByList: any[] = [
   {
-    name: '求和',
-    value: 'SUM',
+    value: 'activity_id',
+    name: '活动ID',
   },
   {
-    name: '最大',
-    value: 'MAX',
+    value: 'activity_name',
+    name: '活动名称',
   },
   {
-    name: '最小',
-    value: 'MIN',
+    value: 'channel_num',
+    name: '进件渠道号',
   },
   {
-    name: '次均',
-    value: 'AVG',
-  },
-  {
-    name: '人均',
-    value: 'DISTINCT_AVG',
+    value: 'mcht_code',
+    name: '商户号',
   },
 ];
 
-// 筛选框 - 数据库属性 - 默认统计方式
-export const statisticDefaultList: any[] = [
+// 对比查看 - 统计方式
+export const timeUnitList: any[] = [
   {
-    name: '去重',
-    value: 'COUNT_DISTINCT',
+    name: '日',
+    value: 'day',
+  },
+  {
+    name: '月',
+    value: 'month',
+  },
+  {
+    name: '年',
+    value: 'year',
   },
 ];
 
-// 子筛选框- 操作 - 数字下拉
-
-export const numberTypeList: any[] = [
+// 对比查看 - 统计方式
+export const timeUnit2List: any[] = [
   {
-    value: '==',
-    name: '等于',
+    name: '天',
+    value: 'day',
   },
   {
-    value: '!==',
-    name: '不等于',
+    name: '月',
+    value: 'month',
   },
   {
-    value: '>=',
-    name: '大于等于',
-  },
-  {
-    value: '>',
-    name: '大于',
-  },
-  {
-    value: '<=',
-    name: '小于等于',
-  },
-  {
-    value: '<',
-    name: '小于',
-  },
-];
-
-// 子筛选框- 数组 - 字符串
-
-export const arrayTypeList: any[] = [
-  {
-    value: '==',
-    name: '等于',
-  },
-  {
-    value: '!=',
-    name: '不等于',
-  },
-  {
-    value: 'in',
-    name: '包含',
-  },
-  {
-    value: 'not in',
-    name: '不包含',
-  },
-];
-
-export const stringTypeList: any[] = [
-  {
-    value: '==',
-    name: '等于',
-  },
-  {
-    value: '!=',
-    name: '不等于',
+    name: '年',
+    value: 'year',
   },
 ];

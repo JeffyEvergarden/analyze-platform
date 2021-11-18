@@ -3,38 +3,42 @@ import React, { useState, useEffect } from 'react';
 import { Form, Space, Select, Input, InputNumber, DatePicker } from 'antd';
 import Condition from '../Condition';
 import { numberTypeList, arrayTypeList, stringTypeList } from '../../model/const';
-import { MinusCircleOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, HighlightOutlined } from '@ant-design/icons';
 import style from '../style.less';
+
+const trim = (text: any) => {
+  if (typeof text === 'string') {
+    return text.trim();
+  }
+  return text;
+};
 
 const { Item: FormItem } = Form;
 const { Option } = Select;
 
 const InnerForm: React.FC<any> = (props: any) => {
-  const { field, form, outIndex, list, map, remove } = props;
+  const { field, form, formName, list, map, remove } = props;
   const { key, fieldKey: index } = field;
-  const curList: any = form.getFieldValue('childrenList');
-  const currentFormValue: any = curList?.[outIndex] || {};
-  const currentInnerValue: any = currentFormValue?.innerList[index];
+  const curList: any = form.getFieldValue(formName);
+  const currentInnerValue: any = curList?.[index] || {};
 
   const type: any = currentInnerValue?.dataType || 'input'; // 类型
   const selectType: any = currentInnerValue?.selectType || 'single'; // 下拉选择类型
 
+  const edit: any = !!currentInnerValue.edit;
+  const alias: any = currentInnerValue.alias;
+
   const opList: any[] = currentInnerValue?.operatorList || [];
   const subInnerList: any[] = currentInnerValue?.subList || [];
 
-  console.log('重新渲染---:' + field.fieldKey);
+  // console.log('重新渲染---:' + field.fieldKey);
   // useEffect(() => {}, []);
 
   // 修改属性
   const changeAttribute = (val: any, options: any, index: number) => {
-    // console.log(options);
-    // console.log(currentFormValue);
-    // console.log(currentInnerValue);
     currentInnerValue.dataType = options.opt.dataType || '';
     let subList: any[] = map?.get(val) || []; // 三级下拉列表
-    // console.log(val);
-    // console.log(map);
-    // console.log(subList);
+
     let operatorList: any[] = []; // 二级列表
     currentInnerValue.attr = val;
     currentInnerValue.op = undefined;
@@ -49,9 +53,6 @@ const InnerForm: React.FC<any> = (props: any) => {
     }
     currentInnerValue.operatorList = operatorList;
     currentInnerValue.subList = subList;
-    // ----------------
-    currentFormValue.innerList[index] = currentInnerValue;
-    currentFormValue.innerList = [...currentFormValue.innerList];
     form.setFieldsValue({
       childrenList: [...curList],
     });
@@ -75,6 +76,18 @@ const InnerForm: React.FC<any> = (props: any) => {
     }
     form.setFieldsValue({
       childrenList: [...curList],
+    });
+  };
+
+  // 修改别名
+  const changeFiterAilas = (val: any) => {
+    const innerList: any = form.getFieldValue(formName);
+    const innerValue: any = innerList?.[index] || {};
+    // 别名状态
+    innerValue.edit = !innerValue.edit;
+    innerValue.alias = trim(innerValue.alias);
+    form.setFieldsValue({
+      [formName]: [...innerList],
     });
   };
 
@@ -200,10 +213,42 @@ const InnerForm: React.FC<any> = (props: any) => {
         </Condition>
 
         {/* 删除按钮 */}
-        <MinusCircleOutlined
-          style={{ marginLeft: '10px', fontSize: '20px', color: '#A0A0A0' }}
-          onClick={remove}
+        <Condition r-if={remove}>
+          <MinusCircleOutlined
+            style={{ marginLeft: '10px', fontSize: '20px', color: '#A0A0A0' }}
+            onClick={remove}
+          />
+        </Condition>
+
+        {/* 别名 */}
+        <Condition r-if={remove}>
+          <MinusCircleOutlined
+            style={{ marginLeft: '10px', fontSize: '20px', color: '#A0A0A0' }}
+            onClick={remove}
+          />
+        </Condition>
+
+        <HighlightOutlined
+          style={{ color: '#1890ff', margin: '0 15px', fontSize: '20px' }}
+          onClick={changeFiterAilas}
         />
+
+        <Condition r-if={edit}>
+          <FormItem name={[key, 'alias']} fieldKey={[key, 'alias']}>
+            <Input
+              style={{ width: '200px' }}
+              placeholder="请输入别名"
+              onPressEnter={changeFiterAilas}
+            ></Input>
+          </FormItem>
+        </Condition>
+
+        <Condition r-if={!edit && alias}>
+          <div style={{ marginLeft: '15px' }}>
+            别名：
+            <span className={style['form-alias']}>{alias}</span>
+          </div>
+        </Condition>
       </div>
     </div>
   );

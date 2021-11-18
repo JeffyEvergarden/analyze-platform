@@ -6,9 +6,8 @@ import { PlusSquareOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-desi
 // 定制组件
 import Condition from '../common/Condition';
 import InnerFormItem from '../common/InnerFormItem';
-import { statisticNumbericList, statisticDefaultList } from '../../retained-analyze/model/const';
+import { statisticNumbericList, statisticDefaultList } from '../model/const';
 import style from './style.less';
-import { format } from 'prettier';
 
 interface StatisticComponentProps {
   cref: any;
@@ -256,9 +255,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
                       <MinusCircleOutlined
                         onClick={() => {
-                          () => {
-                            removeOut(outIndex);
-                          };
+                          removeOut(outIndex);
                         }}
                         style={{ marginLeft: '10px', fontSize: '20px', color: '#A0A0A0' }}
                       />
