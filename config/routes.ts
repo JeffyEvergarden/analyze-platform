@@ -1,5 +1,11 @@
 export default [
   {
+    path: '/home',
+    layout: false,
+    component: './home',
+    noAuth: true,
+  },
+  {
     path: '/analyzehome',
     layout: false,
     component: './analyze-home/home',

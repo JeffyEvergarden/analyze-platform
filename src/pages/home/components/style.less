@@ -1,0 +1,109 @@
+// avator-link  头像模块样式
+.avator-bg {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 140px;
+  height: 120px;
+  margin-bottom: 24px;
+  padding: 0 8px;
+  padding-top: 24px;
+
+  .avator-img {
+    width: 32px;
+    height: 32px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 32px;
+    text-align: center;
+    background: linear-gradient(#53acff 0%, #1890ff 100%);
+    border-radius: 4px;
+  }
+
+  .avator-label {
+    margin-top: 16px;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+  }
+}
+
+.avator-bg_edit {
+  background: #eef4f9;
+  .avator-bg;
+
+  .delete-icon {
+    position: absolute;
+    top: 0;
+    right: 4px;
+    color: #a8b9c8;
+    cursor: pointer;
+  }
+}
+
+// mine-view  我的视图
+.module-mine_bg {
+  margin-bottom: 35px;
+
+  .module-content {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 168px;
+    padding: 24px;
+    padding-bottom: 0;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 8px 40px rgba(0, 71, 138, 0.12);
+  }
+}
+
+// 看板
+.module_bg {
+  margin-bottom: 16px;
+
+  .module-content {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 24px;
+    background: #fff;
+    border-radius: 4px;
+  }
+}
+
+// 模块标题
+.module-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  .left {
+    padding-left: 14px;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 22px;
+    text-align: left;
+
+    &::before {
+      position: absolute;
+      left: 0;
+      width: 6px;
+      height: 20px;
+      background: #1890ff;
+      border-radius: 2px;
+      content: '';
+    }
+  }
+
+  .right {
+    color: #1890ff;
+    font-size: 14px;
+    line-height: 22px;
+    text-align: right;
+    cursor: pointer;
+  }
+}

@@ -53,6 +53,7 @@
     "@ant-design/pro-layout": "^6.15.3",
     "@ant-design/pro-table": "^2.30.8",
     "@umijs/route-utils": "^1.0.36",
+    "animate.css": "^4.1.1",
     "antd": "^4.14.0",
     "bizcharts": "^4.1.14",
     "classnames": "^2.2.6",
