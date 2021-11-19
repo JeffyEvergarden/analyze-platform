@@ -9,19 +9,23 @@ import { useRef } from 'react';
 // 统一门户
 const MineView: React.FC<any> = (props: any) => {
   const { list, finish, loading } = props;
+
+  const editPanelRef = useRef<any>({});
   // 编辑状态
   const [edit, setEdit] = useState<boolean>(false);
 
   const finished = () => {
     setEdit(false);
-    // finish?.(editList);
+    let arr = editPanelRef?.current.getValue() || [];
+    arr = arr.filter((item: any) => {
+      return item.id !== 'last';
+    });
+    finish(arr);
   };
 
   const openEditType = () => {
     setEdit(true);
   };
-
-  const editPanelRef = useRef<any>({});
 
   return (
     <Spin spinning={loading}>
@@ -46,8 +50,8 @@ const MineView: React.FC<any> = (props: any) => {
             {list.map((item: any, index: any) => {
               let flag = index % 6 === 5;
               return (
-                <div style={{ marginRight: flag ? '' : '56px' }}>
-                  <AvatorLink key={index} icon={item.icon} link={item.link} title={item.title} />
+                <div key={index}>
+                  <AvatorLink icon={item.icon} link={item.link} title={item.title} />
                 </div>
               );
             })}

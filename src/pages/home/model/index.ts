@@ -9,7 +9,9 @@ export const useMenuModel = () => {
   const [menuList, setMenuList] = useState<any[]>([]);
 
   const getMyList = async () => {
+    setLoading1(true);
     let res: any = await getHomeList();
+    setLoading1(false);
     let { data = [] } = res;
     console.log(data);
     setMyList(data);
@@ -22,6 +24,7 @@ export const useMenuModel = () => {
     menuList,
     getMyList,
     getMenuList,
+    setMyList,
     loading1,
     loading2,
   };

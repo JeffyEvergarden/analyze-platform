@@ -7,12 +7,12 @@ interface AvatorLinkProps {
   icon: any;
   title: any;
   link: any;
+  index?: number;
   onDelete: (...args: any[]) => void;
 }
 
-// 统一门户
 const Avator: React.FC<AvatorLinkProps> = (props: AvatorLinkProps) => {
-  const { title, icon, link, onDelete } = props;
+  const { title, icon, link, index, onDelete } = props;
 
   const firstWord = (title || '')[0];
 
@@ -33,7 +33,9 @@ const Avator: React.FC<AvatorLinkProps> = (props: AvatorLinkProps) => {
       <Condition r-if={!icon && title}>
         <div className={style['avator-img']}>{firstWord}</div>
       </Condition>
-      <div className={style['avator-label']}>{title}</div>
+      <div className={style['avator-label']}>
+        {index} - {title}
+      </div>
     </div>
   );
 };

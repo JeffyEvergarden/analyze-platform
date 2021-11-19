@@ -4,6 +4,7 @@ import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import { ConfigProvider } from 'antd';
 import Header from './components/header';
 import Mineview from './components/mine-view';
+import Otherview from './components/other-view';
 import zhCN from 'antd/lib/locale/zh_CN';
 import style from './style.less';
 
@@ -13,7 +14,8 @@ import { useEffect } from 'react';
 
 // 统一门户
 const Home: React.FC = (props: any) => {
-  const { myList, menuList, getMyList, getMenuList, loading1 } = useMenuModel();
+  const { myList, menuList, setMyList, getMyList, getMenuList, loading1, loading2 } =
+    useMenuModel();
 
   useEffect(() => {
     getMyList();
@@ -22,6 +24,7 @@ const Home: React.FC = (props: any) => {
 
   const finish = (val: any) => {
     console.log(val);
+    setMyList(val);
   };
 
   return (
@@ -31,6 +34,8 @@ const Home: React.FC = (props: any) => {
 
         <div className={style['home-content']}>
           <Mineview list={myList} finish={finish} loading={loading1} />
+
+          <Otherview loading={loading2} />
         </div>
       </div>
     </ConfigProvider>
