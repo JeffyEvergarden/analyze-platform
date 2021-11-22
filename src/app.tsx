@@ -41,6 +41,7 @@ export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
   routersFilter?: any[];
+  isLogin: boolean;
   hadDone?: boolean; // 表示是否初始化信息接口
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
@@ -62,6 +63,7 @@ export async function getInitialState(): Promise<{
     return {
       fetchUserInfo,
       hadDone: true,
+      isLogin: true,
       routersFilter,
       currentUser, // 获取了user信息
       settings: {}, // 设置信息
@@ -71,6 +73,7 @@ export async function getInitialState(): Promise<{
   return {
     fetchUserInfo,
     routersFilter,
+    isLogin: false,
     hadDone: false,
     settings: {},
   };

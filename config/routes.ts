@@ -6,6 +6,12 @@ export default [
     noAuth: true,
   },
   {
+    path: '/menu',
+    layout: false,
+    component: './menu-management',
+    noAuth: true,
+  },
+  {
     path: '/analyzehome',
     layout: false,
     component: './analyze-home/home',
@@ -19,6 +25,6 @@ export default [
       { component: './404' },
     ],
   },
-  { path: '/', redirect: '/analyzehome/retained' },
+  { path: '/', redirect: '/home', noAuth: true },
   { component: './404' },
 ];

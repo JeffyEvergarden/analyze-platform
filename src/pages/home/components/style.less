@@ -72,11 +72,16 @@
 .module_bg {
   margin-bottom: 16px;
 
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   .module-content {
     display: flex;
     flex-wrap: wrap;
     min-height: 168px;
-    padding: 24px;
+    margin-bottom: 16px;
+    padding: 24px 24px 8px;
     background: #fff;
     border-radius: 4px;
     box-shadow: 0 8px 40px rgba(0, 71, 138, 0.12);
@@ -138,5 +143,43 @@
     line-height: 22px;
     text-align: right;
     cursor: pointer;
+  }
+}
+
+.box-content {
+  display: flex;
+  align-items: flex-start;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+
+  .title {
+    flex-shrink: 0;
+    width: 150px;
+    padding-right: 10px;
+    color: #8fa2b4;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 40px;
+    text-align: left;
+  }
+
+  .desc {
+    display: flex;
+    flex-wrap: wrap;
+
+    .desc_block {
+      width: 150px;
+      margin-bottom: 16px;
+      padding-right: 8px;
+      overflow: hidden;
+      line-height: 40px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      cursor: pointer;
+
+      &:hover {
+        color: #1890ff;
+      }
+    }
   }
 }

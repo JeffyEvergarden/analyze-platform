@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 
 // 统一门户
 const EditPanel: React.FC<any> = (props: any) => {
-  const { cref, list } = props;
+  const { cref, list, openAdd } = props;
   const [editList, setEditList] = useState<any[]>([]);
   const editRef = useRef<any>(null);
 
@@ -57,7 +57,7 @@ const EditPanel: React.FC<any> = (props: any) => {
           let flag = index % 6 === 5;
           if (item.id === 'last') {
             return (
-              <div key={item.id} id="last" className={style['avator-bg_edit']}>
+              <div key={item.id} id="last" className={style['avator-bg_edit']} onClick={openAdd}>
                 <div className={style['avator-icon_add']}>
                   <PlusSquareOutlined style={{ color: '#1890FF', fontSize: '30px' }} />
                 </div>

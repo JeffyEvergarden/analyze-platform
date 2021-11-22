@@ -8,7 +8,7 @@ import { useRef } from 'react';
 
 // 统一门户
 const MineView: React.FC<any> = (props: any) => {
-  const { list, finish, loading } = props;
+  const { list, finish, loading, openAdd } = props;
 
   const editPanelRef = useRef<any>({});
   // 编辑状态
@@ -60,7 +60,7 @@ const MineView: React.FC<any> = (props: any) => {
 
         {/* 编辑状态 */}
         <Condition r-if={edit}>
-          <EditPanel list={list} cref={editPanelRef}></EditPanel>
+          <EditPanel list={list} cref={editPanelRef} openAdd={openAdd}></EditPanel>
         </Condition>
       </div>
     </Spin>
