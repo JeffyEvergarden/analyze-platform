@@ -29,6 +29,7 @@ export const useMenuModel = () => {
     getMyList,
     getMenuList,
     setMyList,
+    setMenuList,
     loading1,
     loading2,
   };

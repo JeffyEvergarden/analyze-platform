@@ -9,6 +9,7 @@ import { useMemo } from 'react';
 const EditPanel: React.FC<any> = (props: any) => {
   const { cref, list, openAdd } = props;
   const [editList, setEditList] = useState<any[]>([]);
+
   const editRef = useRef<any>(null);
 
   // 根据
@@ -31,11 +32,16 @@ const EditPanel: React.FC<any> = (props: any) => {
     getValue: () => {
       return editList;
     },
+    addModule: (arr: any[]) => {
+      let len = editList.length;
+      editList.splice(len - 1, 1, ...arr);
+      setEditList([...editList, { id: 'last', filtered: true }]);
+    },
   }));
 
   const onMove = (evt: any) => {
     console.log(evt);
-    let newIndex = evt.newIndex;
+    // let newIndex = evt.newIndex;
     let dom = evt.related;
     if (dom.id === 'last') {
       console.log('移动到最后一个节点');
@@ -54,7 +60,7 @@ const EditPanel: React.FC<any> = (props: any) => {
         onMove={onMove}
       >
         {editList.map((item: any, index: any) => {
-          let flag = index % 6 === 5;
+          // let flag = index % 6 === 5;
           if (item.id === 'last') {
             return (
               <div key={item.id} id="last" className={style['avator-bg_edit']} onClick={openAdd}>

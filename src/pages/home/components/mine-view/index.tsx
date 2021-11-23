@@ -5,10 +5,11 @@ import { Spin } from 'antd';
 import style from '../style.less';
 import Condition from '../Condition';
 import { useRef } from 'react';
+import { useImperativeHandle } from 'react';
 
 // 统一门户
 const MineView: React.FC<any> = (props: any) => {
-  const { list, finish, loading, openAdd } = props;
+  const { cref, list, finish, loading, openAdd } = props;
 
   const editPanelRef = useRef<any>({});
   // 编辑状态
@@ -26,6 +27,12 @@ const MineView: React.FC<any> = (props: any) => {
   const openEditType = () => {
     setEdit(true);
   };
+
+  useImperativeHandle(cref, () => ({
+    addModule: (arr: any[]) => {
+      editPanelRef.current?.addModule(arr);
+    },
+  }));
 
   return (
     <Spin spinning={loading}>
