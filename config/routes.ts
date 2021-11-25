@@ -12,6 +12,12 @@ export default [
     noAuth: true,
   },
   {
+    path: '/link',
+    layout: false,
+    component: './link-management',
+    noAuth: true,
+  },
+  {
     path: '/analyzehome',
     layout: false,
     component: './analyze-home/home',
