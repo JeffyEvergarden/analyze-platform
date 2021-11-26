@@ -34,7 +34,7 @@ export const useTableModel = () => {
     // console.log(column, data);
     const curColumn = processColumn(column);
     setColumn(column);
-    setTableData(tableData);
+    setTableData(data);
   };
 
   return {

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import moment from 'moment';
 
 // 事件接口
 const getEventList = (req: any, res: any) => {
@@ -157,16 +158,22 @@ const getTableList = (req: any, res: any) => {
   const list1 = ['微信', '支付宝', '中邮钱包', 'NMD'];
   while (i < 200) {
     data.push({
-      index: i,
+      index: `${i + 1}`,
       strategy_name: 'fake' + i,
       touch_way: list1[i % 4],
-      num1: i,
-      num2: i,
-      num3: i,
-      num4: i,
-      num5: i,
-      num6: i,
-      num7: i,
+      first_event_date: moment().format(
+        `${Math.floor(Math.random() * 20) + 2000}-${Math.floor(Math.random() * 12) + 1}-${
+          Math.floor(Math.random() * 31) + 1
+        }`,
+      ),
+      count: Math.floor(Math.random() * 1000000),
+      num1: Math.floor(Math.random() * 1000000),
+      num2: Math.floor(Math.random() * 1000000),
+      num3: Math.floor(Math.random() * 1000000),
+      num4: Math.floor(Math.random() * 1000000),
+      num5: Math.floor(Math.random() * 1000000),
+      num6: Math.floor(Math.random() * 1000000),
+      num7: Math.floor(Math.random() * 1000000),
     });
     i++;
   }
@@ -176,36 +183,54 @@ const getTableList = (req: any, res: any) => {
     data: {
       column: [
         {
-          name: '策略名称',
-          value: 'strategy_name',
+          title: '序号',
+          dataIndex: 'index',
+          key: 'index',
         },
         {
-          name: '触达方式',
-          value: 'touch_way',
+          title: '策略名称',
+          dataIndex: 'strategy_name',
+          key: 'strategy_name',
         },
         {
-          name: '收到信息后登陆用户数',
-          value: 'count',
+          title: '触达方式',
+          dataIndex: 'touch_way',
+          key: 'touch_way',
         },
         {
-          name: '当天',
-          value: 'num1',
+          title: '初始事件日期',
+          dataIndex: 'first_event_date',
+          key: 'first_event_date',
         },
         {
-          name: '3天',
-          value: 'num2',
+          title: '收到信息后登陆用户数',
+          dataIndex: 'count',
+          key: 'count',
         },
         {
-          name: '7天',
-          value: 'num3',
+          title: '当天',
+          dataIndex: 'num1',
+          key: 'num1',
         },
         {
-          name: '15天',
-          value: 'num4',
+          title: '3天',
+          dataIndex: 'num2',
+          key: 'num2',
         },
         {
-          name: '30天',
-          value: 'num5',
+          title: '7天',
+          dataIndex: 'num3',
+          key: 'num3',
+        },
+        {
+          title: '15天',
+          dataIndex: 'num4',
+          key: 'num4',
+        },
+        {
+          title: '30天',
+          dataIndex: 'num5',
+          key: 'num5',
         },
       ],
       data,

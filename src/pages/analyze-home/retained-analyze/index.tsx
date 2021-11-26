@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useModel } from 'umi';
-import { Space, Button, Collapse, Select } from 'antd';
+import { Space, Button, Collapse, Select, Card, Divider, Tooltip } from 'antd';
+import { DownloadOutlined, RetweetOutlined } from '@ant-design/icons';
 import style from './style.less';
 // 业务组件
 import StatisticsSearch from '../components/statistics-search';
 import FollowUpSearch from './components/followup-search';
 import CompareSearch from './components/compare-search';
-// import LineChart from './components/line-chart';
+import LineChart from './components/line-chart';
 import Table from './components/result-table';
 // 共有数据源
 import { useSearchModel } from '../model';
@@ -44,6 +45,9 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   const normalSearchRef = useRef(null);
   // 表格、折线数据
   const { column, tableData, lineData, getTableDataList } = useTableModel();
+
+  //表格选择显示图表
+  const [selectedRowDatas, setSelectedRowDatas] = useState<any>([]);
 
   // mounted初始化
   useEffect(() => {
@@ -120,15 +124,30 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
         <Button onClick={onClick}>fake</Button>
       </div>
 
-      {/* 折线图 */}
-      {/* <div className={style['chart-box']} style={{ marginTop: '10px' }}>
-        <LineChart />
-      </div> */}
+      <Card
+        title={
+          <>
+            <span>结果</span>
+            <Divider type="vertical"></Divider>
+            <DownloadOutlined onClick={() => {}}></DownloadOutlined>
+            <Tooltip placement="top" title={'刷新并重置选择'}>
+              <RetweetOutlined onClick={getTableDataList} style={{ marginLeft: '16px' }} />
+            </Tooltip>
+          </>
+        }
+        style={{ marginTop: '10px' }}
+      >
+        {/* 折线图 */}
+        <div className={style['chart-box']} style={{ marginTop: '10px' }}>
+          <span className={style['chart-title']}>图表标题</span>
+          <LineChart selectData={selectedRowDatas} />
+        </div>
 
-      {/* 表格 */}
-      <div className={style['table-box']} style={{ marginTop: '10px' }}>
-        <Table id={1} column={column} data={tableData} />
-      </div>
+        {/* 表格 */}
+        <div className={style['table-box']} style={{ marginTop: '10px' }}>
+          <Table id={1} column={column} data={tableData} getData={setSelectedRowDatas} />
+        </div>
+      </Card>
     </div>
   );
 };

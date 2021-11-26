@@ -1,12 +1,18 @@
 import React, { useEffect, useImperativeHandle } from 'react';
 // 通用组件
 import { G2, Chart, Geom, Axis, Tooltip, Legend, Util, getTheme } from 'bizcharts';
+import { useState } from 'react';
 
 interface LineChartProps {
   cref?: any;
+  selectData: any;
 }
 
 const LineChart: React.FC<any> = (props: LineChartProps) => {
+  const { selectData } = props;
+  useEffect(() => {
+    console.log(selectData);
+  }, [selectData]);
   const data = [
     {
       date: 'Jan',
@@ -131,8 +137,17 @@ const LineChart: React.FC<any> = (props: LineChartProps) => {
   ];
 
   return (
-    <Chart height={400} data={data} autoFit onAxisLabelClick={console.log}>
-      <Legend />
+    <Chart
+      height={400}
+      data={selectData}
+      autoFit
+      onAxisLabelClick={console.log}
+      padding="auto"
+      appendPadding={[10, 0, 0, 0]}
+      forceUpdate="true"
+    >
+      <Legend position="right" />
+      <Tooltip shared={true} showCrosshairs />
       <Axis name="date" />
       <Axis
         name="value"
