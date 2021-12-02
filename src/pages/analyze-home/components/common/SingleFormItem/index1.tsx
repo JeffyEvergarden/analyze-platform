@@ -31,21 +31,8 @@ const InnerForm: React.FC<any> = (props: any) => {
   const opList: any[] = currentInnerValue?.operatorList || [];
   const subInnerList: any[] = currentInnerValue?.subList || [];
 
-  // 修改事件 （传入序号） 一级属性
-  const changeEvent = (val: any, opt: any) => {
-    console.log('first', currentInnerValue);
-    // // 清除当前对象其他值
-    currentInnerValue.firstVal = val;
-    currentInnerValue.attr = undefined;
-    currentInnerValue.op = undefined;
-    currentInnerValue.value = undefined;
-    currentInnerValue.edit = undefined;
-    currentInnerValue.alias = undefined;
-    currentInnerValue.lastVal = undefined;
-    form.setFieldsValue({
-      childrenList: [...curList],
-    });
-  };
+  // console.log('重新渲染---:' + field.fieldKey);
+  // useEffect(() => {}, []);
 
   // 修改属性
   const changeAttribute = (val: any, options: any, index: number) => {
@@ -56,7 +43,6 @@ const InnerForm: React.FC<any> = (props: any) => {
     currentInnerValue.attr = val;
     currentInnerValue.op = undefined;
     currentInnerValue.value = undefined;
-    currentInnerValue.lastVal = undefined;
     // 二级列表
     if (currentInnerValue.dataType === 'number' || currentInnerValue.dataType === 'dateTime') {
       operatorList = numberTypeList;
@@ -70,7 +56,6 @@ const InnerForm: React.FC<any> = (props: any) => {
     form.setFieldsValue({
       childrenList: [...curList],
     });
-    console.log('打印属性修改后的值', curList);
   };
 
   // 修改操作
@@ -106,38 +91,9 @@ const InnerForm: React.FC<any> = (props: any) => {
     });
   };
 
-  const changeLastAttribute = (val: any, options: any) => {
-    currentInnerValue.lastVal = val;
-    form.setFieldsValue({
-      childrenList: [...curList],
-    });
-  };
-
   return (
     <div key={key}>
       <div className={style['innerform']}>
-        <FormItem
-          rules={[{ required: true, message: '请选择事件' }]}
-          name={[key, 'event']}
-          fieldKey={[key, 'event']}
-          style={{ width: '200px', marginRight: '8px' }}
-        >
-          <Select
-            placeholder="1请选择事件"
-            onChange={(val: any, opt: any) => {
-              changeEvent(val, opt);
-            }}
-          >
-            {list?.map((item: any, index: number) => {
-              return (
-                <Option key={item.value} value={item.value} opt={item}>
-                  {item.name}
-                </Option>
-              );
-            })}
-          </Select>
-        </FormItem>
-
         <FormItem
           name={[key, 'attr']}
           fieldKey={[key, 'attr']}
@@ -153,7 +109,7 @@ const InnerForm: React.FC<any> = (props: any) => {
           >
             {list.map((item: any, i: number) => {
               return (
-                <Option key={item.value} value={item.value} opt={item}>
+                <Option key={i} value={item.value} opt={item}>
                   {item.name}
                 </Option>
               );
@@ -176,7 +132,7 @@ const InnerForm: React.FC<any> = (props: any) => {
           >
             {opList.map((item: any, i: number) => {
               return (
-                <Option key={item.value} value={item.value} opt={item}>
+                <Option key={i} value={item.value} opt={item}>
                   {item.name}
                 </Option>
               );
@@ -195,7 +151,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             <Select style={{ width: '200px' }} placeholder="请选择">
               {subInnerList.map((item: any, i: number) => {
                 return (
-                  <Option key={item.value} value={item.value} opt={item}>
+                  <Option key={i} value={item.value} opt={item}>
                     {item.name}
                   </Option>
                 );
@@ -214,7 +170,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             <Select style={{ width: '200px' }} placeholder="请选择" mode="multiple">
               {subInnerList.map((item: any, i: number) => {
                 return (
-                  <Option key={item.value} value={item.value} opt={item}>
+                  <Option key={i} value={item.value} opt={item}>
                     {item.name}
                   </Option>
                 );
@@ -230,7 +186,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             fieldKey={[key, 'value']}
             rules={[{ required: true, message: '请输入' }]}
           >
-            <Input style={{ width: '200px' }} placeholder="请输入" />
+            <Input style={{ width: '200px' }} placeholder="请输入"></Input>
           </FormItem>
         </Condition>
 
@@ -241,7 +197,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             fieldKey={[key, 'value']}
             rules={[{ required: true, message: '请输入' }]}
           >
-            <InputNumber style={{ width: '200px' }} placeholder="请输入" />
+            <InputNumber style={{ width: '200px' }} placeholder="请输入"></InputNumber>
           </FormItem>
         </Condition>
 
@@ -252,7 +208,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             fieldKey={[key, 'value']}
             rules={[{ required: true, message: '请选择' }]}
           >
-            <DatePicker style={{ width: '200px' }} placeholder="请选择" />
+            <DatePicker style={{ width: '200px' }} placeholder="请选择"></DatePicker>
           </FormItem>
         </Condition>
 
@@ -263,53 +219,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             onClick={remove}
           />
         </Condition>
-        <span style={{ margin: '0 8px' }}>的</span>
 
-        {/* 最后一级筛选 */}
-        <FormItem
-          rules={[{ required: true, message: '请选择查询指标/属性' }]}
-          name={[key, 'lastVal']}
-          fieldKey={[key, 'lastVal']}
-          style={{ width: '180px' }}
-        >
-          <Select
-            placeholder="请选择查询指标/属性"
-            onChange={(val: any, opt: any) => {
-              changeLastAttribute(val, opt);
-            }}
-          >
-            {/* 测试 */}
-            {list?.map((item: any, index: number) => {
-              return (
-                <Option key={item.value} value={item.value} opt={item}>
-                  {item.name}
-                </Option>
-              );
-            })}
-
-            {/* 指标列表 */}
-            {/* {metricsList.map((item: any, index: any) => {
-              return (
-                <Option key={item.value} value={item.value} opt={item}>
-                  {item.name}
-                </Option>
-              );
-            })} */}
-
-            {/* 属性列表 */}
-            {/* {fieldList.length > 0 && (
-              <Select.OptGroup label="----">
-                {fieldList.map((item: any, index: any) => {
-                  return (
-                    <Option key={`field_${item.value}`} value={item.value} opt={item}>
-                      {item.name}
-                    </Option>
-                  );
-                })}
-              </Select.OptGroup>
-            )} */}
-          </Select>
-        </FormItem>
         {/* 别名 */}
         <Condition r-if={remove}>
           <MinusCircleOutlined
@@ -329,7 +239,7 @@ const InnerForm: React.FC<any> = (props: any) => {
               style={{ width: '200px' }}
               placeholder="请输入别名"
               onPressEnter={changeFiterAilas}
-            />
+            ></Input>
           </FormItem>
         </Condition>
 

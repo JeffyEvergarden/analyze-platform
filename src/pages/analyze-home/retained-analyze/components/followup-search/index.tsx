@@ -43,17 +43,41 @@ const NormalSearch: React.FC<any> = (props: NormalSearchProps) => {
     };
   });
 
+  const changeEvent = (index: number, val: any, opt: any) => {
+    if (index < 0 || typeof index !== 'number') {
+      return;
+    }
+    const curList = form.getFieldValue('childrenList');
+    const currentFormValue: any = curList?.[index] || {};
+    console.log(currentFormValue);
+
+    // 清除当前对象其他值
+    currentFormValue.attribute = undefined; // 第二属性 指标
+    currentFormValue.operator = undefined; // 第三属性 统计方式  // 求和、去重之类的
+    currentFormValue.relation = 'AND';
+    // console.log(opt);
+    // 指标列表
+    currentFormValue.metricsList = opt.opt.metricsList || [];
+    // 属性列表
+    currentFormValue.fieldList = opt.opt.fieldList || [];
+    form.setFieldsValue({
+      childrenList: [...curList],
+    });
+  };
+
   // 初始化
   useEffect(() => {
     // 数据初始化
     form.setFieldsValue({
       childrenList: [
         {
+          firstVal: undefined,
           attr: undefined,
           op: undefined,
           value: undefined,
           edit: false,
           alias: '',
+          lastVal: undefined,
         },
       ],
     });

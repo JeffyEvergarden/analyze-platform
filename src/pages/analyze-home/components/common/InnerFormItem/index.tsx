@@ -27,9 +27,9 @@ const InnerForm: React.FC<any> = (props: any) => {
 
   // 修改属性
   const changeAttribute = (val: any, options: any, index: number) => {
-    // console.log(options);
-    // console.log(currentFormValue);
-    // console.log(currentInnerValue);
+    console.log(options);
+    console.log(currentFormValue);
+    console.log(currentInnerValue);
     currentInnerValue.dataType = options.opt.dataType || '';
     let subList: any[] = map?.get(val) || []; // 三级下拉列表
     // console.log(val);
@@ -38,7 +38,7 @@ const InnerForm: React.FC<any> = (props: any) => {
     let operatorList: any[] = []; // 二级列表
     currentInnerValue.attr = val;
     currentInnerValue.op = undefined;
-    currentInnerValue.value = undefined;
+    // currentInnerValue.value = undefined;
     // 二级列表
     if (currentInnerValue.dataType === 'number' || currentInnerValue.dataType === 'dateTime') {
       operatorList = numberTypeList;
@@ -60,19 +60,23 @@ const InnerForm: React.FC<any> = (props: any) => {
   // 修改操作
   const changeOperator = (val: any, options: any, index: number) => {
     // console.log(val);
+    console.log(currentInnerValue, 'twotwotwo');
+
     currentInnerValue.op = val;
     // 多选
     if (val === 'in' || val === 'not in') {
       currentInnerValue.selectType = 'multi';
-      if (!Array.isArray(currentInnerValue.value)) {
-        currentInnerValue.value = undefined;
-      }
+      // if (!Array.isArray(currentInnerValue.value)) {
+      //   currentInnerValue.value = undefined;
+      // }
     } else if (val) {
       currentInnerValue.selectType = 'single';
-      if (Array.isArray(currentInnerValue.value)) {
-        currentInnerValue.value = undefined;
-      }
+      // if (Array.isArray(currentInnerValue.value)) {
+      //   currentInnerValue.value = undefined;
+      // }
     }
+    currentInnerValue.value = undefined;
+
     form.setFieldsValue({
       childrenList: [...curList],
     });

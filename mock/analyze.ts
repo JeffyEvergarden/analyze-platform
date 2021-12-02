@@ -166,14 +166,14 @@ const getTableList = (req: any, res: any) => {
           Math.floor(Math.random() * 31) + 1
         }`,
       ),
-      count: Math.floor(Math.random() * 1000000),
-      num1: Math.floor(Math.random() * 1000000),
-      num2: Math.floor(Math.random() * 1000000),
-      num3: Math.floor(Math.random() * 1000000),
-      num4: Math.floor(Math.random() * 1000000),
-      num5: Math.floor(Math.random() * 1000000),
-      num6: Math.floor(Math.random() * 1000000),
-      num7: Math.floor(Math.random() * 1000000),
+      count: Math.floor(Math.random() * 100000000),
+      num1: Math.floor(Math.random() * 100000000),
+      num2: Math.floor(Math.random() * 100000000),
+      num3: Math.floor(Math.random() * 100000000),
+      num4: Math.floor(Math.random() * 100000000),
+      num5: Math.floor(Math.random() * 100000000),
+      num6: Math.floor(Math.random() * 100000000),
+      num7: Math.floor(Math.random() * 100000000),
     });
     i++;
   }

@@ -4,7 +4,8 @@ import { Space, Button, Collapse, Select, Card, Divider, Tooltip } from 'antd';
 import { DownloadOutlined, RetweetOutlined } from '@ant-design/icons';
 import style from './style.less';
 // 业务组件
-import StatisticsSearch from '../components/statistics-search';
+// import StatisticsSearch from '../components/statistics-search';
+import StatisticsSearch from '../components/statistics-search/testIndex';
 import FollowUpSearch from './components/followup-search';
 import CompareSearch from './components/compare-search';
 import LineChart from './components/line-chart';
@@ -84,7 +85,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
                 </Select>
               </div>
 
-              <div className={style['zy-row']} style={{ marginLeft: '15px' }}>
+              {/* <div className={style['zy-row']} style={{ marginLeft: '15px' }}>
                 <span className="label">关联主体：</span>
                 <Select
                   value={selectUserType}
@@ -99,7 +100,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
                     );
                   })}
                 </Select>
-              </div>
+              </div> */}
             </Space>
           </Panel>
 
@@ -139,7 +140,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
       >
         {/* 折线图 */}
         <div className={style['chart-box']} style={{ marginTop: '10px' }}>
-          <span className={style['chart-title']}>图表标题</span>
+          <span className={style['chart-title']}>留存趋势图</span>
           <LineChart selectData={selectedRowDatas} />
         </div>
 
