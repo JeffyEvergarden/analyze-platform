@@ -20,43 +20,35 @@ const InnerForm: React.FC<any> = (props: any) => {
   const { field, form, formName, list, map, remove } = props;
   const { key, fieldKey: index } = field;
   const curList: any = form.getFieldValue(formName);
-  const currentInnerValue: any = curList?.[index] || {};
+  const currentFormValue: any = curList?.[index] || {};
+  const currentInnerValue: any = currentFormValue?.innerList[index];
 
   const type: any = currentInnerValue?.dataType || 'input'; // 类型
   const selectType: any = currentInnerValue?.selectType || 'single'; // 下拉选择类型
 
-  const edit: any = !!currentInnerValue.edit;
-  const alias: any = currentInnerValue.alias;
+  const edit: any = !!currentFormValue.edit;
+  const alias: any = currentFormValue.alias;
 
   const opList: any[] = currentInnerValue?.operatorList || [];
   const subInnerList: any[] = currentInnerValue?.subList || [];
 
-  // 修改事件 （传入序号） 一级属性
-  const changeEvent = (val: any, opt: any) => {
-    console.log('first', currentInnerValue);
-    // // 清除当前对象其他值
-    currentInnerValue.firstVal = val;
-    currentInnerValue.attr = undefined;
-    currentInnerValue.op = undefined;
-    currentInnerValue.value = undefined;
-    currentInnerValue.edit = undefined;
-    currentInnerValue.alias = undefined;
-    currentInnerValue.lastVal = undefined;
-    form.setFieldsValue({
-      childrenList: [...curList],
-    });
-  };
+  console.log('重新渲染---:' + field.fieldKey);
+  // useEffect(() => {}, []);
 
   // 修改属性
   const changeAttribute = (val: any, options: any, index: number) => {
+    console.log(options);
+    console.log(currentFormValue);
+    console.log(currentInnerValue);
     currentInnerValue.dataType = options.opt.dataType || '';
     let subList: any[] = map?.get(val) || []; // 三级下拉列表
-
+    // console.log(val);
+    // console.log(map);
+    // console.log(subList);
     let operatorList: any[] = []; // 二级列表
     currentInnerValue.attr = val;
     currentInnerValue.op = undefined;
     currentInnerValue.value = undefined;
-    currentInnerValue.lastVal = undefined;
     // 二级列表
     if (currentInnerValue.dataType === 'number' || currentInnerValue.dataType === 'dateTime') {
       operatorList = numberTypeList;
@@ -67,10 +59,12 @@ const InnerForm: React.FC<any> = (props: any) => {
     }
     currentInnerValue.operatorList = operatorList;
     currentInnerValue.subList = subList;
+    // ----------------
+    currentFormValue.innerList[index] = currentInnerValue;
+    currentFormValue.innerList = [...currentFormValue.innerList];
     form.setFieldsValue({
       childrenList: [...curList],
     });
-    console.log('打印属性修改后的值', curList);
   };
 
   // 修改操作
@@ -80,15 +74,17 @@ const InnerForm: React.FC<any> = (props: any) => {
     // 多选
     if (val === 'in' || val === 'not in') {
       currentInnerValue.selectType = 'multi';
-      if (!Array.isArray(currentInnerValue.value)) {
-        currentInnerValue.value = undefined;
-      }
+      // if (!Array.isArray(currentInnerValue.value)) {
+      //   currentInnerValue.value = undefined;
+      // }
     } else if (val) {
       currentInnerValue.selectType = 'single';
-      if (Array.isArray(currentInnerValue.value)) {
-        currentInnerValue.value = undefined;
-      }
+      // if (Array.isArray(currentInnerValue.value)) {
+      //   currentInnerValue.value = undefined;
+      // }
     }
+    currentInnerValue.value = undefined;
+
     form.setFieldsValue({
       childrenList: [...curList],
     });
@@ -97,47 +93,21 @@ const InnerForm: React.FC<any> = (props: any) => {
   // 修改别名
   const changeFiterAilas = (val: any) => {
     const innerList: any = form.getFieldValue(formName);
+    console.log(innerList);
+    console.log(index);
+
     const innerValue: any = innerList?.[index] || {};
     // 别名状态
     innerValue.edit = !innerValue.edit;
-    innerValue.alias = trim(innerValue.alias);
+    innerValue.alias = trim(innerValue.innerList[index].alias);
     form.setFieldsValue({
       [formName]: [...innerList],
-    });
-  };
-
-  const changeLastAttribute = (val: any, options: any) => {
-    currentInnerValue.lastVal = val;
-    form.setFieldsValue({
-      childrenList: [...curList],
     });
   };
 
   return (
     <div key={key}>
       <div className={style['innerform']}>
-        <FormItem
-          rules={[{ required: true, message: '请选择事件' }]}
-          name={[key, 'event']}
-          fieldKey={[key, 'event']}
-          style={{ width: '200px', marginRight: '8px' }}
-        >
-          <Select
-            placeholder="1请选择事件"
-            onChange={(val: any, opt: any) => {
-              changeEvent(val, opt);
-            }}
-          >
-            {list?.map((item: any, index: number) => {
-              return (
-                <Option key={item.value} value={item.value} opt={item}>
-                  {item.name}
-                </Option>
-              );
-            })}
-          </Select>
-        </FormItem>
-
         <FormItem
           name={[key, 'attr']}
           fieldKey={[key, 'attr']}
@@ -153,7 +123,7 @@ const InnerForm: React.FC<any> = (props: any) => {
           >
             {list.map((item: any, i: number) => {
               return (
-                <Option key={item.value} value={item.value} opt={item}>
+                <Option key={i} value={item.value} opt={item}>
                   {item.name}
                 </Option>
               );
@@ -176,7 +146,7 @@ const InnerForm: React.FC<any> = (props: any) => {
           >
             {opList.map((item: any, i: number) => {
               return (
-                <Option key={item.value} value={item.value} opt={item}>
+                <Option key={i} value={item.value} opt={item}>
                   {item.name}
                 </Option>
               );
@@ -195,7 +165,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             <Select style={{ width: '200px' }} placeholder="请选择">
               {subInnerList.map((item: any, i: number) => {
                 return (
-                  <Option key={item.value} value={item.value} opt={item}>
+                  <Option key={i} value={item.value} opt={item}>
                     {item.name}
                   </Option>
                 );
@@ -214,7 +184,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             <Select style={{ width: '200px' }} placeholder="请选择" mode="multiple">
               {subInnerList.map((item: any, i: number) => {
                 return (
-                  <Option key={item.value} value={item.value} opt={item}>
+                  <Option key={i} value={item.value} opt={item}>
                     {item.name}
                   </Option>
                 );
@@ -230,7 +200,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             fieldKey={[key, 'value']}
             rules={[{ required: true, message: '请输入' }]}
           >
-            <Input style={{ width: '200px' }} placeholder="请输入" />
+            <Input style={{ width: '200px' }} placeholder="请输入"></Input>
           </FormItem>
         </Condition>
 
@@ -241,7 +211,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             fieldKey={[key, 'value']}
             rules={[{ required: true, message: '请输入' }]}
           >
-            <InputNumber style={{ width: '200px' }} placeholder="请输入" />
+            <InputNumber style={{ width: '200px' }} placeholder="请输入"></InputNumber>
           </FormItem>
         </Condition>
 
@@ -252,72 +222,11 @@ const InnerForm: React.FC<any> = (props: any) => {
             fieldKey={[key, 'value']}
             rules={[{ required: true, message: '请选择' }]}
           >
-            <DatePicker style={{ width: '200px' }} placeholder="请选择" />
+            <DatePicker style={{ width: '200px' }} placeholder="请选择"></DatePicker>
           </FormItem>
         </Condition>
 
-        {/* 删除按钮 */}
-        <Condition r-if={remove}>
-          <MinusCircleOutlined
-            style={{ marginLeft: '10px', fontSize: '20px', color: '#A0A0A0' }}
-            onClick={remove}
-          />
-        </Condition>
-        <span style={{ margin: '0 8px' }}>的</span>
-
-        {/* 最后一级筛选 */}
-        <FormItem
-          rules={[{ required: true, message: '请选择查询指标/属性' }]}
-          name={[key, 'lastVal']}
-          fieldKey={[key, 'lastVal']}
-          style={{ width: '180px' }}
-        >
-          <Select
-            placeholder="请选择查询指标/属性"
-            onChange={(val: any, opt: any) => {
-              changeLastAttribute(val, opt);
-            }}
-          >
-            {/* 测试 */}
-            {list?.map((item: any, index: number) => {
-              return (
-                <Option key={item.value} value={item.value} opt={item}>
-                  {item.name}
-                </Option>
-              );
-            })}
-
-            {/* 指标列表 */}
-            {/* {metricsList.map((item: any, index: any) => {
-              return (
-                <Option key={item.value} value={item.value} opt={item}>
-                  {item.name}
-                </Option>
-              );
-            })} */}
-
-            {/* 属性列表 */}
-            {/* {fieldList.length > 0 && (
-              <Select.OptGroup label="----">
-                {fieldList.map((item: any, index: any) => {
-                  return (
-                    <Option key={`field_${item.value}`} value={item.value} opt={item}>
-                      {item.name}
-                    </Option>
-                  );
-                })}
-              </Select.OptGroup>
-            )} */}
-          </Select>
-        </FormItem>
         {/* 别名 */}
-        <Condition r-if={remove}>
-          <MinusCircleOutlined
-            style={{ marginLeft: '10px', fontSize: '20px', color: '#A0A0A0' }}
-            onClick={remove}
-          />
-        </Condition>
-
         <HighlightOutlined
           style={{ color: '#1890ff', margin: '0 15px', fontSize: '20px' }}
           onClick={changeFiterAilas}
@@ -329,7 +238,7 @@ const InnerForm: React.FC<any> = (props: any) => {
               style={{ width: '200px' }}
               placeholder="请输入别名"
               onPressEnter={changeFiterAilas}
-            />
+            ></Input>
           </FormItem>
         </Condition>
 

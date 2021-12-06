@@ -1,0 +1,43 @@
+.zy-row {
+  display: flex;
+  align-items: center;
+}
+
+.extra-box {
+  .zy-row;
+
+  position: relative;
+  margin-bottom: 10px;
+
+  .layout_left {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    justify-content: center;
+    height: 100%;
+
+    .relation-button {
+      position: relative;
+      z-index: 10;
+      box-sizing: border-box;
+      width: 25px;
+      height: 25px;
+      color: #1890ff;
+      text-align: center;
+      vertical-align: middle;
+      background: #e6f7ff;
+      border: none;
+    }
+
+    &::after {
+      position: absolute;
+      top: 0;
+      left: 12px;
+      z-index: 1;
+      width: 1px;
+      height: 100%;
+      background: #e6f7ff;
+      content: '';
+    }
+  }
+}

@@ -18,6 +18,7 @@ interface StatisticComponentProps {
 interface StatisticItemProps {
   event?: string | undefined; // 事件类型
   attribute?: string | undefined; // 属性/指标
+  associatedField?: any;
   operator?: string | undefined; // 统计方式
   type?: string | undefined; //  fields/metric 属性/指标
   dataType?: string | undefined; // number/input/select/dateTime
@@ -78,6 +79,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     // 清除当前对象其他值
     currentFormValue.attribute = undefined; // 第二属性 指标
     currentFormValue.operator = undefined; // 第三属性 统计方式  // 求和、去重之类的
+    currentFormValue.associatedField = undefined; // 关联主体
     currentFormValue.relation = 'AND';
     // console.log(opt);
     // 指标列表
@@ -148,7 +150,21 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   useImperativeHandle(cref, () => {
     return {
       getForm() {
-        console.log(form.getFieldValue('childrenList'));
+        const formData = form.getFieldValue('childrenList');
+        return {
+          subject: formData[0]?.event,
+          initEvent: formData[0]?.attribute,
+          initMetric: formData[0]?.operator,
+          associatedField: formData[0]?.associatedField,
+          relation: formData[0]?.relation,
+          conditions: formData[0]?.innerList?.map((item: any) => {
+            return {
+              field: item.attr,
+              function: item.op,
+              params: Array.isArray(item.value) ? item.value.join() : item.value,
+            };
+          }),
+        };
       },
     };
   });
@@ -163,6 +179,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
           attribute: undefined,
           operator: undefined,
           relation: 'AND',
+          associatedField: undefined,
         },
       ],
     });
@@ -331,11 +348,16 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                           addInnerForm(outIndex);
                         }}
                       />
-
-                      <div className={style['zy-row']} style={{ marginLeft: '15px' }}>
-                        <span className="label">关联主体：</span>
+                      <span className="label">关联主体：</span>
+                      <FormItem
+                        rules={[{ required: true, message: '请选择关联主体' }]}
+                        name={[field.fieldKey, 'associatedField']}
+                        fieldKey={[field.fieldKey, 'associatedField']}
+                        className={style['zy-row']}
+                        // style={{ marginLeft: '15px' }}
+                      >
                         <Select
-                          value={selectUserType}
+                          // value={selectUserType}
                           style={{ width: '250px' }}
                           placeholder="请选择关联主体"
                         >
@@ -347,7 +369,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                             );
                           })}
                         </Select>
-                      </div>
+                      </FormItem>
                     </Space>
 
                     <Form.List name={[field.fieldKey, 'innerList']}>

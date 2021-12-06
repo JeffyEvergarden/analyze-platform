@@ -38,7 +38,7 @@ const InnerForm: React.FC<any> = (props: any) => {
     let operatorList: any[] = []; // 二级列表
     currentInnerValue.attr = val;
     currentInnerValue.op = undefined;
-    // currentInnerValue.value = undefined;
+    currentInnerValue.value = undefined;
     // 二级列表
     if (currentInnerValue.dataType === 'number' || currentInnerValue.dataType === 'dateTime') {
       operatorList = numberTypeList;

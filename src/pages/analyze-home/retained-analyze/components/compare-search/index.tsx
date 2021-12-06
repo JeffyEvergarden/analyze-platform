@@ -1,6 +1,6 @@
 import React, { useEffect, useImperativeHandle } from 'react';
 // 通用组件
-import { Form, Select, Button, Space, Input, DatePicker, Tooltip } from 'antd';
+import { Form, Select, Button, Space, Input, DatePicker, Tooltip, InputNumber } from 'antd';
 import { PlusSquareOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { groupByList, timeUnitList, timeUnit2List } from '../../model/const';
 
@@ -37,14 +37,23 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
 
   const setDefaultStep = () => {
     form.setFieldsValue({
-      step: undefined,
+      step: -1,
       unit: undefined,
     });
   };
 
   useImperativeHandle(cref, () => {
     return {
-      getForm() {},
+      getForm() {
+        console.log(form.getFieldsValue());
+        let formData = form.getFieldsValue();
+        return {
+          groupFields: formData?.groupBy?.join(),
+          startDate: formData.dateRange && formData?.dateRange[0]?.format('YYYY-MM-DD'),
+          endDate: formData.dateRange && formData?.dateRange[1]?.format('YYYY-MM-DD'),
+          timeStep: formData?.step,
+        };
+      },
     };
   });
 
@@ -94,7 +103,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
 
       <Space align="baseline">
         <FormItem name="step" label="观测步长">
-          <Input style={{ width: '120px' }} placeholder="请输入步长"></Input>
+          <InputNumber style={{ width: '120px' }} placeholder="请输入步长"></InputNumber>
         </FormItem>
         <FormItem name="unit">
           <Select style={{ width: '120px' }} placeholder="统计单位">

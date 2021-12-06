@@ -57,14 +57,14 @@ export const timeUnitList: any[] = [
     name: '日',
     value: 'day',
   },
-  {
-    name: '月',
-    value: 'month',
-  },
-  {
-    name: '年',
-    value: 'year',
-  },
+  // {
+  //   name: '月',
+  //   value: 'month',
+  // },
+  // {
+  //   name: '年',
+  //   value: 'year',
+  // },
 ];
 
 // 对比查看 - 统计方式
@@ -73,12 +73,12 @@ export const timeUnit2List: any[] = [
     name: '天',
     value: 'day',
   },
-  {
-    name: '月',
-    value: 'month',
-  },
-  {
-    name: '年',
-    value: 'year',
-  },
+  // {
+  //   name: '月',
+  //   value: 'month',
+  // },
+  // {
+  //   name: '年',
+  //   value: 'year',
+  // },
 ];

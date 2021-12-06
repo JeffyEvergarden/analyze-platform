@@ -148,6 +148,7 @@ const LineChart: React.FC<any> = (props: LineChartProps) => {
     >
       <Legend position="right" />
       <Tooltip shared={true} showCrosshairs />
+      {/* <Tooltip /> */}
       <Axis name="date" />
       <Axis
         name="value"

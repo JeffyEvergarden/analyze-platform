@@ -57,7 +57,14 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   }, []);
 
   const onClick = () => {
-    (firstSearchRef.current as any).getForm();
+    let statisticsSearch = (firstSearchRef.current as any).getForm(); //初始行为数据处理为接口需要参数
+    let followUpSearch = (normalSearchRef.current as any).getForm(); //后续行为数据处理为接口需要参数
+    let compareSearch = (lastSearchRef.current as any).getForm(); //对比查看数据处理为接口需要参数
+    // // console.log(statisticsSearch);
+    // // console.log(followUpSearch);
+    console.log(compareSearch);
+    let all = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
+    console.log(all);
   };
 
   return (
