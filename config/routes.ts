@@ -1,20 +1,8 @@
 export default [
   {
-    path: '/home',
-    layout: false,
-    component: './home',
-    noAuth: true,
-  },
-  {
     path: '/menu',
     layout: false,
     component: './menu-management',
-    noAuth: true,
-  },
-  {
-    path: '/link',
-    layout: false,
-    component: './link-management',
     noAuth: true,
   },
   {
@@ -31,6 +19,6 @@ export default [
       { component: './404' },
     ],
   },
-  { path: '/', redirect: '/home', noAuth: true },
+  { path: '/', redirect: '/analyzehome', noAuth: true },
   { component: './404' },
 ];

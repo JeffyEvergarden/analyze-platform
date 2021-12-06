@@ -5,9 +5,10 @@
   width: 100%;
   height: 100%;
   min-height: 100vh;
+  padding-bottom: 8px;
   overflow: auto;
   font-family: PingFang SC, sans-serif, Microsoft YaHei, SimHei;
-  background: url('../home/assets/bg.svg') no-repeat 100%;
+  background: url('./assets/bg.svg') no-repeat 100%;
 
   // 树形组件样式修改
   :global {
@@ -47,8 +48,8 @@
 .menu-box {
   display: flex;
   width: 1200px;
-  min-height: 800px;
-  margin-top: 60px;
+  min-height: 780px;
+  margin-top: 24px;
   background: #fff;
   border-radius: 4px;
   box-shadow: 0 8px 40px rgba(0, 71, 138, 0.12);
@@ -101,4 +102,10 @@
   &:active {
     color: #333;
   }
+}
+
+.icon {
+  width: 80px;
+  max-width: 80px;
+  max-height: 80px;
 }
