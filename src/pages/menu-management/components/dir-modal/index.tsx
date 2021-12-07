@@ -50,7 +50,10 @@ const DirModal: React.FC<any> = (props: any) => {
         if (row.form) {
           form.setFieldsValue(row.form);
         } else {
-          form.setFieldsValue(row);
+          let innerForm: any = {
+            [nameKey]: row.title,
+          };
+          form.setFieldsValue(innerForm);
         }
       }
       setVisible(true);
@@ -80,7 +83,7 @@ const DirModal: React.FC<any> = (props: any) => {
             label={`${name}名称`}
             style={{ width: '360px' }}
           >
-            <Input placeholder="请填写目录名称" {...extra} />
+            <Input placeholder={`请填写${name}名称`} {...extra} />
           </FormItem>
         </Form>
       </div>

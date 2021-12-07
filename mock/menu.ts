@@ -174,5 +174,7 @@ export default {
   'POST /management/menu/delete`': deleteLink, // 删除模块
   'POST /management/menu/update': updateLink, // 修改模块
   'POST /bgs/dashboard/dir/create': createDir, // 创建目录
-  'POST /bgs/dashboard/dir/modify': createDir,
+  'POST /bgs/dashboard/dir/modify': createDir, // 修改目录
+  'POST /bgs/dashboard/board/create': createDir, // 创建看板
+  'POST /bgs/dashboard/board/modify': createDir, // 修改看板
 };

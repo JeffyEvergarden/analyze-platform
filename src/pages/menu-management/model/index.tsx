@@ -6,6 +6,8 @@ import {
   deleteLink,
   createDir,
   modifyDir,
+  createBoard,
+  modifyBoard,
 } from './api';
 import { message } from 'antd';
 
@@ -90,7 +92,7 @@ export const useMenuModel = () => {
 
   // 创建目录
   const addBoard = async (data: any) => {
-    let res: any = await addBoard(data);
+    let res: any = await createBoard(data);
     if (res?.code === successCode) {
       message.success('添加成功');
       return true;
@@ -102,7 +104,7 @@ export const useMenuModel = () => {
 
   // 创建目录
   const updateBoard = async (data: any) => {
-    let res: any = await updateBoard(data);
+    let res: any = await modifyBoard(data);
     if (res?.code === successCode) {
       message.success('添加成功');
       return true;
@@ -119,6 +121,8 @@ export const useMenuModel = () => {
     loading,
     addDir,
     updateDir,
+    addBoard,
+    updateBoard,
   };
 };
 

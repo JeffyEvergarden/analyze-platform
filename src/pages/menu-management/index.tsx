@@ -13,7 +13,7 @@ import DirModal from './components/dir-modal';
 
 const MenuManagement: React.FC<any> = (props: any) => {
   // 菜单列表
-  const { menuList, getMenuList, addDir, updateDir } = useMenuModel();
+  const { menuList, getMenuList, addDir, updateDir, addBoard, updateBoard } = useMenuModel();
   // 表格数据源
   const {
     tableList, // 表格数据源
@@ -54,6 +54,10 @@ const MenuManagement: React.FC<any> = (props: any) => {
       setTableList([...tableList]);
     }
   };
+
+  // 跳转
+  const goToEditPage = (row: any, index: number) => {};
+
   // 表格列名
   const columns = [
     {
@@ -61,15 +65,8 @@ const MenuManagement: React.FC<any> = (props: any) => {
       dataIndex: 'name',
     },
     {
-      title: '缩略图',
-      dataIndex: 'icon',
-      render: (val: any, row: any) => {
-        if (!row.icon) {
-          return null;
-        } else {
-          return <img src={row.icon} className={style['icon']} alt="无法识别" />;
-        }
-      },
+      title: '类型',
+      dataIndex: 'type',
     },
     {
       title: '链接名称',
@@ -80,15 +77,26 @@ const MenuManagement: React.FC<any> = (props: any) => {
       dataIndex: 'op',
       render: (val: any, row: any, index: number) => {
         return (
-          <Button
-            type="link"
-            danger
-            onClick={() => {
-              deleteLink(row, index);
-            }}
-          >
-            删除
-          </Button>
+          <>
+            <Button
+              type="link"
+              onClick={() => {
+                goToEditPage(row, index);
+              }}
+              style={{ marginRight: '8px' }}
+            >
+              编辑
+            </Button>
+            <Button
+              type="link"
+              danger
+              onClick={() => {
+                deleteLink(row, index);
+              }}
+            >
+              删除
+            </Button>
+          </>
         );
       },
     },
@@ -143,12 +151,23 @@ const MenuManagement: React.FC<any> = (props: any) => {
   const openAddBoardModal = (info: any) => {
     console.log('创建看板--------');
     console.log(info);
-    (boardModalRef.current as any).open();
+    (boardModalRef.current as any).open({ parent: info });
   };
 
-  const confirmBoardInfo = (info: any) => {
+  const confirmBoardInfo = async (info: any) => {
     console.log('确认看板--------');
     console.log(info);
+    let params: any = {
+      ...info.form,
+    };
+    if (info._openType === 'new') {
+      params.dirId = info?._originInfo?.parent?.id || '';
+      let res: any = await addBoard(params);
+    } else if (info._openType === 'edit') {
+      params.dashboardId = info?._originInfo?.id || '';
+      let res: any = await updateBoard(params);
+    }
+    (boardModalRef.current as any).close();
   };
 
   // 看板弹窗相关
@@ -168,6 +187,7 @@ const MenuManagement: React.FC<any> = (props: any) => {
     } else {
       //
       console.log('打开其他层级');
+      (boardModalRef.current as any).open(row);
     }
   };
 
