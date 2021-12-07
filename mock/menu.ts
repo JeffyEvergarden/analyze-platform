@@ -169,7 +169,7 @@ const createDir = (req: any, res: any) => {
 
 export default {
   'GET /management/menu': getMenuList, // 获取所有模块
-  'GET /management/menuList': getCurrentMenuList, // 获取当前子模块
+  'GET /bgs/dashboard/board/list/:id': getCurrentMenuList, // 获取当前子模块
   'POST /management/menu/add': addNewLink, // 添加模块
   'POST /management/menu/delete`': deleteLink, // 删除模块
   'POST /management/menu/update': updateLink, // 修改模块

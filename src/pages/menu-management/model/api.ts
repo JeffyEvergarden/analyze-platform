@@ -10,7 +10,7 @@ export async function getMenuList(params?: { [key: string]: any }) {
 
 /** 获取模块列表 **/
 export async function getModuleList(params?: { [key: string]: any }) {
-  return request('/management/menuList', {
+  return request(`/bgs/dashboard/board/list/${params?.boardId}`, {
     method: 'GET',
     params,
   });

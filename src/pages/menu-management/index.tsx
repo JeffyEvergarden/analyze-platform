@@ -61,7 +61,7 @@ const MenuManagement: React.FC<any> = (props: any) => {
   // 表格列名
   const columns = [
     {
-      title: '链接名称',
+      title: '看板名称',
       dataIndex: 'name',
     },
     {
@@ -75,6 +75,7 @@ const MenuManagement: React.FC<any> = (props: any) => {
     {
       title: '操作',
       dataIndex: 'op',
+      width: 160,
       render: (val: any, row: any, index: number) => {
         return (
           <>

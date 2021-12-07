@@ -10,6 +10,8 @@ import {
   modifyBoard,
 } from './api';
 import { message } from 'antd';
+import { templates, map } from './util';
+import { Item } from 'rc-menu';
 
 const successCode = '000';
 
@@ -131,15 +133,38 @@ export const useTableModel = () => {
   const [tableLoading, setTableLoading] = useState<boolean>(false);
   const [opLoading, setOpLoading] = useState<boolean>(false);
 
+  // 格式化类型
+  const formateType = (obj: any) => {
+    let type = map[obj.moduleType];
+    if (!type) {
+      type = map[obj.analysisType];
+    }
+    return type || '';
+  };
+  // 加工表格
+  const processTable = (data: any) => {
+    data = data.analysisTemplates || [];
+    data = data.map((item: any, index: number) => {
+      let json: any = {};
+      try {
+        json = item.analysisData ? JSON.parse(item.analysisData) : {};
+      } catch (e) {}
+      return {
+        ...item,
+        index, // 序号
+        name: item.analysisName, // 看板名称,
+        json, // json 数据
+        type: formateType(json),
+      };
+    });
+  };
+
   const getTableList = async (params: any) => {
     setTableLoading(true);
     let res: any = await getModuleList(params);
     setTableLoading(false);
-    let { data = [] } = res;
-    data = data.map((item: any, index: any) => {
-      item.index = index;
-      return item;
-    });
+    let { data = {} } = res;
+    data = processTable(data);
     console.log('tableList', data);
     setTableList(data || []);
   };
