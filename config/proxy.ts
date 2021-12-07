@@ -8,8 +8,8 @@
  */
 export default {
   dev: {
-    '/api/': {
-      target: 'https://preview.pro.ant.design',
+    '/bgs/': {
+      target: '', //'http://11.113.0.77:26062',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

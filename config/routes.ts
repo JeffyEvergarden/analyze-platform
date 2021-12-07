@@ -1,21 +1,28 @@
 export default [
   {
-    path: '/home',
-    layout: false,
-    component: './home',
-    noAuth: true,
-  },
-  {
     path: '/menu',
     layout: false,
-    component: './menu-management',
+    component: './menu-management/home',
     noAuth: true,
-  },
-  {
-    path: '/link',
-    layout: false,
-    component: './link-management',
-    noAuth: true,
+    routes: [
+      {
+        name: '公共',
+        path: '/menu/public',
+        component: './menu-management/home/public',
+      },
+      {
+        name: '团队',
+        path: '/menu/team',
+        component: './menu-management/home/team',
+      },
+      {
+        name: '个人',
+        path: '/menu/person',
+        component: './menu-management/home/person',
+      },
+      { redirect: '/menu/public' },
+      { component: './404' },
+    ],
   },
   {
     path: '/analyzehome',
@@ -31,6 +38,6 @@ export default [
       { component: './404' },
     ],
   },
-  { path: '/', redirect: '/home', noAuth: true },
+  { path: '/', redirect: '/analyzehome', noAuth: true },
   { component: './404' },
 ];
