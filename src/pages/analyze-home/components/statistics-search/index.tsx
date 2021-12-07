@@ -59,11 +59,13 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     currentFormValue.attribute = undefined; // 第二属性 指标
     currentFormValue.operator = undefined; // 第三属性 统计方式  // 求和、去重之类的
     currentFormValue.relation = 'AND';
-    // console.log(opt);
+    console.log(opt);
     // 指标列表
     currentFormValue.metricsList = opt.opt.metricsList || [];
     // 属性列表
     currentFormValue.fieldList = opt.opt.fieldList || [];
+    //关联主体
+    // currentFormValue.associatedFieldsList = opt.opt.fieldList || [];
     form.setFieldsValue({
       childrenList: [...curList],
     });
@@ -154,6 +156,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                 // console.log(curItem);
                 const metricsList = curItem.metricsList || [];
                 const fieldList = curItem.fieldList || [];
+                const associatedFieldsList = curItem.associatedFields || [];
 
                 const type: string = curItem.type || ''; // 判断是 指标 还是 属性
                 const dataType: string = curItem.dataType || ''; // 判断数据类型

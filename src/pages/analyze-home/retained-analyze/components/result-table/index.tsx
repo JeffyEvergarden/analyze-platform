@@ -10,6 +10,7 @@ interface TableProps {
   id?: string;
   getData: any;
   resetSelect: any;
+  chartList: any;
 }
 
 const LineChart: React.FC<any> = (props: TableProps) => {
@@ -20,16 +21,17 @@ const LineChart: React.FC<any> = (props: TableProps) => {
     setCurrent(val);
   };
 
-  const { column, data, id, getData } = props;
+  const { column, data, id, getData, chartList } = props;
   const tableId = `result-table-${id}`;
 
   // 默认勾选5条数据
   useEffect(() => {
+    console.log(column);
     console.log(data);
     let init = [];
     let init2 = [];
     for (let i = 0; i < 5; i++) {
-      init.push(data?.[i]?.strategy_name);
+      init.push(data?.[i]?.tableIndex);
       init2.push(data?.[i]);
     }
     setSelectedRowKeys(init);
@@ -40,31 +42,37 @@ const LineChart: React.FC<any> = (props: TableProps) => {
   useEffect(() => {
     let data2: any = [];
     selectedRows?.forEach((res: any) => {
-      data2.push({
-        date: '当天',
-        type: res?.first_event_date,
-        value: res?.num1,
+      console.log(res);
+      console.log(chartList);
+
+      chartList.forEach((item: any) => {
+        data2.push({
+          date: item.title,
+          type: res?.tableIndex,
+          value: res?.[item?.value],
+        });
       });
-      data2.push({
-        date: '3天',
-        type: res?.first_event_date,
-        value: res?.num2,
-      });
-      data2.push({
-        date: '7天',
-        type: res?.first_event_date,
-        value: res?.num3,
-      });
-      data2.push({
-        date: '15天',
-        type: res?.first_event_date,
-        value: res?.num4,
-      });
-      data2.push({
-        date: '30天',
-        type: res?.first_event_date,
-        value: res?.num5,
-      });
+
+      // data2.push({
+      //   date: '3天',
+      //   type: res?.first_event_date,
+      //   value: res?.num2,
+      // });
+      // data2.push({
+      //   date: '7天',
+      //   type: res?.first_event_date,
+      //   value: res?.num3,
+      // });
+      // data2.push({
+      //   date: '15天',
+      //   type: res?.first_event_date,
+      //   value: res?.num4,
+      // });
+      // data2.push({
+      //   date: '30天',
+      //   type: res?.first_event_date,
+      //   value: res?.num5,
+      // });
     });
     getData(data2);
   }, [selectedRows]);
@@ -95,7 +103,7 @@ const LineChart: React.FC<any> = (props: TableProps) => {
       rowSelection={rowSelection}
       pagination={{ current, onChange: changePage }}
       rowKey={(record) => {
-        return `${record.strategy_name}`;
+        return `${record.tableIndex}`;
         // return record;
       }}
     ></Table>

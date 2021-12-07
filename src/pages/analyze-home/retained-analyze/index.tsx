@@ -11,8 +11,9 @@ import CompareSearch from './components/compare-search';
 import LineChart from './components/line-chart';
 import Table from './components/result-table';
 // 共有数据源
-import { useSearchModel } from '../model';
+import { useSearchModel, useBehaviorModel, useListModel } from '../model';
 import { modelTypeList, userTypeList } from './model/const';
+import { groupByList } from './model/const';
 // 定制
 import { useTableModel } from './model';
 
@@ -38,6 +39,13 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   const [selectUserType, setSelectUserType] = useState<string>('01');
   // 搜索条件---筛选框的数据源
   const { eventList, fieldMap, getPreConfig } = useSearchModel();
+  //后续行为
+  const { behaviorList, behaviorFieldMap, getBehaviorConfig } = useBehaviorModel();
+  // 表格数据
+  const { chartList, tableList, tableDataList, getTable } = useListModel();
+
+  //别名
+  const [otherName, setOtherName] = useState<any>('');
 
   const firstSearchRef = useRef(null);
 
@@ -61,10 +69,13 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     let followUpSearch = (normalSearchRef.current as any).getForm(); //后续行为数据处理为接口需要参数
     let compareSearch = (lastSearchRef.current as any).getForm(); //对比查看数据处理为接口需要参数
     // // console.log(statisticsSearch);
-    // // console.log(followUpSearch);
-    console.log(compareSearch);
+    console.log(followUpSearch);
+    // console.log(compareSearch);
     let all = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
     console.log(all);
+    getTable(all, eventList);
+    //别名
+    setOtherName(all.otherName);
   };
 
   return (
@@ -113,12 +124,17 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
 
           {/* 初始行为 */}
           <Panel header="初始行为" key="2">
-            <StatisticsSearch cref={firstSearchRef} list={eventList} map={fieldMap} />
+            <StatisticsSearch
+              cref={firstSearchRef}
+              list={eventList}
+              map={fieldMap}
+              getBehavior={getBehaviorConfig}
+            />
           </Panel>
 
           {/* 后续行为 */}
           <Panel header="后续行为" key="3">
-            <FollowUpSearch cref={normalSearchRef} list={eventList} map={fieldMap} />
+            <FollowUpSearch cref={normalSearchRef} list={behaviorList} map={behaviorFieldMap} />
           </Panel>
 
           <Panel header="对比查看" key="4">
@@ -129,19 +145,25 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
 
       {/* 测试功能 */}
       <div className={style['search-box']} style={{ marginTop: '10px' }}>
-        <Button onClick={onClick}>fake</Button>
+        <Button onClick={onClick}>刷新列表</Button>
+        <Button onClick={onClick} style={{ marginLeft: '10px' }}>
+          保存到看板
+        </Button>
       </div>
 
       <Card
         title={
-          <>
-            <span>结果</span>
-            <Divider type="vertical"></Divider>
-            <DownloadOutlined onClick={() => {}}></DownloadOutlined>
-            <Tooltip placement="top" title={'刷新并重置选择'}>
-              <RetweetOutlined onClick={getTableDataList} style={{ marginLeft: '16px' }} />
-            </Tooltip>
-          </>
+          <div className={style['result']}>
+            <div>
+              <span>结果</span>
+              <Divider type="vertical"></Divider>
+              <DownloadOutlined onClick={() => {}}></DownloadOutlined>
+              <Tooltip placement="top" title={'刷新并重置选择'}>
+                <RetweetOutlined onClick={getTableDataList} style={{ marginLeft: '16px' }} />
+              </Tooltip>
+            </div>
+            <div>{otherName}</div>
+          </div>
         }
         style={{ marginTop: '10px' }}
       >
@@ -153,7 +175,13 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
 
         {/* 表格 */}
         <div className={style['table-box']} style={{ marginTop: '10px' }}>
-          <Table id={1} column={column} data={tableData} getData={setSelectedRowDatas} />
+          <Table
+            id={1}
+            column={tableList}
+            data={tableDataList}
+            getData={setSelectedRowDatas}
+            chartList={chartList}
+          />
         </div>
       </Card>
     </div>
