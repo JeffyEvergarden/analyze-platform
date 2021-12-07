@@ -17,6 +17,9 @@ export default defineConfig({
     siderWidth: 208,
     ...defaultSettings,
   },
+  publicPath: '/bgs/board',
+  outputPath: 'dist/board',
+  base: '/bgs/board/home',
   dynamicImport: {
     loading: '@ant-design/pro-layout/es/PageLoading',
   },
