@@ -6,8 +6,10 @@ import {
   deleteLink,
   createDir,
   modifyDir,
+  deleteDir,
   createBoard,
   modifyBoard,
+  deleteBoard,
 } from './api';
 import { message } from 'antd';
 import { templates, map } from './util';
@@ -92,6 +94,17 @@ export const useMenuModel = () => {
     }
   };
 
+  const delDir = async (data: any) => {
+    let res: any = await deleteDir(data);
+    if (res?.code === successCode) {
+      message.success('删除成功');
+      return true;
+    } else {
+      message.success('发生未知系统异常');
+      return false;
+    }
+  };
+
   // 创建目录
   const addBoard = async (data: any) => {
     let res: any = await createBoard(data);
@@ -116,6 +129,16 @@ export const useMenuModel = () => {
     }
   };
 
+  const delBoard = async (data: any) => {
+    let res: any = await deleteBoard(data);
+    if (res?.code === successCode) {
+      message.success('删除成功');
+      return true;
+    } else {
+      message.success('发生未知系统异常');
+      return false;
+    }
+  };
   return {
     menuList,
     getMenuList,
@@ -123,8 +146,10 @@ export const useMenuModel = () => {
     loading,
     addDir,
     updateDir,
+    delDir,
     addBoard,
     updateBoard,
+    delBoard,
   };
 };
 

@@ -10,7 +10,7 @@ export async function getMenuList(params?: { [key: string]: any }) {
 
 /** 获取模块列表 **/
 export async function getModuleList(params?: { [key: string]: any }) {
-  return request(`/bgs/dashboard/board/list/${params?.boardId}`, {
+  return request(`/bgs/dashboard/board/list/${params?.id}`, {
     method: 'GET',
     params,
   });
@@ -18,8 +18,8 @@ export async function getModuleList(params?: { [key: string]: any }) {
 
 // 删除链接
 export async function deleteLink(data?: { [key: string]: any }) {
-  return request('/management/menu/delete', {
-    method: 'POST',
+  return request(`/bgs/dashboard/analysis/delete/${data?.id}`, {
+    method: 'DELETE',
     data,
   });
 }
@@ -57,6 +57,14 @@ export async function modifyDir(data?: { [key: string]: any }) {
   });
 }
 
+// 删除目录
+export async function deleteDir(data?: { [key: string]: any }) {
+  return request(`/bgs/dashboard/Dir/delete/{${data?.id}}`, {
+    method: 'DELETE',
+    data,
+  });
+}
+
 // 新增看板
 
 export async function createBoard(data?: { [key: string]: any }) {
@@ -70,6 +78,14 @@ export async function createBoard(data?: { [key: string]: any }) {
 export async function modifyBoard(data?: { [key: string]: any }) {
   return request('/bgs/dashboard/board/modify', {
     method: 'POST',
+    data,
+  });
+}
+
+// 删除看板
+export async function deleteBoard(data?: { [key: string]: any }) {
+  return request(`/bgs/dashboard/board/delete/{${data?.id}}`, {
+    method: 'DELETE',
     data,
   });
 }

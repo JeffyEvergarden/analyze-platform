@@ -2,8 +2,27 @@ export default [
   {
     path: '/menu',
     layout: false,
-    component: './menu-management',
+    component: './menu-management/home',
     noAuth: true,
+    routes: [
+      {
+        name: '公共',
+        path: '/menu/public',
+        component: './menu-management/home/public',
+      },
+      {
+        name: '团队',
+        path: '/menu/team',
+        component: './menu-management/home/team',
+      },
+      {
+        name: '个人',
+        path: '/menu/person',
+        component: './menu-management/home/person',
+      },
+      { component: './404' },
+      { redirect: '/menu/public' },
+    ],
   },
   {
     path: '/analyzehome',
