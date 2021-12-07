@@ -11,11 +11,11 @@ import CompareSearch from './components/compare-search';
 import LineChart from './components/line-chart';
 import Table from './components/result-table';
 // 共有数据源
-import { useSearchModel, useBehaviorModel, useListModel } from '../model';
+import { useSearchModel, useBehaviorModel, useListModel } from './model';
 import { modelTypeList, userTypeList } from './model/const';
 import { groupByList } from './model/const';
 // 定制
-import { useTableModel } from './model';
+// import { useTableModel } from './model';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -53,15 +53,15 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
 
   const normalSearchRef = useRef(null);
   // 表格、折线数据
-  const { column, tableData, lineData, getTableDataList } = useTableModel();
+  // const { column, tableData, lineData, getTableDataList } = useTableModel();
 
   //表格选择显示图表
   const [selectedRowDatas, setSelectedRowDatas] = useState<any>([]);
 
   // mounted初始化
   useEffect(() => {
-    getPreConfig('retained');
-    getTableDataList();
+    getPreConfig('RETAIN_STRATEGY');
+    // getTableDataList();
   }, []);
 
   const onClick = () => {
@@ -159,7 +159,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
               <Divider type="vertical"></Divider>
               <DownloadOutlined onClick={() => {}}></DownloadOutlined>
               <Tooltip placement="top" title={'刷新并重置选择'}>
-                <RetweetOutlined onClick={getTableDataList} style={{ marginLeft: '16px' }} />
+                <RetweetOutlined onClick={onClick} style={{ marginLeft: '16px' }} />
               </Tooltip>
             </div>
             <div>{otherName}</div>

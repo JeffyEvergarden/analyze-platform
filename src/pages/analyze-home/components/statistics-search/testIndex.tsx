@@ -70,7 +70,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
-    getBehavior();
+    getBehavior('RETAIN_STRATEGY', opt.value);
     if (index < 0 || typeof index !== 'number') {
       return;
     }

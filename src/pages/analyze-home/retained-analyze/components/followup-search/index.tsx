@@ -117,9 +117,17 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     });
   };
 
-  useImperativeHandle(cref, () => {
+  useImperativeHandle(cref, async () => {
     return {
       getForm() {
+        // async function validFun() {
+        //   const fieldsValue: any = await form.validateFields();
+        //   return fieldsValue
+        // }
+
+        // let a = validFun();
+        // if (a) {
+        // }
         let formData = form.getFieldValue('childrenList')[0];
         console.log(formData);
 

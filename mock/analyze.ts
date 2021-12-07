@@ -426,8 +426,8 @@ const getRefreshList = (req: any, res: any) => {
 };
 
 export default {
-  'GET /bgs/analysis/events/dict': getEventList,
-  'GET /bgs/analysis/behavior/dict': getBehaviorList,
+  'GET /bgs/analysis/retain/events/dict': getEventList,
+  'GET /bgs/analysis/retain/behavior/dict': getBehaviorList,
   'GET /bgs/analysis/dict/fields': getFieldList,
   'GET /bgs/analysis/table/list': getTableList,
   'POST /bgs/retain/query': getRefreshList,
