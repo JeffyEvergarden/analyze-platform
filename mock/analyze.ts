@@ -5,8 +5,16 @@ import moment from 'moment';
 const getEventList = (req: any, res: any) => {
   res.json([
     {
+      id: '1',
       code: 'LQHTXCG',
       name: '命运冠位指定',
+      associatedFields: [
+        {
+          eventCode: 'xx',
+          field: 'xx',
+          name: 'xx',
+        },
+      ],
       fields: [
         {
           canGroupBy: '1',
@@ -15,6 +23,8 @@ const getEventList = (req: any, res: any) => {
           name: '下拉框',
           dataType: 'string',
           dictCode: 'select',
+          createdTime: '1111-11-11',
+          updateTime: '2222-22-22',
         },
         {
           canGroupBy: '1',
@@ -65,8 +75,152 @@ const getEventList = (req: any, res: any) => {
       ],
     },
     {
+      id: '2',
       code: 'LBQ',
       name: '原神',
+      associatedFields: [
+        {
+          eventCode: 'xx',
+          field: 'xx',
+          name: 'xx',
+        },
+      ],
+      fields: [
+        {
+          canGroupBy: '1',
+          id: '1',
+          code: 'select',
+          name: '下拉框',
+          dataType: 'string',
+          dictCode: 'select',
+        },
+        {
+          canGroupBy: '1',
+          id: '2',
+          code: 'input',
+          name: '输入框',
+          dataType: 'string',
+          dictCode: undefined,
+        },
+        {
+          canGroupBy: '1',
+          id: '3',
+          code: 'dateTime',
+          name: '时间选择器',
+          dataType: 'dateTime',
+          dictCode: undefined,
+        },
+        {
+          canGroupBy: '1',
+          id: '4',
+          code: 'number',
+          name: '数字框',
+          dataType: 'numberic',
+          dictCode: undefined,
+        },
+      ],
+      metrics: [
+        {
+          name: '用户数',
+          expression: '用户数',
+        },
+        {
+          name: '提现成功人数',
+          expression: '户均提现成功金额',
+        },
+        {
+          name: '提现成功笔数',
+          expression: '提现成功笔数',
+        },
+      ],
+    },
+  ]);
+};
+
+//后续行为
+const getBehaviorList = (req: any, res: any) => {
+  res.json([
+    {
+      id: '1',
+      code: 'LQHTXCG',
+      name: '命运冠位指定',
+      associatedFields: [
+        {
+          eventCode: 'xx',
+          field: 'xx',
+          name: 'xx',
+        },
+      ],
+      fields: [
+        {
+          canGroupBy: '1',
+          id: '1',
+          code: 'select',
+          name: '下拉框',
+          dataType: 'string',
+          dictCode: 'select',
+          createdTime: '1111-11-11',
+          updateTime: '2222-22-22',
+        },
+        {
+          canGroupBy: '1',
+          id: '1',
+          code: 'select2',
+          name: '下拉框2',
+          dataType: 'string',
+          dictCode: 'select2',
+        },
+        {
+          canGroupBy: '1',
+          id: '2',
+          code: 'input',
+          name: '输入框',
+          dataType: 'string',
+          dictCode: undefined,
+        },
+        {
+          canGroupBy: '1',
+          id: '3',
+          code: 'dateTime',
+          name: '时间选择器',
+          dataType: 'dateTime',
+          dictCode: undefined,
+        },
+        {
+          canGroupBy: '1',
+          id: '4',
+          code: 'number',
+          name: '数字框',
+          dataType: 'numberic',
+          dictCode: undefined,
+        },
+      ],
+      metrics: [
+        {
+          name: '用户数',
+          expression: '用户数',
+        },
+        {
+          name: '提现成功人数',
+          expression: '户均提现成功金额',
+        },
+        {
+          name: '提现成功笔数',
+          expression: '提现成功笔数',
+        },
+      ],
+    },
+    {
+      id: '2',
+      code: 'LBQ',
+      name: '原神',
+      associatedFields: [
+        {
+          eventCode: 'xx',
+          field: 'xx',
+          name: 'xx',
+        },
+      ],
       fields: [
         {
           canGroupBy: '1',
@@ -238,8 +392,43 @@ const getTableList = (req: any, res: any) => {
   });
 };
 
+const getRefreshList = (req: any, res: any) => {
+  res.json({
+    queryConditionId: '',
+    status: 'finished',
+    data: {
+      nextEventTitleNum: 5,
+      nextEventTitles: ['当天', '3天', '7天', '15天', '30天'],
+      groupData: [
+        {
+          init_event_num: '123',
+          next_event_num1: 2,
+          next_event_num2: 2,
+          next_event_num3: 2,
+          next_event_num4: 2,
+          next_event_num5: 2,
+          strategy_id: 'id',
+          strategy_name: 'name',
+        },
+        {
+          init_event_num: '123',
+          next_event_num1: 4,
+          next_event_num2: 2,
+          next_event_num3: 4,
+          next_event_num4: 2,
+          next_event_num5: 4,
+          strategy_id: 'id',
+          strategy_name: 'name',
+        },
+      ],
+    },
+  });
+};
+
 export default {
-  'GET /bgs/analysis/dict/events': getEventList,
+  'GET /bgs/analysis/events/dict': getEventList,
+  'GET /bgs/analysis/behavior/dict': getBehaviorList,
   'GET /bgs/analysis/dict/fields': getFieldList,
   'GET /bgs/analysis/table/list': getTableList,
+  'POST /bgs/retain/query': getRefreshList,
 };

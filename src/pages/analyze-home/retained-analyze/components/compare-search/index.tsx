@@ -45,7 +45,6 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   useImperativeHandle(cref, () => {
     return {
       getForm() {
-        console.log(form.getFieldsValue());
         let formData = form.getFieldsValue();
         return {
           groupFields: formData?.groupBy?.join(),

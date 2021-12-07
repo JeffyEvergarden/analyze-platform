@@ -13,6 +13,7 @@ interface StatisticComponentProps {
   cref: any;
   list: [];
   map?: Map<string, any> | undefined;
+  getBehavior: any;
 }
 
 interface StatisticItemProps {
@@ -48,7 +49,7 @@ const { Option } = Select;
 
 const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
-  const { list, cref, map } = props;
+  const { list, cref, map, getBehavior } = props;
   const [selectUserType, setSelectUserType] = useState<string>('01');
 
   // 筛选框 - 关联主体 - 下拉列表
@@ -69,6 +70,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
+    getBehavior();
     if (index < 0 || typeof index !== 'number') {
       return;
     }
@@ -81,11 +83,14 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     currentFormValue.operator = undefined; // 第三属性 统计方式  // 求和、去重之类的
     currentFormValue.associatedField = undefined; // 关联主体
     currentFormValue.relation = 'AND';
-    // console.log(opt);
+    console.log(opt);
     // 指标列表
     currentFormValue.metricsList = opt.opt.metricsList || [];
     // 属性列表
     currentFormValue.fieldList = opt.opt.fieldList || [];
+    //关联主体
+    currentFormValue.associatedFieldsList = opt.opt.associatedFieldsList || [];
+
     form.setFieldsValue({
       childrenList: [...curList],
     });
@@ -236,6 +241,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                 // console.log(curItem);
                 const metricsList = curItem.metricsList || [];
                 const fieldList = curItem.fieldList || [];
+                const associatedFieldsList = curItem.associatedFieldsList || [];
 
                 const type: string = curItem.type || ''; // 判断是 指标 还是 属性
                 const dataType: string = curItem.dataType || ''; // 判断数据类型
@@ -361,7 +367,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                           style={{ width: '250px' }}
                           placeholder="请选择关联主体"
                         >
-                          {userTypeList.map((item: any) => {
+                          {associatedFieldsList.map((item: any) => {
                             return (
                               <Option value={item.value} key={item.value}>
                                 {item.name}

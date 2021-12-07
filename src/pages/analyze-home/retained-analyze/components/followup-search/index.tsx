@@ -121,6 +121,8 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     return {
       getForm() {
         let formData = form.getFieldValue('childrenList')[0];
+        console.log(formData);
+
         return {
           nextEvent: formData?.event,
           nextMetric: formData?.attribute,
@@ -129,6 +131,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
             function: formData?.innerList[0]?.op || undefined,
             params: formData?.innerList[0]?.value || undefined,
           },
+          otherName: formData?.alias,
         };
       },
     };
@@ -309,7 +312,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                                     field={innerField} // 包含name、 fieldKey
                                     form={form}
                                     formName={'childrenList'}
-                                    list={list}
+                                    list={fieldList}
                                     map={map}
                                   />
                                 );
