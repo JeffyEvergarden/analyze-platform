@@ -7,6 +7,7 @@ import MyTree from './components/tree';
 import Condition from './components/common/Condition';
 import LinkModal from './components/link-modal';
 import DirModal from './components/dir-modal';
+import { Item } from 'rc-menu';
 
 // 统一门户-菜单管理
 
@@ -36,21 +37,14 @@ const MenuManagement: React.FC<any> = (props: any) => {
     setCurrent(val);
   };
 
-  // 添加链接
-  const addLink = async (obj: any) => {
-    let res: any = await addModuleLink(obj);
-    if (res.id) {
-      setTableList([...tableList, res]);
-    }
-  };
-
+  // 删除目录/看板 api
   const deleteApi = (row: any) => {
     console.log(row);
     if (row.level === 2) {
-      return delBoard(row);
+      return delBoard({ id: row.id });
     }
     if (row.level === 1) {
-      return delDir(row);
+      return delDir({ id: row.id });
     }
     return true;
   };
@@ -61,12 +55,41 @@ const MenuManagement: React.FC<any> = (props: any) => {
     console.log('删除序列', i);
     let res: any = await deleteModuleLink({ id: row.id });
     if (res) {
-      getTableList({}); // todo
+      getTableList({ id: parentId }); // todo 刷新
     }
   };
 
   // 跳转
-  const goToEditPage = (row: any, index: number) => {};
+  const goToEditPage = (row: any, index: number) => {
+    let prefix = window.location.protocol + '//' + window.location.host;
+    // 其他分析的
+    let type: string = row.typeKey;
+    if (['strategy', 'ynf', 'sub_activity', 'activity'].includes(type)) {
+      let otherPageUrl: string = prefix + '/bgs/analyze/index.html/createModule?';
+      let commonQuery: string = `dashboardId=${row.analysisBoard}&moduleId=${row.analysisId}&type=${row.typeKey}`;
+      window.open(otherPageUrl + commonQuery);
+    } else if (type === 'funnel') {
+      let otherPageUrl: string = prefix + '/bgs/analyze/index.html/funnel?';
+      let obj: any = {};
+      let keys: any[] = [
+        'startTime',
+        'endTime',
+        'funnelId',
+        'groupLabel',
+        'queryType',
+        'groupField',
+        'timeType',
+      ];
+      keys.forEach((key: string) => {
+        obj[key] = row.json ? row.json['key'] : undefined;
+      });
+      let objStr = JSON.stringify(obj);
+      let commonQuery: string = `dashboardId=${row.analysisBoard}&moduleId=${row.analysisId}&moduleName=${row.title}&json=${objStr}`;
+      window.open(otherPageUrl + commonQuery);
+    } else {
+      console.log('打开了其他看板');
+    }
+  };
 
   // 表格列名
   const columns = [
@@ -122,11 +145,11 @@ const MenuManagement: React.FC<any> = (props: any) => {
     let node: any = args[1]?.node || {};
     console.log(node);
     let params = {
-      parentId: node?.key || node?.id || undefined, // todo
+      id: node?.id || undefined, // todo
     };
-    setParentId(node?.key || node?.id || undefined);
+    setParentId(node?.id || undefined);
     setTitle(node?.title || '');
-    if (!params.parentId) {
+    if (!params.id) {
       message.warning('获取不到该节点ID');
       return;
     }
@@ -164,7 +187,7 @@ const MenuManagement: React.FC<any> = (props: any) => {
     console.log(info);
     (boardModalRef.current as any).open({ parent: info });
   };
-
+  // 确认添加或修改
   const confirmBoardInfo = async (info: any) => {
     console.log('确认看板--------');
     console.log(info);
@@ -202,7 +225,7 @@ const MenuManagement: React.FC<any> = (props: any) => {
     }
   };
 
-  // 切换父节点
+  // 切换父节点  ---- 暂时用不到
   const touchChangeParent = () => {};
 
   // 初始化 mounted

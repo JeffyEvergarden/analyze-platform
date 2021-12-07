@@ -9,7 +9,7 @@
 export default {
   dev: {
     '/bgs/': {
-      target: 'http://11.113.0.77:26062',
+      target: '', //'http://11.113.0.77:26062',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

@@ -20,8 +20,8 @@ export default [
         path: '/menu/person',
         component: './menu-management/home/person',
       },
-      { component: './404' },
       { redirect: '/menu/public' },
+      { component: './404' },
     ],
   },
   {

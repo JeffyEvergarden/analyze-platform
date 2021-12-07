@@ -68,64 +68,60 @@ const getMenuList = (req: any, res: any) => {
 const getCurrentMenuList = (req: any, res: any) => {
   res.json({
     code: 200,
-    data: [
-      {
-        id: 'fake13',
-        name: 'fuck3',
-        url: 'https://www.baidu.com',
-        showType: 'leader',
-        index: 10,
-        icon: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.zhimg.com%2F50%2Fv2-6ff5d5ccc24154bc38823529d353d474_hd.jpg&refer=http%3A%2F%2Fpic1.zhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1640501958&t=c76186c40a5a100e12e94f92bf77bd62',
-      },
-      {
-        id: 'fake2',
-        name: 'fuck2',
-        url: 'https://www.baidu.com',
-        showType: 1,
-        index: 10,
-        icon: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.zhimg.com%2F50%2Fv2-6ff5d5ccc24154bc38823529d353d474_hd.jpg&refer=http%3A%2F%2Fpic1.zhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1640501958&t=c76186c40a5a100e12e94f92bf77bd62',
-      },
-      {
-        id: 'fake',
-        name: 'fuck1',
-        url: 'https://www.baidu.com',
-        showType: 1,
-        index: 10,
-        icon: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.zhimg.com%2F50%2Fv2-6ff5d5ccc24154bc38823529d353d474_hd.jpg&refer=http%3A%2F%2Fpic1.zhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1640501958&t=c76186c40a5a100e12e94f92bf77bd62',
-      },
-      {
-        id: 'fake',
-        name: 'fuck4',
-        url: 'https://www.baidu.com',
-        showType: 'leader',
-        index: 10,
-        icon: '',
-      },
-      {
-        id: 'fake',
-        name: 'fuck5',
-        url: 'https://www.baidu.com',
-        showType: 'leader',
-        index: 10,
-        icon: 'https://10.192.171.243:8099/unifyportal/menuFile/get?id=1464173559804456961',
-      },
-      {
-        id: 'fake',
-        name: 'fuck6',
-        url: 'https://www.baidu.com',
-        showType: 'leader',
-        index: 10,
-        icon: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.zhimg.com%2F50%2Fv2-6ff5d5ccc24154bc38823529d353d474_hd.jpg&refer=http%3A%2F%2Fpic1.zhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1640501958&t=c76186c40a5a100e12e94f92bf77bd62',
-      },
-      {
-        id: 'fake',
-        name: 'fuck7',
-        url: 'https://www.baidu.com',
-        showType: 'leader',
-        index: 10,
-        icon: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.zhimg.com%2F50%2Fv2-6ff5d5ccc24154bc38823529d353d474_hd.jpg&refer=http%3A%2F%2Fpic1.zhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1640501958&t=c76186c40a5a100e12e94f92bf77bd62',
-      },
-    ],
+    datas: {
+      analysisTemplates: [
+        {
+          id: 'fake13',
+          name: 'fuck3',
+          url: 'https://www.baidu.com',
+          showType: 'leader',
+          index: 10,
+          icon: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.zhimg.com%2F50%2Fv2-6ff5d5ccc24154bc38823529d353d474_hd.jpg&refer=http%3A%2F%2Fpic1.zhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1640501958&t=c76186c40a5a100e12e94f92bf77bd62',
+        },
+        {
+          id: 'fake2',
+          analysisName: 'fuck2',
+          analysisData: JSON.stringify({
+            moduleType: 'ynf',
+          }),
+        },
+        {
+          id: 'fake',
+          analysisName: 'fuck1',
+          analysisData: JSON.stringify({
+            moduleType: 'strategy',
+          }),
+        },
+        {
+          id: 'fake',
+          analysisName: 'fuck4',
+          analysisData: JSON.stringify({
+            moduleType: 'activity',
+          }),
+        },
+        {
+          id: 'fake',
+          analysisName: 'fuck5',
+          analysisData: JSON.stringify({
+            moduleType: 'sub_activity',
+          }),
+        },
+        {
+          id: 'fake',
+          analysisName: 'fuck6',
+          analysisData: JSON.stringify({
+            analysisType: 'funnel',
+          }),
+        },
+        {
+          id: 'fake',
+          analysisName: 'fuck7',
+          analysisData: JSON.stringify({
+            analysisType: 'superset',
+          }),
+        },
+      ],
+    },
   });
 };
 
@@ -171,12 +167,12 @@ export default {
   'GET /management/menu': getMenuList, // 获取所有模块
   'GET /bgs/dashboard/board/list/:id': getCurrentMenuList, // 获取当前子模块
   'POST /management/menu/add': addNewLink, // 添加模块
-  'POST /bgs/dashboard/analysis/delete/:id`': deleteLink, // 删除模块
+  'DELETE /bgs/dashboard/analysis/delete/:id`': deleteLink, // 删除模块
   'POST /management/menu/update': updateLink, // 修改模块
   'POST /bgs/dashboard/dir/create': createDir, // 创建目录
   'POST /bgs/dashboard/dir/modify': createDir, // 修改目录
-  'POST /bgs/dashboard/dir/delete/:id': createDir, // 删除目录
+  'DELETE /bgs/dashboard/dir/delete/:id': createDir, // 删除目录
   'POST /bgs/dashboard/board/create': createDir, // 创建看板
   'POST /bgs/dashboard/board/modify': createDir, // 修改看板
-  'POST /bgs/dashboard/board/delete/:id': createDir, // 删除看板
+  'DELETE /bgs/dashboard/board/delete/:id': createDir, // 删除看板
 };

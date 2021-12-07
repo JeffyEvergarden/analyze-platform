@@ -179,17 +179,19 @@ export const useTableModel = () => {
         index, // 序号
         name: item.analysisName, // 看板名称,
         json, // json 数据
+        typeKey: json?.moduleType || json?.analysisType || '',
         type: formateType(json),
       };
     });
+    return data;
   };
 
   const getTableList = async (params: any) => {
     setTableLoading(true);
     let res: any = await getModuleList(params);
     setTableLoading(false);
-    let { data = {} } = res;
-    data = processTable(data);
+    let { datas = {} } = res;
+    let data = processTable(datas);
     console.log('tableList', data);
     setTableList(data || []);
   };
@@ -220,7 +222,7 @@ export const useTableModel = () => {
       message.success('删除成功');
       return true;
     } else {
-      message.success('发生未知系统异常');
+      message.error('发生未知系统异常');
       return false;
     }
   };
