@@ -46,6 +46,8 @@ const InnerForm: React.FC<any> = (props: any) => {
       operatorList = stringTypeList;
     } else if (currentInnerValue.dataType === 'select') {
       operatorList = arrayTypeList;
+    } else if (currentInnerValue.dataType === 'input') {
+      operatorList = stringTypeList;
     }
     currentInnerValue.operatorList = operatorList;
     currentInnerValue.subList = subList;
