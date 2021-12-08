@@ -17,7 +17,7 @@ export default defineConfig({
     siderWidth: 208,
     ...defaultSettings,
   },
-  publicPath: '/bgs/board',
+  publicPath: '/bgs/board/',
   outputPath: 'dist/board',
   base: '/bgs/board/home',
   dynamicImport: {
