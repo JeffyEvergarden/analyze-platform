@@ -36,6 +36,7 @@ export async function getFieldList(params?: { [key: string]: any }) {
 export async function getRefreshList(params: any) {
   return request('/bgs/retain/query', {
     method: 'POST',
-    params,
+
+    data: params,
   });
 }

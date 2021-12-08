@@ -59,7 +59,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     currentFormValue.attribute = undefined; // 第二属性 指标
     currentFormValue.operator = undefined; // 第三属性 统计方式  // 求和、去重之类的
     currentFormValue.relation = 'AND';
-    console.log(opt);
+    // console.log(opt);
     // 指标列表
     currentFormValue.metricsList = opt.opt.metricsList || [];
     // 属性列表

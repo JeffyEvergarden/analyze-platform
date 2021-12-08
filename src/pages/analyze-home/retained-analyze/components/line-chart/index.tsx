@@ -1,6 +1,6 @@
 import React, { useEffect, useImperativeHandle } from 'react';
 // 通用组件
-import { G2, Chart, Geom, Axis, Tooltip, Legend, Util, getTheme } from 'bizcharts';
+import { G2, Chart, Geom, Axis, Tooltip, Legend, Util, getTheme, Line, Point } from 'bizcharts';
 import { useState } from 'react';
 
 interface LineChartProps {
@@ -13,6 +13,7 @@ const LineChart: React.FC<any> = (props: LineChartProps) => {
   useEffect(() => {
     console.log(selectData);
   }, [selectData]);
+
   return (
     <Chart
       height={400}
@@ -33,18 +34,19 @@ const LineChart: React.FC<any> = (props: LineChartProps) => {
           formatter: (val) => `${val} `,
         }}
       />
+
       <Geom
         type="point"
         position="date*value"
         size={4}
         shape={'circle'}
         color={'type'}
-        style={{
-          stroke: '#fff',
-          lineWidth: 1,
-        }}
+        // style={{
+        //   stroke: '#fff',
+        //   lineWidth: 1,
+        // }}
       />
-      <Geom type="line" position="date*value" size={2} color={'type'} shape={'smooth'} />
+      <Geom type="line" position="date*value" size={2} color={'type'} shape={'circle'} />
     </Chart>
   );
 };

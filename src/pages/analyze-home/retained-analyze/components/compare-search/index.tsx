@@ -1,6 +1,16 @@
 import React, { useEffect, useImperativeHandle } from 'react';
 // 通用组件
-import { Form, Select, Button, Space, Input, DatePicker, Tooltip, InputNumber } from 'antd';
+import {
+  Form,
+  Select,
+  Button,
+  Space,
+  Input,
+  DatePicker,
+  Tooltip,
+  InputNumber,
+  message,
+} from 'antd';
 import { PlusSquareOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { groupByList, timeUnitList, timeUnit2List } from '../../model/const';
 
@@ -37,7 +47,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
 
   const setDefaultStep = () => {
     form.setFieldsValue({
-      step: -1,
+      step: undefined,
       unit: undefined,
     });
   };
@@ -45,13 +55,30 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   useImperativeHandle(cref, () => {
     return {
       getForm() {
-        let formData = form.getFieldsValue();
-        return {
-          groupFields: formData?.groupBy?.join(),
-          startDate: formData.dateRange && formData?.dateRange[0]?.format('YYYY-MM-DD'),
-          endDate: formData.dateRange && formData?.dateRange[1]?.format('YYYY-MM-DD'),
-          timeStep: formData?.step,
-        };
+        const fieldsValue: any = form.validateFields();
+        // console.log(form.validateFields());
+        let strategy_name = form.getFieldValue('groupBy').find((item: any) => {
+          return item == 'strategy_name';
+        });
+        console.log(strategy_name);
+
+        if (fieldsValue) {
+          if (!strategy_name) {
+            message.info('分组策略名称必选');
+            return false;
+          }
+          let formData = form.getFieldsValue();
+          console.log(formData);
+
+          return {
+            groupFields: formData?.groupBy,
+            startDate: formData.dateRange && formData?.dateRange[0]?.format('YYYY-MM-DD'),
+            endDate: formData.dateRange && formData?.dateRange[1]?.format('YYYY-MM-DD'),
+            timeStep: formData?.step || -1,
+          };
+        } else {
+          return false;
+        }
       },
     };
   });
@@ -59,7 +86,9 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   // 初始化
   useEffect(() => {
     // 数据初始化
-    form.setFieldsValue({});
+    form.setFieldsValue({
+      groupBy: ['strategy_name'],
+    });
   }, []);
 
   return (

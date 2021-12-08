@@ -70,7 +70,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
-    getBehavior('RETAIN_STRATEGY', opt.value);
+    getBehavior('RETAIN_STRATEGY_NEXT', opt.value);
     if (index < 0 || typeof index !== 'number') {
       return;
     }
@@ -155,21 +155,30 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   useImperativeHandle(cref, () => {
     return {
       getForm() {
-        const formData = form.getFieldValue('childrenList');
-        return {
-          subject: formData[0]?.event,
-          initEvent: formData[0]?.attribute,
-          initMetric: formData[0]?.operator,
-          associatedField: formData[0]?.associatedField,
-          relation: formData[0]?.relation,
-          conditions: formData[0]?.innerList?.map((item: any) => {
-            return {
-              field: item.attr,
-              function: item.op,
-              params: Array.isArray(item.value) ? item.value.join() : item.value,
-            };
-          }),
-        };
+        const fieldsValue: any = form.validateFields();
+        if (fieldsValue) {
+          const formData = form.getFieldValue('childrenList');
+          return {
+            initEvent: formData[0]?.event,
+            initMetric: formData[0]?.attribute,
+            // initMetric: formData[0]?.operator,
+            associatedField: formData[0]?.associatedField,
+            relation: formData[0]?.relation,
+            conditions: formData[0]?.innerList?.map((item: any) => {
+              return {
+                field: item.attr,
+                function: item.op,
+                params: Array.isArray(item.value)
+                  ? item.value.join()
+                  : item.value.format('YYYY-MM-DD')
+                  ? item.value.format('YYYY-MM-DD')
+                  : item.value,
+              };
+            }),
+          };
+        } else {
+          return false;
+        }
       },
     };
   });
@@ -306,7 +315,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                             );
                           })}
                           {/* 属性列表 */}
-                          {fieldList.length > 0 && (
+                          {/* {fieldList.length > 0 && (
                             <Select.OptGroup label="----">
                               {fieldList.map((item: any, index: any) => {
                                 return (
@@ -316,7 +325,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                                 );
                               })}
                             </Select.OptGroup>
-                          )}
+                          )} */}
                         </Select>
                       </FormItem>
                       {/* {type} */}
@@ -356,7 +365,6 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                       />
                       <span className="label">关联主体：</span>
                       <FormItem
-                        rules={[{ required: true, message: '请选择关联主体' }]}
                         name={[field.fieldKey, 'associatedField']}
                         fieldKey={[field.fieldKey, 'associatedField']}
                         className={style['zy-row']}

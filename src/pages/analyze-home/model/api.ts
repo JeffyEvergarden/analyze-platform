@@ -25,9 +25,9 @@ export async function getFieldList(params?: { [key: string]: any }) {
 }
 
 /** 刷新列表 **/
-export async function getRefreshList(params?: { [key: string]: any }) {
+export async function getRefreshList(data: any) {
   return request('/bgs/retain/query', {
     method: 'POST',
-    params,
+    data,
   });
 }

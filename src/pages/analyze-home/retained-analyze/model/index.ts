@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import React, { useState } from 'react';
 import { getEventList, getFieldList, getBehaviorList, getRefreshList } from './api';
 import { groupByList } from './const';
@@ -35,7 +36,7 @@ export const useSearchModel = () => {
           subList = map.get(subItem.code);
           type = 'select';
         }
-        if (subItem.dataType === 'numberic') {
+        if (subItem.dataType === 'numbric') {
           // 时间选择框
           subList = map.get(subItem.code) || [];
           type = 'number';
@@ -143,7 +144,7 @@ export const useBehaviorModel = () => {
           subList = map.get(subItem.code);
           type = 'select';
         }
-        if (subItem.dataType === 'numberic') {
+        if (subItem.dataType === 'numbric') {
           // 时间选择框
           subList = map.get(subItem.code) || [];
           type = 'number';
@@ -209,6 +210,7 @@ export const useBehaviorModel = () => {
 export const useListModel = () => {
   const [tableList, setTableList] = useState<any>([]);
   const [chartList, setChartList] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [tableDataList, setTableDataList] = useState<any>();
   let tableIndex = [
     'next_event_num1',
@@ -260,11 +262,22 @@ export const useListModel = () => {
   };
 
   const getTable = async (obj: any, eventList: any) => {
+    setLoading(true);
     let res: any = await getRefreshList(obj);
-    console.log(res);
-    console.log(eventList);
+    // console.log(res);
+    // console.log(eventList);
+    if (res.status == 'finished') {
+      setLoading(false);
+      processEvent(res.data, obj, eventList);
+    } else if (res.status == 'failed') {
+      setLoading(false);
+      message.error('查询失败');
+    } else if (res.statys == 'running') {
+      setTimeout(async () => {
+        getTable(obj, eventList);
+      }, 2000);
+    }
 
-    processEvent(res.data, obj, eventList);
     //groupFields
   };
 

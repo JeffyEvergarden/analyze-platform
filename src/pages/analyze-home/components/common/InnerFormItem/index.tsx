@@ -22,14 +22,14 @@ const InnerForm: React.FC<any> = (props: any) => {
   const opList: any[] = currentInnerValue?.operatorList || [];
   const subInnerList: any[] = currentInnerValue?.subList || [];
 
-  console.log('重新渲染---:' + field.fieldKey);
+  // console.log('重新渲染---:' + field.fieldKey);
   // useEffect(() => {}, []);
 
   // 修改属性
   const changeAttribute = (val: any, options: any, index: number) => {
-    console.log(options);
-    console.log(currentFormValue);
-    console.log(currentInnerValue);
+    // console.log(options);
+    // console.log(currentFormValue);
+    // console.log(currentInnerValue);
     currentInnerValue.dataType = options.opt.dataType || '';
     let subList: any[] = map?.get(val) || []; // 三级下拉列表
     // console.log(val);
@@ -64,7 +64,8 @@ const InnerForm: React.FC<any> = (props: any) => {
 
     currentInnerValue.op = val;
     // 多选
-    if (val === 'in' || val === 'not in') {
+    // if (val === 'in' || val === 'not in') {
+    if (val === 'contain' || val === 'not contain') {
       currentInnerValue.selectType = 'multi';
       // if (!Array.isArray(currentInnerValue.value)) {
       //   currentInnerValue.value = undefined;

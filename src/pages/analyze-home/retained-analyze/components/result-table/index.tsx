@@ -48,7 +48,7 @@ const LineChart: React.FC<any> = (props: TableProps) => {
       chartList.forEach((item: any) => {
         data2.push({
           date: item.title,
-          type: res?.tableIndex,
+          type: String(res?.tableIndex),
           value: res?.[item?.value],
         });
       });

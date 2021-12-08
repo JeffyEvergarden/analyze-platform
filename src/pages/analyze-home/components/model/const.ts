@@ -35,11 +35,11 @@ export const statisticDefaultList: any[] = [
 
 export const numberTypeList: any[] = [
   {
-    value: '==',
+    value: '=',
     name: '等于',
   },
   {
-    value: '!==',
+    value: '!=',
     name: '不等于',
   },
   {
@@ -64,26 +64,26 @@ export const numberTypeList: any[] = [
 
 export const arrayTypeList: any[] = [
   {
-    value: '==',
+    value: 'equal',
     name: '等于',
   },
   {
-    value: '!=',
+    value: 'notequal',
     name: '不等于',
   },
   {
-    value: 'in',
+    value: 'contain',
     name: '包含',
   },
   {
-    value: 'not in',
+    value: 'not contain',
     name: '不包含',
   },
 ];
 
 export const stringTypeList: any[] = [
   {
-    value: '==',
+    value: '=',
     name: '等于',
   },
   {

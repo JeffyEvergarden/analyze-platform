@@ -58,7 +58,6 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     }
     const curList = form.getFieldValue('childrenList');
     const currentFormValue: any = curList?.[index] || {};
-    console.log(currentFormValue);
 
     // 清除当前对象其他值
     currentFormValue.attribute = undefined; // 第二属性 指标
@@ -117,30 +116,26 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     });
   };
 
-  useImperativeHandle(cref, async () => {
+  useImperativeHandle(cref, () => {
     return {
       getForm() {
-        // async function validFun() {
-        //   const fieldsValue: any = await form.validateFields();
-        //   return fieldsValue
-        // }
-
-        // let a = validFun();
-        // if (a) {
-        // }
-        let formData = form.getFieldValue('childrenList')[0];
-        console.log(formData);
-
-        return {
-          nextEvent: formData?.event,
-          nextMetric: formData?.attribute,
-          nextCondition: {
-            field: formData?.innerList[0]?.attr || undefined,
-            function: formData?.innerList[0]?.op || undefined,
-            params: formData?.innerList[0]?.value || undefined,
-          },
-          otherName: formData?.alias,
-        };
+        const fieldsValue: any = form.validateFields();
+        if (fieldsValue) {
+          let formData = form.getFieldValue('childrenList')[0];
+          console.log(formData);
+          return {
+            nextEvent: formData?.event,
+            nextMetric: formData?.attribute,
+            nextCondition: {
+              field: formData?.innerList[0]?.attr || undefined,
+              function: formData?.innerList[0]?.op || undefined,
+              params: formData?.innerList[0]?.value || undefined,
+            },
+            otherName: formData?.alias,
+          };
+        } else {
+          return false;
+        }
       },
     };
   });
@@ -255,7 +250,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                             );
                           })}
                           {/* 属性列表 */}
-                          {fieldList.length > 0 && (
+                          {/* {fieldList.length > 0 && (
                             <Select.OptGroup label="----">
                               {fieldList.map((item: any, index: any) => {
                                 return (
@@ -265,7 +260,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                                 );
                               })}
                             </Select.OptGroup>
-                          )}
+                          )} */}
                         </Select>
                       </FormItem>
                       {/* {type} */}
