@@ -38,11 +38,14 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   // 搜索条件---选择用户
   const [selectUserType, setSelectUserType] = useState<string>('01');
   // 搜索条件---筛选框的数据源
-  const { eventList, fieldMap, getPreConfig } = useSearchModel();
+  const { eventList, getPreConfig } = useSearchModel();
   //后续行为
-  const { behaviorList, behaviorFieldMap, getBehaviorConfig } = useBehaviorModel();
+  const { behaviorList, getBehaviorConfig } = useBehaviorModel();
   // 表格数据
   const { loading, chartList, tableList, tableDataList, getTable } = useListModel();
+
+  //检测初始变没
+  const [test, setTest] = useState<any>('');
 
   //别名
   const [otherName, setOtherName] = useState<any>('');
@@ -64,7 +67,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     // getTableDataList();
   }, []);
 
-  const onClick = async () => {
+  const refreshList = async () => {
     let statisticsSearch = await (firstSearchRef.current as any).getForm(); //初始行为数据处理为接口需要参数
     let followUpSearch = await (normalSearchRef?.current as any).getForm(); //后续行为数据处理为接口需要参数
     let compareSearch = await (lastSearchRef.current as any).getForm(); //对比查看数据处理为接口需要参数
@@ -76,9 +79,18 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     if (statisticsSearch && followUpSearch && compareSearch) {
       getTable(all, eventList);
     }
-
     //别名
     setOtherName(all.otherName);
+  };
+
+  const save = async () => {
+    let all = await Promise.all([
+      (firstSearchRef.current as any).getForm(),
+      (normalSearchRef?.current as any).getForm(),
+      (lastSearchRef.current as any).getForm(),
+    ]);
+    all = Object.assign({}, ...all);
+    console.log(all);
   };
 
   return (
@@ -105,23 +117,6 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
                   })}
                 </Select>
               </div>
-
-              {/* <div className={style['zy-row']} style={{ marginLeft: '15px' }}>
-                <span className="label">关联主体：</span>
-                <Select
-                  value={selectUserType}
-                  style={{ width: '250px' }}
-                  placeholder="请选择关联主体"
-                >
-                  {userTypeList.map((item: any) => {
-                    return (
-                      <Option value={item.value} key={item.value}>
-                        {item.name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </div> */}
             </Space>
           </Panel>
 
@@ -130,14 +125,14 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
             <StatisticsSearch
               cref={firstSearchRef}
               list={eventList}
-              map={fieldMap}
               getBehavior={getBehaviorConfig}
+              change={setTest}
             />
           </Panel>
 
           {/* 后续行为 */}
           <Panel header="后续行为" key="3">
-            <FollowUpSearch cref={normalSearchRef} list={behaviorList} map={behaviorFieldMap} />
+            <FollowUpSearch cref={normalSearchRef} list={behaviorList} change={test} />
           </Panel>
 
           <Panel header="对比查看" key="4">
@@ -148,8 +143,8 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
       <Spin spinning={loading}>
         {/* 测试功能 */}
         <div className={style['search-box']} style={{ marginTop: '10px' }}>
-          <Button onClick={onClick}>刷新列表</Button>
-          <Button onClick={onClick} style={{ marginLeft: '10px' }}>
+          <Button onClick={refreshList}>刷新列表</Button>
+          <Button onClick={save} style={{ marginLeft: '10px' }}>
             保存到看板
           </Button>
         </div>
@@ -161,8 +156,8 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
                 <span>结果</span>
                 <Divider type="vertical"></Divider>
                 <DownloadOutlined onClick={() => {}}></DownloadOutlined>
-                <Tooltip placement="top" title={'刷新并重置选择'}>
-                  <RetweetOutlined onClick={onClick} style={{ marginLeft: '16px' }} />
+                <Tooltip placement="top" title={'刷新并重置勾选'}>
+                  <RetweetOutlined onClick={refreshList} style={{ marginLeft: '16px' }} />
                 </Tooltip>
               </div>
               <div>{otherName}</div>

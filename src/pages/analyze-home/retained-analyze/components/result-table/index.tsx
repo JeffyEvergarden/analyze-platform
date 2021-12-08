@@ -30,10 +30,18 @@ const LineChart: React.FC<any> = (props: TableProps) => {
     // console.log(data);
     let init = [];
     let init2 = [];
-    for (let i = 0; i < 5; i++) {
-      init.push(data?.[i]?.tableIndex);
-      init2.push(data?.[i]);
+    if (data && data?.length < 5) {
+      for (let i = 0; i < data?.length; i++) {
+        init.push(data?.[i]?.tableIndex);
+        init2.push(data?.[i]);
+      }
+    } else {
+      for (let i = 0; i < 5; i++) {
+        init.push(data?.[i]?.tableIndex);
+        init2.push(data?.[i]);
+      }
     }
+
     setSelectedRowKeys(init);
     setSelectedRows(init2);
   }, [data]);

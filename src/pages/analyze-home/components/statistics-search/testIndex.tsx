@@ -14,6 +14,7 @@ interface StatisticComponentProps {
   list: [];
   map?: Map<string, any> | undefined;
   getBehavior: any;
+  change: any;
 }
 
 interface StatisticItemProps {
@@ -49,7 +50,7 @@ const { Option } = Select;
 
 const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
-  const { list, cref, map, getBehavior } = props;
+  const { list, cref, map, getBehavior, change } = props;
   const [selectUserType, setSelectUserType] = useState<string>('01');
 
   // 筛选框 - 关联主体 - 下拉列表
@@ -76,7 +77,15 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     }
     const curList = form.getFieldValue('childrenList');
     const currentFormValue: any = curList?.[index] || {};
-    // console.log(currentFormValue);
+    console.log(currentFormValue);
+    //清除子
+    currentFormValue?.innerList?.forEach((item: any) => {
+      item.attr = undefined;
+      item.op = undefined;
+      item.value = undefined;
+    });
+
+    change(currentFormValue.event);
 
     // 清除当前对象其他值
     currentFormValue.attribute = undefined; // 第二属性 指标
@@ -117,18 +126,6 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     });
   };
 
-  // 修改别名
-  const changeAlias = (index: number) => {
-    const list = form.getFieldValue('childrenList');
-    const currentFormValue: any = list?.[index] || {};
-    // 编辑状态修改
-    currentFormValue.edit = !currentFormValue.edit;
-    currentFormValue.alias = trim(currentFormValue.alias);
-    form.setFieldsValue({
-      childrenList: [...list],
-    });
-  };
-
   // 添加子筛选
   const addInnerForm = (outIndex: number) => {
     const curList: any = form.getFieldValue('childrenList');
@@ -156,6 +153,8 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     return {
       async getForm() {
         const fieldsValue: any = await form.validateFields();
+        console.log(fieldsValue);
+
         if (fieldsValue) {
           const formData = form.getFieldValue('childrenList');
           return {
@@ -173,12 +172,17 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                   : item.value.format
                   ? item.value.format('YYYY-MM-DD')
                   : item.value,
+                dataType: item.dataType,
               };
             }),
           };
         } else {
           return false;
         }
+      },
+      async getFormData() {
+        const fieldsValue: any = await form.validateFields();
+        return fieldsValue;
       },
     };
   });

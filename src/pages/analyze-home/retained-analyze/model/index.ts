@@ -5,10 +5,11 @@ import { groupByList } from './const';
 
 export const useSearchModel = () => {
   const [eventList, setEventList] = useState<any[]>([]);
-  const [fieldMap, setFieldMap] = useState<Map<string, any[]>>(new Map());
 
   // 数据加工
-  const processEvent = (originList: any, map: any) => {
+  const processEvent = (originList: any) => {
+    console.log(originList);
+
     const list: any[] = originList.map((item: any, index: number) => {
       // 指标列表
       const metricsList: any[] = item.metrics.map((subItem: any, index: number) => {
@@ -27,18 +28,23 @@ export const useSearchModel = () => {
         }
         let type: string = 'input'; // 输入框
         let subList: any = undefined; // 下拉框存在 下拉列表
+
+        subItem.dictValues = subItem?.dictValues?.map((item: any) => {
+          return { name: item.name, value: item.value };
+        });
+
         if (subItem.dataType === 'dateTime') {
           // 时间选择框
           type = subItem.dataType;
         }
-        if (subItem.dataType === 'string' && map.get(subItem.code)) {
-          // 时间选择框
-          subList = map.get(subItem.code);
+        if (subItem.dataType === 'string' && subItem?.dictValues?.length) {
+          // 选择或输入
+          subList = subItem.dictValues;
           type = 'select';
         }
         if (subItem.dataType === 'numbric') {
-          // 时间选择框
-          subList = map.get(subItem.code) || [];
+          // 数字
+          subList = subItem.dictValues || [];
           type = 'number';
         }
         fieldList.push({
@@ -67,6 +73,8 @@ export const useSearchModel = () => {
         associatedFieldsList,
       };
     });
+    console.log(list);
+
     setEventList(list);
   };
 
@@ -79,44 +87,25 @@ export const useSearchModel = () => {
     return list;
   };
 
-  // 获取映射列表
-  const getField = async () => {
-    let res: any = await getFieldList();
-    const list: any[] = Array.isArray(res) ? res : [];
-    const map = new Map();
-    list.forEach((item: any, index: number) => {
-      let name: string = item.code || '';
-      // name / value
-      let subList = item.dicts || [];
-      if (name && subList && subList.length > 0) {
-        map.set(name, subList);
-      }
-    });
-    setFieldMap(map);
-    return map;
-  };
-
   const getPreConfig = async (theme: any) => {
-    let [list, map] = await Promise.all([getEvent(theme), getField()]);
+    let [list] = await Promise.all([getEvent(theme)]);
     if (list.length > 0) {
-      processEvent(list, map);
+      processEvent(list);
     }
     // console.log(map);
   };
 
   return {
     eventList,
-    fieldMap,
     getPreConfig,
   };
 };
 
 export const useBehaviorModel = () => {
   const [behaviorList, setBehaviorList] = useState<any[]>([]);
-  const [behaviorFieldMap, setBehaviorFieldMap] = useState<Map<string, any[]>>(new Map());
 
   // 数据加工
-  const processEvent = (originList: any, map: any) => {
+  const processEvent = (originList: any) => {
     const list: any[] = originList.map((item: any, index: number) => {
       // 指标列表
       const metricsList: any[] = item.metrics.map((subItem: any, index: number) => {
@@ -133,20 +122,23 @@ export const useBehaviorModel = () => {
         if (subItem.canGroupBy !== '1') {
           return;
         }
+        subItem.dictValues = subItem?.dictValues?.map((item: any) => {
+          return { name: item.name, value: item.value };
+        });
         let type: string = 'input'; // 输入框
         let subList: any = undefined; // 下拉框存在 下拉列表
         if (subItem.dataType === 'dateTime') {
           // 时间选择框
           type = subItem.dataType;
         }
-        if (subItem.dataType === 'string' && map.get(subItem.code)) {
-          // 时间选择框
-          subList = map.get(subItem.code);
+        if (subItem.dataType === 'string' && subItem?.dictValues?.length) {
+          // 字符串
+          subList = subItem.dictValues;
           type = 'select';
         }
         if (subItem.dataType === 'numbric') {
-          // 时间选择框
-          subList = map.get(subItem.code) || [];
+          // 数字
+          subList = subItem.dictValues || [];
           type = 'number';
         }
         fieldList.push({
@@ -170,39 +162,20 @@ export const useBehaviorModel = () => {
   // 获取事件列表
   const getEvent = async (theme: any, initEvent: any) => {
     let res: any = await getBehaviorList({ theme: theme, initEvent: initEvent });
-
     const list: any[] = Array.isArray(res) ? res : [];
     // setEventList(list);
     return list;
   };
 
-  // 获取映射列表
-  const getField = async () => {
-    let res: any = await getFieldList();
-    const list: any[] = Array.isArray(res) ? res : [];
-    const map = new Map();
-    list.forEach((item: any, index: number) => {
-      let name: string = item.code || '';
-      // name / value
-      let subList = item.dicts || [];
-      if (name && subList && subList.length > 0) {
-        map.set(name, subList);
-      }
-    });
-    setBehaviorFieldMap(map);
-    return map;
-  };
-
   const getBehaviorConfig = async (theme: any, initEvent: any) => {
-    let [list, map] = await Promise.all([getEvent(theme, initEvent), getField()]);
+    let [list] = await Promise.all([getEvent(theme, initEvent)]);
     if (list.length > 0) {
-      processEvent(list, map);
+      processEvent(list);
     }
   };
 
   return {
     behaviorList,
-    behaviorFieldMap,
     getBehaviorConfig,
   };
 };
@@ -213,13 +186,16 @@ export const useListModel = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [tableDataList, setTableDataList] = useState<any>();
   let tableIndex = [
+    'next_event_num0',
     'next_event_num1',
     'next_event_num2',
     'next_event_num3',
     'next_event_num4',
-    'next_event_num5',
   ];
   const processEvent = (res: any, obj: any, eventList: any) => {
+    console.log(obj);
+    console.log(eventList);
+
     let step: any = [];
     //步长
     res.nextEventTitles.forEach((item: any, index: any) => {
@@ -239,14 +215,17 @@ export const useListModel = () => {
     console.log(a);
     let init_event_num = eventList?.find((item: any) => {
       return item.value == obj.initEvent;
-    })?.name;
+    });
+    let init_Metric = init_event_num?.metricsList?.find((item: any) => {
+      return item.value == obj.initMetric;
+    });
     console.log(init_event_num);
 
     setTableList([
       { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex' },
       ...a,
       {
-        title: `${init_event_num}的${obj.initMetric}`,
+        title: `${init_event_num?.name}的${init_Metric?.name}`,
         value: 'init_event_num',
         dataIndex: 'init_event_num',
       },

@@ -14,6 +14,7 @@ interface StatisticComponentProps {
   cref: any;
   list: [];
   map?: Map<string, any> | undefined;
+  change: any;
 }
 
 interface StatisticItemProps {
@@ -48,21 +49,36 @@ const { Option } = Select;
 
 const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
-  const { list, cref, map } = props;
+  const { list, cref, map, change } = props;
   const [selectUserType, setSelectUserType] = useState<string>('01');
 
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
+    console.log(change);
+
     if (index < 0 || typeof index !== 'number') {
       return;
     }
     const curList = form.getFieldValue('childrenList');
     const currentFormValue: any = curList?.[index] || {};
+    console.log(val);
+    console.log(opt);
+    console.log(curList);
+    // 清除子对象其他值
+    currentFormValue?.innerList?.forEach((item: any) => {
+      item.attr = undefined;
+      item.op = undefined;
+      item.value = undefined;
+    });
+    // currentFormValue.innerList[0].op = undefined;
+    // currentFormValue.innerList[0].value = undefined;
+    // currentFormValue.innerList[0].alias = undefined;
 
     // 清除当前对象其他值
     currentFormValue.attribute = undefined; // 第二属性 指标
     currentFormValue.operator = undefined; // 第三属性 统计方式  // 求和、去重之类的
     currentFormValue.relation = 'AND';
+
     // console.log(opt);
     // 指标列表
     currentFormValue.metricsList = opt.opt.metricsList || [];
@@ -122,14 +138,20 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
         const fieldsValue: any = await form.validateFields();
         if (fieldsValue) {
           let formData = form.getFieldValue('childrenList')[0];
-          // console.log(formData);
+          console.log(formData);
+
           return {
             nextEvent: formData?.event,
             nextMetric: formData?.attribute,
             nextCondition: {
               field: formData?.innerList[0]?.attr || undefined,
               function: formData?.innerList[0]?.op || undefined,
-              params: formData?.innerList[0]?.value || undefined,
+              params: Array.isArray(formData?.innerList[0]?.value)
+                ? formData?.innerList[0]?.value.join()
+                : formData?.innerList[0]?.value.format
+                ? formData?.innerList[0]?.value.format('YYYY-MM-DD')
+                : formData?.innerList[0]?.value,
+              dataType: formData?.innerList[0]?.dataType,
             },
             otherName: formData?.alias,
           };
@@ -153,11 +175,23 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
         },
       ],
     });
-  }, []);
-
-  useEffect(() => {
     addInnerForm(0);
-  }, []);
+  }, [change]);
+
+  // useEffect(() => {
+  //   addInnerForm(0);
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log(test);
+
+  //   const curList = form.getFieldValue('childrenList');
+  //   const currentFormValue: any = curList?.[0] || {};
+  //   currentFormValue.event = undefined;
+  //   form.setFieldsValue({
+  //     childrenList: [...curList],
+  //   });
+  // }, [test]);
 
   const fieldChangeFunc = (changedFields: any, allFields: any) => {
     // console.log('fieldChangeFunc', changedFields);

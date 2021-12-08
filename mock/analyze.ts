@@ -25,6 +25,20 @@ const getEventList = (req: any, res: any) => {
           dictCode: 'select',
           createdTime: '1111-11-11',
           updateTime: '2222-22-22',
+          dictValues: [
+            {
+              id: '测试1',
+              code: '测试1',
+              name: '测试1',
+              value: '测试1',
+            },
+            {
+              id: '测试2',
+              code: '测试2',
+              name: '测试2',
+              value: '测试2',
+            },
+          ],
         },
         {
           canGroupBy: '1',
@@ -33,6 +47,20 @@ const getEventList = (req: any, res: any) => {
           name: '下拉框2',
           dataType: 'string',
           dictCode: 'select2',
+          dictValues: [
+            {
+              id: '测试1',
+              code: '测试1',
+              name: '测试1',
+              value: '测试1',
+            },
+            {
+              id: '测试2',
+              code: '测试2',
+              name: '测试2',
+              value: '测试2',
+            },
+          ],
         },
         {
           canGroupBy: '1',
@@ -41,6 +69,7 @@ const getEventList = (req: any, res: any) => {
           name: '输入框',
           dataType: 'string',
           dictCode: undefined,
+          dictValues: [],
         },
         {
           canGroupBy: '1',
@@ -49,6 +78,7 @@ const getEventList = (req: any, res: any) => {
           name: '时间选择器',
           dataType: 'dateTime',
           dictCode: undefined,
+          dictValues: [],
         },
         {
           canGroupBy: '1',
@@ -57,6 +87,7 @@ const getEventList = (req: any, res: any) => {
           name: '数字框',
           dataType: 'numbric',
           dictCode: undefined,
+          dictValues: [],
         },
       ],
       metrics: [
@@ -93,6 +124,20 @@ const getEventList = (req: any, res: any) => {
           name: '下拉框',
           dataType: 'string',
           dictCode: 'select',
+          dictValues: [
+            {
+              id: '测试1',
+              code: '测试1',
+              name: '测试1',
+              value: '测试1',
+            },
+            {
+              id: '测试2',
+              code: '测试2',
+              name: '测试2',
+              value: '测试2',
+            },
+          ],
         },
         {
           canGroupBy: '1',
@@ -101,6 +146,7 @@ const getEventList = (req: any, res: any) => {
           name: '输入框',
           dataType: 'string',
           dictCode: undefined,
+          dictValues: [],
         },
         {
           canGroupBy: '1',
@@ -109,6 +155,7 @@ const getEventList = (req: any, res: any) => {
           name: '时间选择器',
           dataType: 'dateTime',
           dictCode: undefined,
+          dictValues: [],
         },
         {
           canGroupBy: '1',
@@ -117,6 +164,7 @@ const getEventList = (req: any, res: any) => {
           name: '数字框',
           dataType: 'numbric',
           dictCode: undefined,
+          dictValues: [],
         },
       ],
       metrics: [
@@ -161,6 +209,20 @@ const getBehaviorList = (req: any, res: any) => {
           dictCode: 'select',
           createdTime: '1111-11-11',
           updateTime: '2222-22-22',
+          dictValues: [
+            {
+              id: '测试1',
+              code: '测试1',
+              name: '测试1',
+              value: '测试1',
+            },
+            {
+              id: '测试2',
+              code: '测试2',
+              name: '测试2',
+              value: '测试2',
+            },
+          ],
         },
         {
           canGroupBy: '1',
@@ -169,6 +231,20 @@ const getBehaviorList = (req: any, res: any) => {
           name: '下拉框2',
           dataType: 'string',
           dictCode: 'select2',
+          dictValues: [
+            {
+              id: '测试1',
+              code: '测试1',
+              name: '测试1',
+              value: '测试1',
+            },
+            {
+              id: '测试2',
+              code: '测试2',
+              name: '测试2',
+              value: '测试2',
+            },
+          ],
         },
         {
           canGroupBy: '1',
@@ -177,6 +253,7 @@ const getBehaviorList = (req: any, res: any) => {
           name: '输入框',
           dataType: 'string',
           dictCode: undefined,
+          dictValues: [],
         },
         {
           canGroupBy: '1',
@@ -185,6 +262,7 @@ const getBehaviorList = (req: any, res: any) => {
           name: '时间选择器',
           dataType: 'dateTime',
           dictCode: undefined,
+          dictValues: [],
         },
         {
           canGroupBy: '1',
@@ -193,6 +271,7 @@ const getBehaviorList = (req: any, res: any) => {
           name: '数字框',
           dataType: 'numbric',
           dictCode: undefined,
+          dictValues: [],
         },
       ],
       metrics: [
@@ -229,6 +308,20 @@ const getBehaviorList = (req: any, res: any) => {
           name: '下拉框',
           dataType: 'string',
           dictCode: 'select',
+          dictValues: [
+            {
+              id: '测试1',
+              code: '测试1',
+              name: '测试1',
+              value: '测试1',
+            },
+            {
+              id: '测试2',
+              code: '测试2',
+              name: '测试2',
+              value: '测试2',
+            },
+          ],
         },
         {
           canGroupBy: '1',
@@ -237,6 +330,7 @@ const getBehaviorList = (req: any, res: any) => {
           name: '输入框',
           dataType: 'string',
           dictCode: undefined,
+          dictValues: [],
         },
         {
           canGroupBy: '1',
@@ -245,6 +339,7 @@ const getBehaviorList = (req: any, res: any) => {
           name: '时间选择器',
           dataType: 'dateTime',
           dictCode: undefined,
+          dictValues: [],
         },
         {
           canGroupBy: '1',
@@ -253,6 +348,7 @@ const getBehaviorList = (req: any, res: any) => {
           name: '数字框',
           dataType: 'numbric',
           dictCode: undefined,
+          dictValues: [],
         },
       ],
       metrics: [
@@ -407,7 +503,7 @@ const getRefreshList = (req: any, res: any) => {
           next_event_num2: 2,
           next_event_num3: 2,
           next_event_num4: 2,
-          next_event_num5: 2,
+          next_event_num0: 2,
           strategy_id: 'id',
           strategy_name: 'name',
         },
@@ -417,7 +513,7 @@ const getRefreshList = (req: any, res: any) => {
           next_event_num2: 2,
           next_event_num3: 4,
           next_event_num4: 2,
-          next_event_num5: 4,
+          next_event_num0: 4,
           strategy_id: 'id',
           strategy_name: 'name',
         },
@@ -427,7 +523,7 @@ const getRefreshList = (req: any, res: any) => {
           next_event_num2: 32,
           next_event_num3: 44,
           next_event_num4: 25,
-          next_event_num5: 43,
+          next_event_num0: 43,
           strategy_id: 'id',
           strategy_name: 'name',
         },
@@ -437,30 +533,30 @@ const getRefreshList = (req: any, res: any) => {
           next_event_num2: 22,
           next_event_num3: 43,
           next_event_num4: 12,
-          next_event_num5: 41,
+          next_event_num0: 41,
           strategy_id: 'id2',
           strategy_name: 'n3ame',
         },
-        // {
-        //   init_event_num: '444',
-        //   next_event_num1: 22,
-        //   next_event_num2: 23,
-        //   next_event_num3: 34,
-        //   next_event_num4: 12,
-        //   next_event_num5: 14,
-        //   strategy_id: 'id3',
-        //   strategy_name: 'na2me',
-        // },
-        // {
-        //   init_event_num: '155523',
-        //   next_event_num1: 34,
-        //   next_event_num2: 23,
-        //   next_event_num3: 24,
-        //   next_event_num4: 26,
-        //   next_event_num5: 42,
-        //   strategy_id: 'id2',
-        //   strategy_name: 'na2me',
-        // },
+        {
+          init_event_num: '444',
+          next_event_num1: 22,
+          next_event_num2: 23,
+          next_event_num3: 34,
+          next_event_num4: 12,
+          next_event_num0: 14,
+          strategy_id: 'id3',
+          strategy_name: 'na2me',
+        },
+        {
+          init_event_num: '155523',
+          next_event_num1: 34,
+          next_event_num2: 23,
+          next_event_num3: 24,
+          next_event_num4: 26,
+          next_event_num0: 42,
+          strategy_id: 'id2',
+          strategy_name: 'na2me',
+        },
       ],
     },
   });

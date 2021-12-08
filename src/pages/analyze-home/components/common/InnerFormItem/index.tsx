@@ -10,7 +10,7 @@ const { Item: FormItem } = Form;
 const { Option } = Select;
 
 const InnerForm: React.FC<any> = (props: any) => {
-  const { field, form, outIndex, list, map, remove } = props;
+  const { field, form, outIndex, list, remove } = props;
   const { key, fieldKey: index } = field;
   const curList: any = form.getFieldValue('childrenList');
   const currentFormValue: any = curList?.[outIndex] || {};
@@ -27,11 +27,11 @@ const InnerForm: React.FC<any> = (props: any) => {
 
   // 修改属性
   const changeAttribute = (val: any, options: any, index: number) => {
-    // console.log(options);
+    console.log(options);
     // console.log(currentFormValue);
     // console.log(currentInnerValue);
     currentInnerValue.dataType = options.opt.dataType || '';
-    let subList: any[] = map?.get(val) || []; // 三级下拉列表
+    let subList: any[] = options.opt.list || []; // 三级下拉列表
     // console.log(val);
     // console.log(map);
     // console.log(subList);
@@ -142,7 +142,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             fieldKey={[key, 'value']}
             rules={[{ required: true, message: '请选择' }]}
           >
-            <Select style={{ width: '200px' }} placeholder="请选择">
+            <Select style={{ width: '200px' }} placeholder="请选择" showSearch>
               {subInnerList.map((item: any, i: number) => {
                 return (
                   <Option key={i} value={item.value} opt={item}>
@@ -161,7 +161,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             fieldKey={[key, 'value']}
             rules={[{ required: true, message: '请选择' }]}
           >
-            <Select style={{ width: '200px' }} placeholder="请选择" mode="multiple">
+            <Select style={{ width: '200px' }} placeholder="请选择" mode="multiple" showSearch>
               {subInnerList.map((item: any, i: number) => {
                 return (
                   <Option key={i} value={item.value} opt={item}>

@@ -21,7 +21,7 @@ const LineChart: React.FC<any> = (props: LineChartProps) => {
       autoFit
       onAxisLabelClick={console.log}
       padding="auto"
-      appendPadding={[10, 0, 0, 0]}
+      appendPadding={[10, 10, 10, 10]}
       forceUpdate="true"
     >
       <Legend position="right" />

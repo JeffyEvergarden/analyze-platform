@@ -33,7 +33,6 @@ const InnerForm: React.FC<any> = (props: any) => {
   const subInnerList: any[] = currentInnerValue?.subList || [];
 
   // console.log('重新渲染---:' + field.fieldKey);
-  // useEffect(() => {}, []);
 
   // 修改属性
   const changeAttribute = (val: any, options: any, index: number) => {
@@ -41,7 +40,7 @@ const InnerForm: React.FC<any> = (props: any) => {
     // console.log(currentFormValue);
     // console.log(currentInnerValue);
     currentInnerValue.dataType = options.opt.dataType || '';
-    let subList: any[] = map?.get(val) || []; // 三级下拉列表
+    let subList: any[] = options.opt.list || []; // 三级下拉列表
     // console.log(val);
     // console.log(map);
     // console.log(subList);
@@ -49,6 +48,8 @@ const InnerForm: React.FC<any> = (props: any) => {
     currentInnerValue.attr = val;
     currentInnerValue.op = undefined;
     currentInnerValue.value = undefined;
+    currentInnerValue.alias = undefined;
+
     // 二级列表
     if (currentInnerValue.dataType === 'number' || currentInnerValue.dataType === 'dateTime') {
       operatorList = numberTypeList;
@@ -93,7 +94,7 @@ const InnerForm: React.FC<any> = (props: any) => {
   };
 
   // 修改别名
-  const changeFiterAilas = (val: any) => {
+  const changeFiterAilas = (val?: any) => {
     const innerList: any = form.getFieldValue(formName);
     // console.log(innerList);
     // console.log(index);
@@ -164,7 +165,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             fieldKey={[key, 'value']}
             rules={[{ required: true, message: '请选择' }]}
           >
-            <Select style={{ width: '200px' }} placeholder="请选择">
+            <Select style={{ width: '200px' }} placeholder="请选择" showSearch>
               {subInnerList.map((item: any, i: number) => {
                 return (
                   <Option key={i} value={item.value} opt={item}>
@@ -183,7 +184,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             fieldKey={[key, 'value']}
             rules={[{ required: true, message: '请选择' }]}
           >
-            <Select style={{ width: '200px' }} placeholder="请选择" mode="multiple">
+            <Select style={{ width: '200px' }} placeholder="请选择" mode="multiple" showSearch>
               {subInnerList.map((item: any, i: number) => {
                 return (
                   <Option key={i} value={item.value} opt={item}>
