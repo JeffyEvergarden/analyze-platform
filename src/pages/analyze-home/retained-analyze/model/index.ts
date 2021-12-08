@@ -272,7 +272,7 @@ export const useListModel = () => {
     } else if (res.status == 'failed') {
       setLoading(false);
       message.error('查询失败');
-    } else if (res.statys == 'running') {
+    } else if (res.status == 'running') {
       setTimeout(async () => {
         getTable(obj, eventList);
       }, 2000);
@@ -282,6 +282,7 @@ export const useListModel = () => {
   };
 
   return {
+    loading,
     chartList,
     tableList,
     tableDataList,

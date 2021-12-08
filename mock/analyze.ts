@@ -396,6 +396,7 @@ const getRefreshList = (req: any, res: any) => {
   res.json({
     queryConditionId: '',
     status: 'finished',
+    // status: 'running',
     data: {
       nextEventTitleNum: 5,
       nextEventTitles: ['当天', '3天', '7天', '15天', '30天'],

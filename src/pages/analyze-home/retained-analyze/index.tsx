@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useModel } from 'umi';
-import { Space, Button, Collapse, Select, Card, Divider, Tooltip } from 'antd';
+import { Space, Button, Collapse, Select, Card, Divider, Tooltip, Spin } from 'antd';
 import { DownloadOutlined, RetweetOutlined } from '@ant-design/icons';
 import style from './style.less';
 // 业务组件
@@ -42,7 +42,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   //后续行为
   const { behaviorList, behaviorFieldMap, getBehaviorConfig } = useBehaviorModel();
   // 表格数据
-  const { chartList, tableList, tableDataList, getTable } = useListModel();
+  const { loading, chartList, tableList, tableDataList, getTable } = useListModel();
 
   //别名
   const [otherName, setOtherName] = useState<any>('');
@@ -145,48 +145,49 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
           </Panel>
         </Collapse>
       </div>
+      <Spin spinning={loading}>
+        {/* 测试功能 */}
+        <div className={style['search-box']} style={{ marginTop: '10px' }}>
+          <Button onClick={onClick}>刷新列表</Button>
+          <Button onClick={onClick} style={{ marginLeft: '10px' }}>
+            保存到看板
+          </Button>
+        </div>
 
-      {/* 测试功能 */}
-      <div className={style['search-box']} style={{ marginTop: '10px' }}>
-        <Button onClick={onClick}>刷新列表</Button>
-        <Button onClick={onClick} style={{ marginLeft: '10px' }}>
-          保存到看板
-        </Button>
-      </div>
-
-      <Card
-        title={
-          <div className={style['result']}>
-            <div>
-              <span>结果</span>
-              <Divider type="vertical"></Divider>
-              <DownloadOutlined onClick={() => {}}></DownloadOutlined>
-              <Tooltip placement="top" title={'刷新并重置选择'}>
-                <RetweetOutlined onClick={onClick} style={{ marginLeft: '16px' }} />
-              </Tooltip>
+        <Card
+          title={
+            <div className={style['result']}>
+              <div>
+                <span>结果</span>
+                <Divider type="vertical"></Divider>
+                <DownloadOutlined onClick={() => {}}></DownloadOutlined>
+                <Tooltip placement="top" title={'刷新并重置选择'}>
+                  <RetweetOutlined onClick={onClick} style={{ marginLeft: '16px' }} />
+                </Tooltip>
+              </div>
+              <div>{otherName}</div>
             </div>
-            <div>{otherName}</div>
+          }
+          style={{ marginTop: '10px' }}
+        >
+          {/* 折线图 */}
+          <div className={style['chart-box']} style={{ marginTop: '10px' }}>
+            <span className={style['chart-title']}>留存趋势图</span>
+            <LineChart selectData={selectedRowDatas} />
           </div>
-        }
-        style={{ marginTop: '10px' }}
-      >
-        {/* 折线图 */}
-        <div className={style['chart-box']} style={{ marginTop: '10px' }}>
-          <span className={style['chart-title']}>留存趋势图</span>
-          <LineChart selectData={selectedRowDatas} />
-        </div>
 
-        {/* 表格 */}
-        <div className={style['table-box']} style={{ marginTop: '10px' }}>
-          <Table
-            id={1}
-            column={tableList}
-            data={tableDataList}
-            getData={setSelectedRowDatas}
-            chartList={chartList}
-          />
-        </div>
-      </Card>
+          {/* 表格 */}
+          <div className={style['table-box']} style={{ marginTop: '10px' }}>
+            <Table
+              id={1}
+              column={tableList}
+              data={tableDataList}
+              getData={setSelectedRowDatas}
+              chartList={chartList}
+            />
+          </div>
+        </Card>
+      </Spin>
     </div>
   );
 };
