@@ -222,7 +222,7 @@ export const useListModel = () => {
     let step: any = [];
     //步长
     res.nextEventTitles.forEach((item: any, index: any) => {
-      console.log(item);
+      // console.log(item);
       if (index < res.nextEventTitleNum) {
         step.push({
           value: tableIndex[index],
@@ -235,11 +235,11 @@ export const useListModel = () => {
     let a = groupByList?.filter((item: any) => {
       return obj?.groupFields?.indexOf(item.value) != -1;
     });
-    console.log(a);
+    // console.log(a);
     let init_event_num = eventList?.find((item: any) => {
       return item.value == obj.subject;
     })?.name;
-    console.log(init_event_num);
+    // console.log(init_event_num);
 
     setTableList([
       { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex' },
@@ -263,8 +263,8 @@ export const useListModel = () => {
   const getTable = async (obj: any, eventList: any) => {
     setLoading(true);
     let res: any = await getRefreshList(obj);
-    console.log(res);
-    console.log(eventList);
+    // console.log(res);
+    // console.log(eventList);
     // res.status
 
     processEvent(res.data, obj, eventList);

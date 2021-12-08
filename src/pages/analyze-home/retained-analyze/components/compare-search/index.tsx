@@ -57,11 +57,11 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
       async getForm() {
         try {
           const fieldsValue: any = await form.validateFields();
-          console.log(fieldsValue);
+          // console.log(fieldsValue);
           let strategy_name = form.getFieldValue('groupBy').find((item: any) => {
             return item == 'strategy_name';
           });
-          console.log(strategy_name);
+          // console.log(strategy_name);
 
           if (fieldsValue) {
             if (!strategy_name) {
@@ -69,7 +69,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
               return false;
             }
             let formData = form.getFieldsValue();
-            console.log(formData);
+            // console.log(formData);
 
             return {
               groupFields: formData?.groupBy,

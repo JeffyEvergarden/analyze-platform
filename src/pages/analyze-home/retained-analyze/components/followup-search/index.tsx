@@ -97,9 +97,9 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   // 添加子筛选
   const addInnerForm = (outIndex: number) => {
     const curList: any = form.getFieldValue('childrenList');
-    console.log(curList);
+    // console.log(curList);
     const currentFormValue: any = curList?.[outIndex] || {};
-    console.log(currentFormValue);
+    // console.log(currentFormValue);
     currentFormValue.innerList = currentFormValue.innerList || [];
     currentFormValue.innerList.push({
       attr: undefined,
@@ -109,7 +109,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       operatorList: [],
       subList: [],
     });
-    console.log(curList);
+    // console.log(curList);
 
     form.setFieldsValue({
       childrenList: [...curList],
@@ -118,11 +118,11 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
   useImperativeHandle(cref, () => {
     return {
-      getForm() {
-        const fieldsValue: any = form.validateFields();
+      async getForm() {
+        const fieldsValue: any = await form.validateFields();
         if (fieldsValue) {
           let formData = form.getFieldValue('childrenList')[0];
-          console.log(formData);
+          // console.log(formData);
           return {
             nextEvent: formData?.event,
             nextMetric: formData?.attribute,
@@ -160,7 +160,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   }, []);
 
   const fieldChangeFunc = (changedFields: any, allFields: any) => {
-    console.log('fieldChangeFunc', changedFields);
+    // console.log('fieldChangeFunc', changedFields);
     if (changedFields[0]?.name?.length === 5) {
       let newVal = [...changedFields[0]?.name];
       const curList: any = form.getFieldValue(newVal[0]);

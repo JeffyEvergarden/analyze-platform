@@ -64,13 +64,13 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     // getTableDataList();
   }, []);
 
-  const onClick = () => {
-    let statisticsSearch = (firstSearchRef.current as any).getForm(); //初始行为数据处理为接口需要参数
-    let followUpSearch = (normalSearchRef?.current as any).getForm(); //后续行为数据处理为接口需要参数
-    let compareSearch = (lastSearchRef.current as any).getForm(); //对比查看数据处理为接口需要参数
-    console.log(statisticsSearch);
-    console.log(followUpSearch);
-    console.log(compareSearch);
+  const onClick = async () => {
+    let statisticsSearch = await (firstSearchRef.current as any).getForm(); //初始行为数据处理为接口需要参数
+    let followUpSearch = await (normalSearchRef?.current as any).getForm(); //后续行为数据处理为接口需要参数
+    let compareSearch = await (lastSearchRef.current as any).getForm(); //对比查看数据处理为接口需要参数
+    // console.log(statisticsSearch);
+    // console.log(followUpSearch);
+    // console.log(compareSearch);
     let all = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
     console.log(all);
     if (statisticsSearch && followUpSearch && compareSearch) {

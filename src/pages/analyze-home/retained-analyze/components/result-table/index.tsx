@@ -26,8 +26,8 @@ const LineChart: React.FC<any> = (props: TableProps) => {
 
   // 默认勾选5条数据
   useEffect(() => {
-    console.log(column);
-    console.log(data);
+    // console.log(column);
+    // console.log(data);
     let init = [];
     let init2 = [];
     for (let i = 0; i < 5; i++) {
@@ -42,9 +42,8 @@ const LineChart: React.FC<any> = (props: TableProps) => {
   useEffect(() => {
     let data2: any = [];
     selectedRows?.forEach((res: any) => {
-      console.log(res);
-      console.log(chartList);
-
+      // console.log(res);
+      // console.log(chartList);
       chartList.forEach((item: any) => {
         data2.push({
           date: item.title,
@@ -52,27 +51,6 @@ const LineChart: React.FC<any> = (props: TableProps) => {
           value: res?.[item?.value],
         });
       });
-
-      // data2.push({
-      //   date: '3天',
-      //   type: res?.first_event_date,
-      //   value: res?.num2,
-      // });
-      // data2.push({
-      //   date: '7天',
-      //   type: res?.first_event_date,
-      //   value: res?.num3,
-      // });
-      // data2.push({
-      //   date: '15天',
-      //   type: res?.first_event_date,
-      //   value: res?.num4,
-      // });
-      // data2.push({
-      //   date: '30天',
-      //   type: res?.first_event_date,
-      //   value: res?.num5,
-      // });
     });
     getData(data2);
   }, [selectedRows]);

@@ -57,7 +57,7 @@ const InnerForm: React.FC<any> = (props: any) => {
     } else if (currentInnerValue.dataType === 'select') {
       operatorList = arrayTypeList;
     } else if (currentInnerValue.dataType === 'input') {
-      operatorList = stringTypeList;
+      operatorList = arrayTypeList;
     }
     currentInnerValue.operatorList = operatorList;
     currentInnerValue.subList = subList;
@@ -74,7 +74,7 @@ const InnerForm: React.FC<any> = (props: any) => {
     // console.log(val);
     currentInnerValue.op = val;
     // 多选
-    if (val === 'in' || val === 'not in') {
+    if (val === 'in' || val === 'not in' || val === 'contain' || val === 'not contain') {
       currentInnerValue.selectType = 'multi';
       // if (!Array.isArray(currentInnerValue.value)) {
       //   currentInnerValue.value = undefined;
@@ -95,8 +95,8 @@ const InnerForm: React.FC<any> = (props: any) => {
   // 修改别名
   const changeFiterAilas = (val: any) => {
     const innerList: any = form.getFieldValue(formName);
-    console.log(innerList);
-    console.log(index);
+    // console.log(innerList);
+    // console.log(index);
 
     const innerValue: any = innerList?.[index] || {};
     // 别名状态

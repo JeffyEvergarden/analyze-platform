@@ -238,7 +238,7 @@ export const useListModel = () => {
     });
     console.log(a);
     let init_event_num = eventList?.find((item: any) => {
-      return item.value == obj.subject;
+      return item.value == obj.initEvent;
     })?.name;
     console.log(init_event_num);
 
@@ -246,7 +246,7 @@ export const useListModel = () => {
       { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex' },
       ...a,
       {
-        title: `${init_event_num}的${obj.initEvent}`,
+        title: `${init_event_num}的${obj.initMetric}`,
         value: 'init_event_num',
         dataIndex: 'init_event_num',
       },
@@ -256,7 +256,7 @@ export const useListModel = () => {
     setChartList(step);
 
     res.groupData.map((item: any, index: any) => {
-      item.tableIndex = index + 1;
+      item.tableIndex = String(index + 1);
     });
     setTableDataList(res.groupData);
   };

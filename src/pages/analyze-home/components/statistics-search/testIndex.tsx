@@ -76,14 +76,14 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     }
     const curList = form.getFieldValue('childrenList');
     const currentFormValue: any = curList?.[index] || {};
-    console.log(currentFormValue);
+    // console.log(currentFormValue);
 
     // 清除当前对象其他值
     currentFormValue.attribute = undefined; // 第二属性 指标
     currentFormValue.operator = undefined; // 第三属性 统计方式  // 求和、去重之类的
     currentFormValue.associatedField = undefined; // 关联主体
     currentFormValue.relation = 'AND';
-    console.log(opt);
+    // console.log(opt);
     // 指标列表
     currentFormValue.metricsList = opt.opt.metricsList || [];
     // 属性列表
@@ -132,10 +132,10 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   // 添加子筛选
   const addInnerForm = (outIndex: number) => {
     const curList: any = form.getFieldValue('childrenList');
-    console.log(curList);
+    // console.log(curList);
 
     const currentFormValue: any = curList?.[outIndex] || {};
-    console.log(currentFormValue);
+    // console.log(currentFormValue);
     currentFormValue.innerList = currentFormValue.innerList || [];
     currentFormValue.innerList.push({
       attr: undefined,
@@ -145,7 +145,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       operatorList: [],
       subList: [],
     });
-    console.log(curList);
+    // console.log(curList);
 
     form.setFieldsValue({
       childrenList: [...curList],
@@ -154,8 +154,8 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
   useImperativeHandle(cref, () => {
     return {
-      getForm() {
-        const fieldsValue: any = form.validateFields();
+      async getForm() {
+        const fieldsValue: any = await form.validateFields();
         if (fieldsValue) {
           const formData = form.getFieldValue('childrenList');
           return {
@@ -170,7 +170,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                 function: item.op,
                 params: Array.isArray(item.value)
                   ? item.value.join()
-                  : item.value.format('YYYY-MM-DD')
+                  : item.value.format
                   ? item.value.format('YYYY-MM-DD')
                   : item.value,
               };
@@ -224,7 +224,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   };
 
   const fieldChangeFunc = (changedFields: any, allFields: any) => {
-    console.log('fieldChangeFunc', changedFields);
+    // console.log('fieldChangeFunc', changedFields);
     if (changedFields[0]?.name?.length === 5) {
       let newVal = [...changedFields[0]?.name];
       const curList: any = form.getFieldValue(newVal[0]);
