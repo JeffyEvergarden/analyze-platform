@@ -1,4 +1,4 @@
-import { request } from 'umi';
+import { request } from '@/services/request';
 
 /** 获取事件列表 **/
 export async function getEventList(params?: { [key: string]: any }) {

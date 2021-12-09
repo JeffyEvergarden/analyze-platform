@@ -1,4 +1,4 @@
-import { request } from 'umi';
+import { request } from '@/services/request';
 
 /** 获取菜单列表 **/
 export async function getMenuList(params?: { [key: string]: any }) {
