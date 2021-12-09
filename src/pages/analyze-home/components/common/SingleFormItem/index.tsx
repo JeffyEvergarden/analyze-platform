@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Form, Space, Select, Input, InputNumber, DatePicker } from 'antd';
+import { Form, Space, Select, Input, InputNumber, DatePicker, Button } from 'antd';
 import Condition from '../Condition';
 import { numberTypeList, arrayTypeList, stringTypeList } from '../../model/const';
 import { MinusCircleOutlined, HighlightOutlined } from '@ant-design/icons';
@@ -230,11 +230,13 @@ const InnerForm: React.FC<any> = (props: any) => {
         </Condition>
 
         {/* 别名 */}
-        <HighlightOutlined
-          style={{ color: '#1890ff', margin: '0 15px', fontSize: '20px' }}
+        <Button
+          type="link"
+          icon={
+            <HighlightOutlined style={{ color: '#1890ff', margin: '0 15px', fontSize: '20px' }} />
+          }
           onClick={changeFiterAilas}
-        />
-
+        ></Button>
         <Condition r-if={edit}>
           <FormItem name={[key, 'alias']} fieldKey={[key, 'alias']}>
             <Input

@@ -3,6 +3,7 @@ import { history, Link } from 'umi';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import { useModel } from 'umi';
 import { ConfigProvider, Collapse, Divider } from 'antd';
+import { UsergroupDeleteOutlined } from '@ant-design/icons';
 import zhCN from 'antd/lib/locale/zh_CN';
 import style from './style.less';
 const { Panel } = Collapse;
@@ -15,8 +16,8 @@ const HomePage: React.FC = (props: any) => {
       <div className={style['zy-column']}>
         <div className={style['title-box']}>
           <Link to="/analyzehome/retained">
-            <LinkOutlined />
-            <span>留存分析</span>
+            <UsergroupDeleteOutlined style={{ marginRight: '8px', fontSize: '16px' }} />
+            <span style={{ fontSize: '16px' }}>留存分析</span>
           </Link>
         </div>
 

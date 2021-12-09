@@ -8,10 +8,12 @@ export const modelTypeList: any[] = [
   {
     name: '活动转化分析',
     value: '02',
+    disabled: true,
   },
   {
     name: '普通事件分析',
     value: '03',
+    disabled: true,
   },
 ];
 

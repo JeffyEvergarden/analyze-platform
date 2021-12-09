@@ -5,7 +5,7 @@ import {
   Select,
   Button,
   Space,
-  Input,
+  ConfigProvider,
   DatePicker,
   Tooltip,
   InputNumber,
@@ -110,6 +110,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
       <Space align="baseline" style={{ marginRight: '32px' }}>
         <FormItem name="dateRange" label="初始事件日期">
           <RangePicker
+            format="YYYY-MM-DD"
             style={{ width: '300px' }}
             placeholder={['初始日期的开始', '初始日期的结束']}
             showTime={false}
