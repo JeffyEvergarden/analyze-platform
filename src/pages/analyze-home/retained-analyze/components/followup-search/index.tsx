@@ -236,7 +236,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                 return (
                   <div key={field.fieldKey}>
                     {/* 前置筛选 */}
-                    <Space align="baseline">
+                    <Space align="baseline" style={{ height: '32px', marginBottom: '16px' }}>
                       {/* 一级筛选 */}
                       <FormItem
                         rules={[{ required: true, message: '请选择事件' }]}

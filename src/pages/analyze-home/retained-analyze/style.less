@@ -5,11 +5,13 @@
     .ant-collapse-header {
       padding: 0 !important;
       padding-top: 16px !important;
-      padding-bottom: 24px !important;
+      padding-bottom: 16px !important;
+      padding-left: 16px !important;
       font-weight: bolder;
       // 标题
       font-size: 16px;
       line-height: 22px !important;
+      background-color: #fafafa;
 
       .ant-collapse-arrow {
         // 箭头
@@ -20,7 +22,9 @@
     .ant-collapse-content-box {
       // 内容
       padding: 0 !important;
-      padding-bottom: 24px !important;
+      padding-top: 16px !important;
+      // padding-bottom: 16px !important;
+      padding-left: 32px !important;
     }
 
     .ant-collapse-item {
@@ -28,7 +32,7 @@
     }
 
     .ant-form-item {
-      margin-bottom: 12px;
+      // margin-bottom: 12px;
     }
   }
 }
@@ -41,9 +45,9 @@
 // 筛选条件
 .search-box {
   width: 100%;
-  padding: 16px 32px;
+  // padding: 16px 0;
   background: #fff;
-  border-radius: 2px;
+  border-radius: 4px;
 
   .label {
     flex-shrink: 0;
@@ -55,6 +59,14 @@
   .search-content {
     width: 200px;
   }
+}
+
+//查询
+.select-box {
+  width: 100%;
+  padding: 16px 32px;
+  background: #fff;
+  border-radius: 4px;
 }
 
 // 图表盒子
@@ -84,4 +96,5 @@
 .zy-row {
   display: flex;
   align-items: center;
+  margin-bottom: 16px;
 }

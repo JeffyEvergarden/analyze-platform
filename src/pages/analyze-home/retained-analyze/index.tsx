@@ -142,7 +142,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
       </div>
       <Spin spinning={loading}>
         {/* 测试功能 */}
-        <div className={style['search-box']} style={{ marginTop: '10px' }}>
+        <div className={style['select-box']} style={{ marginTop: '10px' }}>
           <Button onClick={refreshList}>刷新列表</Button>
           <Button onClick={save} style={{ marginLeft: '10px' }}>
             保存到看板
