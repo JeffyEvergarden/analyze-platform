@@ -53,22 +53,6 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const { list, cref, map, getBehavior, change } = props;
   const [selectUserType, setSelectUserType] = useState<string>('01');
 
-  // 筛选框 - 关联主体 - 下拉列表
-  const userTypeList: any[] = [
-    {
-      name: '用户',
-      value: '01',
-    },
-    {
-      name: '借据',
-      value: '02',
-    },
-    {
-      name: 'BO号',
-      value: '03',
-    },
-  ];
-
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
     getBehavior('RETAIN_STRATEGY_NEXT', opt.value);
@@ -360,14 +344,20 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                         }}
                         style={{ marginLeft: '10px', fontSize: '20px', color: '#A0A0A0' }}
                       /> */}
-
                       <PlusSquareOutlined
-                        style={{ color: '#1890ff', marginLeft: '5px', fontSize: '20px' }}
+                        style={{
+                          color: '#1890ff',
+                          marginLeft: '5px',
+                          marginTop: '2px',
+                          fontSize: '20px',
+                        }}
                         onClick={() => {
                           addInnerForm(outIndex);
                         }}
                       />
-                      <span className="label">关联主体：</span>
+                      <span className="label" style={{ marginLeft: '32px' }}>
+                        关联主体：
+                      </span>
                       <FormItem
                         name={[field.fieldKey, 'associatedField']}
                         fieldKey={[field.fieldKey, 'associatedField']}
