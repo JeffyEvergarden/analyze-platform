@@ -97,13 +97,22 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   };
 
   const save = async () => {
+    //请求所需数据
     let all = await Promise.all([
       (firstSearchRef.current as any).getForm(),
       (normalSearchRef?.current as any).getForm(),
       (lastSearchRef.current as any).getForm(),
     ]);
+    //回显所需数据
+    let allData = await Promise.all([
+      (firstSearchRef.current as any).getFormData(),
+      (normalSearchRef?.current as any).getFormData(),
+      (lastSearchRef.current as any).getFormData(),
+    ]);
     all = Object.assign({}, ...all);
-    console.log(all);
+    allData = Object.assign({}, ...allData);
+    let save = { reqData: all, formData: allData };
+    console.log(save);
   };
 
   return (

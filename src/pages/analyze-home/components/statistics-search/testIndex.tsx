@@ -166,7 +166,14 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       },
       async getFormData() {
         const fieldsValue: any = await form.validateFields();
-        return fieldsValue;
+        // console.log(fieldsValue);
+
+        if (fieldsValue) {
+          const formData = form.getFieldValue('childrenList')[0];
+          return { first: formData };
+        } else {
+          return false;
+        }
       },
     };
   });
@@ -255,7 +262,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                 return (
                   <div key={field.fieldKey}>
                     {/* 前置筛选 */}
-                    <Space align="baseline" style={{ height: '32px', marginBottom: '16px' }}>
+                    <Space align="baseline" style={{ height: '32px', marginBottom: '24px' }}>
                       {/* 一级筛选 */}
                       <FormItem
                         rules={[{ required: true, message: '请选择事件' }]}

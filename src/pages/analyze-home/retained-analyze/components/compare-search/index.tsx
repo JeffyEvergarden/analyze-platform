@@ -82,6 +82,17 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
           }
         } catch (e) {}
       },
+      async getFormData() {
+        const fieldsValue: any = await form.validateFields();
+        // console.log(fieldsValue);
+
+        if (fieldsValue) {
+          const formData = form.getFieldsValue();
+          return { compare: formData };
+        } else {
+          return false;
+        }
+      },
     };
   });
 

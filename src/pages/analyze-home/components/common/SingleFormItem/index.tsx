@@ -230,13 +230,9 @@ const InnerForm: React.FC<any> = (props: any) => {
         </Condition>
 
         {/* 别名 */}
-        <Button
-          type="link"
-          icon={
-            <HighlightOutlined style={{ color: '#1890ff', margin: '0 15px', fontSize: '20px' }} />
-          }
-          onClick={changeFiterAilas}
-        ></Button>
+        <Button type="link" onClick={changeFiterAilas}>
+          <HighlightOutlined style={{ color: '#1890ff', fontSize: '20px' }}></HighlightOutlined>
+        </Button>
         <Condition r-if={edit}>
           <FormItem name={[key, 'alias']} fieldKey={[key, 'alias']}>
             <Input

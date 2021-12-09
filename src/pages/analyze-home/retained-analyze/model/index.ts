@@ -193,6 +193,8 @@ export const useListModel = () => {
     'next_event_num4',
   ];
   const processEvent = (res: any, obj: any, eventList: any) => {
+    console.log(res);
+
     console.log(obj);
     console.log(eventList);
 

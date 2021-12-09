@@ -5,6 +5,7 @@
 // import { DownloadOutlined, RetweetOutlined } from '@ant-design/icons';
 // import { useState } from 'react';
 // import { message, Table, Card, Divider, Tooltip as Tooltips } from 'antd';
+// import { useListModel } from './model';
 
 // // interface LineChartProps {
 // //   cref?: any;
@@ -21,9 +22,18 @@
 //   const changePage = (val: number) => {
 //     setCurrent(val);
 //   };
-//   //       表头   表数据     图x轴的数据 别名       刷新表格数据的方法
-//   const { column, data, id, chartList, otherName, refreshList } = props;
-//   const tableId = `result-table-${id}`;
+
+//   // const { column, data, id, chartList, otherName, refreshList } = props;
+//   const { dataJson } = props;
+
+//   // 表格数据
+//   const { loading, chartList, tableList, tableDataList, getTable } = useListModel();
+
+//   //table数据加工
+//   useEffect(() => {
+//     //第二个参数为选择分析模型的值占时只有一个所以写死
+//     getTable(dataJson.reqData, 'RETAIN_STRATEGY');
+//   }, []);
 
 //   // 默认勾选5条数据
 //   useEffect(() => {
@@ -31,21 +41,21 @@
 //     // console.log(data);
 //     let init = [];
 //     let init2 = [];
-//     if (data && data?.length < 5) {
-//       for (let i = 0; i < data?.length; i++) {
-//         init.push(data?.[i]?.tableIndex);
-//         init2.push(data?.[i]);
+//     if (tableDataList && tableDataList?.length < 5) {
+//       for (let i = 0; i < tableDataList?.length; i++) {
+//         init.push(tableDataList?.[i]?.tableIndex);
+//         init2.push(tableDataList?.[i]);
 //       }
 //     } else {
 //       for (let i = 0; i < 5; i++) {
-//         init.push(data?.[i]?.tableIndex);
-//         init2.push(data?.[i]);
+//         init.push(tableDataList?.[i]?.tableIndex);
+//         init2.push(tableDataList?.[i]);
 //       }
 //     }
 
 //     setSelectedRowKeys(init);
 //     setSelectedRows(init2);
-//   }, [data]);
+//   }, [tableDataList]);
 
 //   // 加工成图表数据
 //   useEffect(() => {
@@ -89,10 +99,15 @@
 //             <Divider type="vertical"></Divider>
 //             <DownloadOutlined onClick={() => {}}></DownloadOutlined>
 //             <Tooltips placement="top" title={'刷新并重置勾选'}>
-//               <RetweetOutlined onClick={refreshList} style={{ marginLeft: '16px' }} />
+//               <RetweetOutlined
+//                 onClick={() => {
+//                   getTable(dataJson.reqData, 'RETAIN_STRATEGY');
+//                 }}
+//                 style={{ marginLeft: '16px' }}
+//               />
 //             </Tooltips>
 //           </div>
-//           <div>{otherName}</div>
+//           <div>{dataJson?.formData?.last?.innerList?.[0]?.alias}</div>
 //         </div>
 //       }
 //       style={{ marginTop: '10px' }}
@@ -130,9 +145,9 @@
 //         <Geom type="line" position="date*value" size={2} color={'type'} shape={'circle'} />
 //       </Chart>
 //       <Table
-//         id={tableId}
-//         dataSource={data}
-//         columns={column}
+//         // id={tableId}
+//         dataSource={tableDataList}
+//         columns={tableList}
 //         rowSelection={rowSelection}
 //         pagination={{ current, onChange: changePage }}
 //         rowKey={(record) => {
