@@ -93,6 +93,10 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
           return false;
         }
       },
+      //数据回显
+      async setForm(obj: any) {
+        form.setFieldsValue(obj);
+      },
     };
   });
 

@@ -8,6 +8,7 @@ import Condition from '../common/Condition';
 import InnerFormItem from '../common/InnerFormItem';
 import { statisticNumbericList, statisticDefaultList } from '../model/const';
 import style from './style.less';
+import StepForm from '@ant-design/pro-form/lib/layouts/StepsForm/StepForm';
 
 interface StatisticComponentProps {
   cref: any;
@@ -83,6 +84,8 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     currentFormValue.fieldList = opt.opt.fieldList || [];
     //关联主体
     currentFormValue.associatedFieldsList = opt.opt.associatedFieldsList || [];
+    //一级筛选的数据
+    currentFormValue.EventList = list;
 
     form.setFieldsValue({
       childrenList: [...curList],
@@ -135,6 +138,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
   useImperativeHandle(cref, () => {
     return {
+      //获取接口所需数据
       async getForm() {
         const fieldsValue: any = await form.validateFields();
         console.log(fieldsValue);
@@ -164,6 +168,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
           return false;
         }
       },
+      //获取当前表单选择数据
       async getFormData() {
         const fieldsValue: any = await form.validateFields();
         // console.log(fieldsValue);
@@ -174,6 +179,10 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
         } else {
           return false;
         }
+      },
+      //数据回显
+      async setForm(obj: any) {
+        form.setFieldsValue({ childrenList: [obj] });
       },
     };
   });

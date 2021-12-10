@@ -12,7 +12,12 @@
 // //   selectData: any;
 // // }
 
-// const miniMap: React.FC<any> = (props: any) => {
+// interface miniMapProps {
+//   cref: any;
+//   dataJson: any;
+// }
+
+// const miniMap: React.FC<any> = (props: miniMapProps) => {
 //   const [current, setCurrent] = useState<number>(1);
 //   //表格选择的数据
 //   const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
@@ -31,9 +36,10 @@
 
 //   //table数据加工
 //   useEffect(() => {
-//     //第二个参数为选择分析模型的值占时只有一个所以写死
-//     getTable(dataJson.reqData, 'RETAIN_STRATEGY');
-//   }, []);
+//     if (dataJson.reqData && dataJson.formData) {
+//       getTable(dataJson?.reqData, dataJson?.formData?.first?.EventList);
+//     }
+//   }, [dataJson]);
 
 //   // 默认勾选5条数据
 //   useEffect(() => {

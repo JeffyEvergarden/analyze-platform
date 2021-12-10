@@ -15,6 +15,7 @@ interface StatisticComponentProps {
   list: [];
   map?: Map<string, any> | undefined;
   change: any;
+  setBehaviorList: any;
 }
 
 interface StatisticItemProps {
@@ -49,7 +50,7 @@ const { Option } = Select;
 
 const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
-  const { list, cref, map, change } = props;
+  const { list, cref, map, change, setBehaviorList } = props;
   const [selectUserType, setSelectUserType] = useState<string>('01');
 
   // 修改事件 （传入序号） 一级属性
@@ -84,6 +85,8 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     currentFormValue.metricsList = opt.opt.metricsList || [];
     // 属性列表
     currentFormValue.fieldList = opt.opt.fieldList || [];
+    //一级筛选
+    currentFormValue.EventList = list;
     form.setFieldsValue({
       childrenList: [...curList],
     });
@@ -134,6 +137,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
   useImperativeHandle(cref, () => {
     return {
+      //获取接口所需数据
       async getForm() {
         const fieldsValue: any = await form.validateFields();
         if (fieldsValue) {
@@ -159,6 +163,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
           return false;
         }
       },
+      //获取当前表单选择数据
       async getFormData() {
         const fieldsValue: any = await form.validateFields();
         // console.log(fieldsValue);
@@ -169,6 +174,11 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
         } else {
           return false;
         }
+      },
+      //数据回显
+      async setForm(obj: any) {
+        form.setFieldsValue({ childrenList: [obj] });
+        setBehaviorList(obj.EventList);
       },
     };
   });

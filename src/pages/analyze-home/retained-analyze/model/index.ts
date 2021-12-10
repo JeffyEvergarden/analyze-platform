@@ -176,6 +176,7 @@ export const useBehaviorModel = () => {
 
   return {
     behaviorList,
+    setBehaviorList,
     getBehaviorConfig,
   };
 };
@@ -246,7 +247,7 @@ export const useListModel = () => {
     setLoading(true);
     let res: any = await getRefreshList(obj);
     // console.log(res);
-    // console.log(eventList);
+    console.log(eventList);
     if (res.status == 'finished') {
       setLoading(false);
       processEvent(res.data, obj, eventList);
