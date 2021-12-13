@@ -21,7 +21,7 @@ import FollowUpSearch from './components/followup-search';
 import CompareSearch from './components/compare-search';
 import LineChart from './components/line-chart';
 import Table from './components/result-table';
-// import MiniMap from './components/miniMap.tsx';
+import MiniMap from './components/miniMap.tsx';
 // 共有数据源
 import { useSearchModel, useBehaviorModel, useListModel } from './model';
 import { modelTypeList, userTypeList } from './model/const';
@@ -419,9 +419,9 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
               保存到看板
             </Button>
 
-            <Button onClick={backData} style={{ marginLeft: '10px' }}>
+            {/* <Button onClick={backData} style={{ marginLeft: '10px' }}>
               回显
-            </Button>
+            </Button> */}
           </div>
 
           <Card
