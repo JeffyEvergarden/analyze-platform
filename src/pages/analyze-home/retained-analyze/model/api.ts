@@ -40,3 +40,11 @@ export async function getRefreshList(params: any) {
     data: params,
   });
 }
+
+//保存
+export async function saveAnalysisModule(data: any) {
+  return request('/bgs/dashboard/analysis/create', {
+    method: 'POST',
+    data,
+  });
+}

@@ -10,10 +10,12 @@ import {
   Tooltip,
   Spin,
   ConfigProvider,
+  message,
 } from 'antd';
 import { DownloadOutlined, RetweetOutlined } from '@ant-design/icons';
 import style from './style.less';
 import zhCN from 'antd/lib/locale/zh_CN';
+import { saveAnalysisModule } from './model/api';
 // 业务组件
 // import StatisticsSearch from '../components/statistics-search';
 import StatisticsSearch from '../components/statistics-search/testIndex';
@@ -21,7 +23,7 @@ import FollowUpSearch from './components/followup-search';
 import CompareSearch from './components/compare-search';
 import LineChart from './components/line-chart';
 import Table from './components/result-table';
-import MiniMap from './components/miniMap.tsx';
+import MiniMap from './components/MiniMap';
 // 共有数据源
 import { useSearchModel, useBehaviorModel, useListModel } from './model';
 import { modelTypeList, userTypeList } from './model/const';
@@ -30,6 +32,8 @@ import { groupByList } from './model/const';
 // import { useTableModel } from './model';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+
+import EditModal from '../SaveModel/modal';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -78,11 +82,29 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   //表格选择显示图表
   const [selectedRowDatas, setSelectedRowDatas] = useState<any>([]);
 
-  // mounted初始化
-  useEffect(() => {
-    getPreConfig('RETAIN_STRATEGY');
-    // getTableDataList();
-  }, []);
+  //分析类型
+  const [moduleName, setModuleName] = useState<any>('');
+  const [moduleType, setModuleType] = useState<any>('');
+
+  const getvl = (url: any) => {
+    let obj: any = {},
+      index = url.indexOf('?'), // 看url有没有参数
+      params = url.substr(index + 1); // 截取url参数部分 name = aaa & age = 20
+
+    if (index != -1) {
+      // 有参数时
+      let parr = params.split('&'); // 将参数分割成数组 ["name = aaa", "age = 20"]
+      for (let i of parr) {
+        // 遍历数组
+        let arr = i.split('='); // 1） i name = aaa   arr = [name, aaa]  2）i age = 20  arr = [age, 20]
+        obj[arr[0]] = arr[1]; // obj[arr[0]] = name, obj.name = aaa   obj[arr[0]] = age, obj.age = 20
+      }
+    }
+
+    return obj;
+  };
+
+  const editModalRef = useRef(null);
 
   // 查询
   const refreshList = async () => {
@@ -102,6 +124,12 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   };
   //  保存
   const save = async () => {
+    //  分析类型
+    (editModalRef.current as any).open({ moduleName });
+  };
+
+  //提交请求
+  const saveSubmit = async (analysisNmae: any, analysisBoard: any) => {
     //请求所需数据
     let all = await Promise.all([
       (firstSearchRef.current as any).getForm(),
@@ -117,244 +145,56 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     all = Object.assign({}, ...all);
     allData = Object.assign({}, ...allData);
     let save = { reqData: all, formData: allData };
-    console.log(save);
-    setSaveData(save);
-  };
-  // 回显
-  const backData = async () => {
-    let obj: any = {
-      reqData: {
-        initEvent: 'LQHTXCG',
-        initMetric: '用户数',
-        relation: 'AND',
-        nextEvent: 'LQHTXCG',
-        nextMetric: '用户数',
-        nextCondition: { field: 'select', function: 'equal', params: '测试2', dataType: 'select' },
-        groupFields: ['strategy_name'],
-        timeStep: -1,
-      },
-      formData: {
-        first: {
-          event: 'LQHTXCG',
-          attribute: '用户数',
-          relation: 'AND',
-          metricsList: [
-            { name: '用户数', value: '用户数', type: 'metrics' },
-            { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
-            { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
-          ],
-          fieldList: [
-            {
-              name: '下拉框',
-              value: 'select',
-              type: 'fields',
-              dataType: 'select',
-              list: [
-                { name: '测试1', value: '测试1' },
-                { name: '测试2', value: '测试2' },
-              ],
-            },
-            {
-              name: '下拉框2',
-              value: 'select2',
-              type: 'fields',
-              dataType: 'select',
-              list: [
-                { name: '测试1', value: '测试1' },
-                { name: '测试2', value: '测试2' },
-              ],
-            },
-            { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
-            { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
-            { name: '数字框', value: 'numbr', type: 'fields', dataType: 'number', list: [] },
-          ],
-          associatedFieldsList: [{ code: 'xx', name: 'xx', value: 'xx' }],
-          EventList: [
-            {
-              name: '命运冠位指定',
-              value: 'LQHTXCG',
-              metricsList: [
-                { name: '用户数', value: '用户数', type: 'metrics' },
-                { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
-                { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
-              ],
-              fieldList: [
-                {
-                  name: '下拉框',
-                  value: 'select',
-                  type: 'fields',
-                  dataType: 'select',
-                  list: [
-                    { name: '测试1', value: '测试1' },
-                    { name: '测试2', value: '测试2' },
-                  ],
-                },
-                {
-                  name: '下拉框2',
-                  value: 'select2',
-                  type: 'fields',
-                  dataType: 'select',
-                  list: [
-                    { name: '测试1', value: '测试1' },
-                    { name: '测试2', value: '测试2' },
-                  ],
-                },
-                { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
-                { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
-                { name: '数字框', value: 'numbr', type: 'fields', dataType: 'number', list: [] },
-              ],
-              associatedFieldsList: [{ code: 'xx', name: 'xx', value: 'xx' }],
-            },
-            {
-              name: '原神',
-              value: 'LBQ',
-              metricsList: [
-                { name: '用户数', value: '用户数', type: 'metrics' },
-                { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
-                { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
-              ],
-              fieldList: [
-                {
-                  name: '下拉框',
-                  value: 'select',
-                  type: 'fields',
-                  dataType: 'select',
-                  list: [
-                    { name: '测试1', value: '测试1' },
-                    { name: '测试2', value: '测试2' },
-                  ],
-                },
-                { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
-                { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
-                { name: '数字框', value: 'number', type: 'fields', dataType: 'number', list: [] },
-              ],
-              associatedFieldsList: [{ code: 'xx', name: 'xx', value: 'xx' }],
-            },
-          ],
-          type: 'metrics',
-        },
-        last: {
-          event: 'LQHTXCG',
-          attribute: '用户数',
-          relation: 'AND',
-          innerList: [
-            {
-              attr: 'select',
-              op: 'equal',
-              value: '测试2',
-              dataType: 'select',
-              operatorList: [
-                { value: 'equal', name: '等于' },
-                { value: 'notequal', name: '不等于' },
-                { value: 'contain', name: '包含' },
-                { value: 'not contain', name: '不包含' },
-              ],
-              subList: [
-                { name: '测试1', value: '测试1' },
-                { name: '测试2', value: '测试2' },
-              ],
-              selectType: 'single',
-            },
-          ],
-          metricsList: [
-            { name: '用户数', value: '用户数', type: 'metrics' },
-            { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
-            { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
-          ],
-          fieldList: [
-            {
-              name: '下拉框',
-              value: 'select',
-              type: 'fields',
-              dataType: 'select',
-              list: [
-                { name: '测试1', value: '测试1' },
-                { name: '测试2', value: '测试2' },
-              ],
-            },
-            {
-              name: '下拉框2',
-              value: 'select2',
-              type: 'fields',
-              dataType: 'select',
-              list: [
-                { name: '测试1', value: '测试1' },
-                { name: '测试2', value: '测试2' },
-              ],
-            },
-            { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
-            { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
-            { name: '数字框', value: 'number', type: 'fields', dataType: 'number', list: [] },
-          ],
-          EventList: [
-            {
-              name: '命运冠位指定',
-              value: 'LQHTXCG',
-              metricsList: [
-                { name: '用户数', value: '用户数', type: 'metrics' },
-                { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
-                { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
-              ],
-              fieldList: [
-                {
-                  name: '下拉框',
-                  value: 'select',
-                  type: 'fields',
-                  dataType: 'select',
-                  list: [
-                    { name: '测试1', value: '测试1' },
-                    { name: '测试2', value: '测试2' },
-                  ],
-                },
-                {
-                  name: '下拉框2',
-                  value: 'select2',
-                  type: 'fields',
-                  dataType: 'select',
-                  list: [
-                    { name: '测试1', value: '测试1' },
-                    { name: '测试2', value: '测试2' },
-                  ],
-                },
-                { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
-                { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
-                { name: '数字框', value: 'number', type: 'fields', dataType: 'number', list: [] },
-              ],
-            },
-            {
-              name: '原神',
-              value: 'LBQ',
-              metricsList: [
-                { name: '用户数', value: '用户数', type: 'metrics' },
-                { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
-                { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
-              ],
-              fieldList: [
-                {
-                  name: '下拉框',
-                  value: 'select',
-                  type: 'fields',
-                  dataType: 'select',
-                  list: [
-                    { name: '测试1', value: '测试1' },
-                    { name: '测试2', value: '测试2' },
-                  ],
-                },
-                { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
-                { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
-                { name: '数字框', value: 'number', type: 'fields', dataType: 'number', list: [] },
-              ],
-            },
-          ],
-          type: 'metrics',
-        },
-        compare: { groupBy: ['strategy_name'] },
-      },
+
+    let reqData = {
+      analysisBoard,
+      analysisData: JSON.stringify(save),
+      analysisNmae,
+      analysisType: moduleType,
     };
-    (firstSearchRef.current as any).setForm(obj.formData.first);
-    (normalSearchRef?.current as any).setForm(obj.formData.last);
-    (lastSearchRef.current as any).setForm(obj.formData.compare);
+    saveAnalysisModule(reqData).then((res) => {
+      if (res.resultCode === '000') {
+        message.success('成功');
+        setTimeout(() => {
+          window.close();
+        }, 1500);
+      } else if (Number(res.resultCode) === 403) {
+        message.error('没有权限操作');
+      } else {
+        message.error(res.resultMsg);
+      }
+      (editModalRef.current as any).close();
+    });
   };
+
+  // 回显
+  const backData = async (obj: any) => {
+    (firstSearchRef.current as any).setForm(obj?.formData?.first);
+    (normalSearchRef?.current as any).setForm(obj?.formData?.last);
+    (lastSearchRef.current as any).setForm(obj?.formData?.compare);
+    refreshList();
+  };
+
+  // mounted初始化
+  useEffect(() => {
+    let afterUrl: any = window.location.search;
+
+    if (afterUrl) {
+      let obj = getvl(afterUrl);
+      console.log(obj);
+
+      let formData = obj?.formData && JSON.parse(obj?.formData);
+      if (formData) {
+        backData(formData);
+      }
+
+      setModuleName(obj?.analysisName);
+      setModuleType(obj?.analysisType);
+    }
+
+    getPreConfig('RETAIN_STRATEGY');
+    // getTableDataList();
+  }, []);
 
   return (
     <ConfigProvider locale={zhCN}>
@@ -461,6 +301,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
           {/* <MiniMap dataJson={saveData}></MiniMap> */}
         </Spin>
       </div>
+      {/* <EditModal cref={editModalRef} onSave={saveSubmit}></EditModal> */}
     </ConfigProvider>
   );
 };

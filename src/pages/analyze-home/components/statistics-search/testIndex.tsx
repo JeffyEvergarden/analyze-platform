@@ -252,12 +252,12 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
               {fields.map((field: any, outIndex: number) => {
                 const curItem = form.getFieldValue('childrenList')[outIndex];
                 // console.log(curItem);
-                const metricsList = curItem.metricsList || [];
-                const fieldList = curItem.fieldList || [];
-                const associatedFieldsList = curItem.associatedFieldsList || [];
+                const metricsList = curItem?.metricsList || [];
+                const fieldList = curItem?.fieldList || [];
+                const associatedFieldsList = curItem?.associatedFieldsList || [];
 
-                const type: string = curItem.type || ''; // 判断是 指标 还是 属性
-                const dataType: string = curItem.dataType || ''; // 判断数据类型
+                const type: string = curItem?.type || ''; // 判断是 指标 还是 属性
+                const dataType: string = curItem?.dataType || ''; // 判断数据类型
                 let subList: any[] = []; // 三级下拉列表
                 if (type === 'fields' && dataType === 'number') {
                   subList = statisticNumbericList;
@@ -266,7 +266,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                 }
 
                 //
-                const relation = curItem.relation;
+                const relation = curItem?.relation;
 
                 return (
                   <div key={field.fieldKey}>
