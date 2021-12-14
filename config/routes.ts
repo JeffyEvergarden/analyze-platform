@@ -35,6 +35,7 @@ export default [
         path: '/analyzehome/retained',
         component: './analyze-home/retained-analyze',
       },
+      { redirect: '/analyzehome/retained' },
       { component: './404' },
     ],
   },
