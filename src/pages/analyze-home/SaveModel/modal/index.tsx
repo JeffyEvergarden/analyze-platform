@@ -3,10 +3,11 @@ import { Form, Select, message, Modal, Input, TreeSelect } from 'antd';
 import { getTreeSelect } from '../util';
 
 interface SaveRecordModalProps {
-  [name: string]: any;
+  cref: any;
+  onSave: (...args: any[]) => void;
 }
 
-const SaveRecordModal = (props: SaveRecordModalProps) => {
+const SaveRecordModal: React.FC<SaveRecordModalProps> = (props: any) => {
   const { cref, onSave } = props;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [type, setType] = useState<string>('create');
@@ -41,14 +42,12 @@ const SaveRecordModal = (props: SaveRecordModalProps) => {
       message.warning('请选择目录');
       return;
     }
-    onSave?.({
-      analysisName: moduleName,
-      analysisBoard: treeSelectId,
-    });
+    onSave?.(moduleName, treeSelectId);
   };
 
   const getTreeOptions = async () => {
     const data = await getTreeSelect();
+    console.log(data);
 
     setTreeSelectOptions(data);
   };
@@ -71,34 +70,25 @@ const SaveRecordModal = (props: SaveRecordModalProps) => {
       visible={modalVisible}
       onOk={saveModalData}
       onCancel={() => setModalVisible(false)}
-      // confirmLoading={loading}
       okText="保存"
       cancelText="取消"
       destroyOnClose
       title={`保存分析模板`}
     >
-      {/* <div className={style['record-row']}>
-        <span className={style['red']}>*</span>
-        <span className={style['label']}>分析看板名称</span> */}
       <Input
         placeholder="请输入分析模板名字"
         value={moduleName}
         onChange={changeInput}
         maxLength={30}
-        style={{ width: '300px' }}
       ></Input>
-      {/* </div> */}
 
-      {/* <div className={style['record-row']} style={{ marginTop: '10px' }}>
-        <span className={style['red']}>*</span>
-        <span className={style['label']}>选择目录</span> */}
       <div style={{ clear: 'both', marginTop: '10px' }}>
         <TreeSelect
-          style={{ width: '300px' }}
+          style={{ width: '100%' }}
           showSearch
           dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
           defaultValue={treeSelectId}
-          value={treeSelectId}
+          value={treeSelectId || []}
           treeData={treeSelectOptions}
           placeholder="选择看板"
           treeDefaultExpandAll
@@ -107,10 +97,8 @@ const SaveRecordModal = (props: SaveRecordModalProps) => {
             setTreeSelectId(value);
           }}
           treeNodeFilterProp="title"
-        ></TreeSelect>
+        />
       </div>
-
-      {/* </div> */}
     </Modal>
   );
 };

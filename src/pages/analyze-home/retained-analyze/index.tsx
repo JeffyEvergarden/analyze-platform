@@ -15,7 +15,7 @@ import {
 import { DownloadOutlined, RetweetOutlined } from '@ant-design/icons';
 import style from './style.less';
 import zhCN from 'antd/lib/locale/zh_CN';
-import { saveAnalysisModule } from './model/api';
+import { saveAnalysisModule, getModuleData } from './model/api';
 // 业务组件
 // import StatisticsSearch from '../components/statistics-search';
 import StatisticsSearch from '../components/statistics-search/testIndex';
@@ -84,7 +84,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
 
   //分析类型
   const [moduleName, setModuleName] = useState<any>('');
-  const [moduleType, setModuleType] = useState<any>('');
+  const [moduleType, setModuleType] = useState<any>('retain');
 
   const getvl = (url: any) => {
     let obj: any = {},
@@ -124,12 +124,23 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   };
   //  保存
   const save = async () => {
+    let all = await Promise.all([
+      (firstSearchRef.current as any).getForm(),
+      (normalSearchRef?.current as any).getForm(),
+      (lastSearchRef.current as any).getForm(),
+    ]);
+    let allData = await Promise.all([
+      (firstSearchRef.current as any).getFormData(),
+      (normalSearchRef?.current as any).getFormData(),
+      (lastSearchRef.current as any).getFormData(),
+    ]);
+
     //  分析类型
     (editModalRef.current as any).open({ moduleName });
   };
 
   //提交请求
-  const saveSubmit = async (analysisNmae: any, analysisBoard: any) => {
+  const saveSubmit = async (analysisName: any, analysisBoard: any) => {
     //请求所需数据
     let all = await Promise.all([
       (firstSearchRef.current as any).getForm(),
@@ -149,7 +160,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     let reqData = {
       analysisBoard,
       analysisData: JSON.stringify(save),
-      analysisNmae,
+      analysisName,
       analysisType: moduleType,
     };
     saveAnalysisModule(reqData).then((res) => {
@@ -177,23 +188,25 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
 
   // mounted初始化
   useEffect(() => {
+    console.log(location);
     let afterUrl: any = window.location.search;
-
     if (afterUrl) {
       let obj = getvl(afterUrl);
-      console.log(obj);
+      let canshu = obj.moduleId;
+      getModuleData(canshu).then((res: any) => {
+        let data = JSON.parse(res?.datas?.analysisData);
+        backData(data);
 
-      let formData = obj?.formData && JSON.parse(obj?.formData);
-      if (formData) {
-        backData(formData);
-      }
-
-      setModuleName(obj?.analysisName);
-      setModuleType(obj?.analysisType);
+        setModuleName(res?.datas?.analysisName);
+        setModuleType(res?.datas?.analysisType);
+      });
+      // console.log(obj);
+      // let formData = obj?.formData && JSON.parse(obj?.formData);
+      // if (formData) {
+      //   backData(formData);
+      // }
     }
-
     getPreConfig('RETAIN_STRATEGY');
-    // getTableDataList();
   }, []);
 
   return (
@@ -301,7 +314,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
           {/* <MiniMap dataJson={saveData}></MiniMap> */}
         </Spin>
       </div>
-      {/* <EditModal cref={editModalRef} onSave={saveSubmit}></EditModal> */}
+      <EditModal cref={editModalRef} onSave={saveSubmit}></EditModal>
     </ConfigProvider>
   );
 };

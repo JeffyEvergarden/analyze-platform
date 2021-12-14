@@ -5,8 +5,10 @@ export const obj = {
     relation: 'AND',
     nextEvent: 'LQHTXCG',
     nextMetric: '用户数',
-    nextCondition: { field: 'select', function: 'equal', params: '测试2', dataType: 'select' },
+    nextCondition: { field: 'select', function: 'equal', params: '测试1', dataType: 'select' },
     groupFields: ['strategy_name'],
+    startDate: '2021-12-08',
+    endDate: '2021-12-10',
     timeStep: -1,
   },
   formData: {
@@ -117,7 +119,7 @@ export const obj = {
         {
           attr: 'select',
           op: 'equal',
-          value: '测试2',
+          value: '测试1',
           dataType: 'select',
           operatorList: [
             { value: 'equal', name: '等于' },
@@ -224,6 +226,6 @@ export const obj = {
       ],
       type: 'metrics',
     },
-    compare: { groupBy: ['strategy_name'] },
+    compare: { groupBy: ['strategy_name'], dateRange: ['2021-12-08', '2021-12-10'] },
   },
 };
