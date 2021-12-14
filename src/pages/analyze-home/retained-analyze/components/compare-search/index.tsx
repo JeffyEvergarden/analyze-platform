@@ -13,6 +13,7 @@ import {
 } from 'antd';
 import { PlusSquareOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { groupByList, timeUnitList, timeUnit2List } from '../../model/const';
+import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 
@@ -88,6 +89,13 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
 
         if (fieldsValue) {
           const formData = form.getFieldsValue();
+          console.log(formData);
+
+          if (formData.dateRange) {
+            formData.dateRange[0] = formData?.dateRange[0]?.format('YYYY-MM-DD');
+            formData.dateRange[1] = formData?.dateRange[1]?.format('YYYY-MM-DD');
+          }
+
           return { compare: formData };
         } else {
           return false;
@@ -95,6 +103,11 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
       },
       //数据回显
       async setForm(obj: any) {
+        if (obj.dateRange) {
+          obj.dateRange[0] = obj.dateRange[0] && moment(obj?.dateRange[0]);
+          obj.dateRange[1] = obj.dateRange[1] && moment(obj?.dateRange[1]);
+        }
+
         form.setFieldsValue(obj);
       },
     };

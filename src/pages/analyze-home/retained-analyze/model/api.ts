@@ -48,3 +48,9 @@ export async function saveAnalysisModule(data: any) {
     data,
   });
 }
+//回显
+export async function getModuleData(id: string) {
+  return request('/bgs/dashboard/analysis/detail/' + id, {
+    method: 'get',
+  });
+}
