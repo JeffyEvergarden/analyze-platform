@@ -16,11 +16,11 @@ const SaveRecordModal: React.FC<SaveRecordModalProps> = (props: any) => {
   const [treeSelectOptions, setTreeSelectOptions] = useState<any[]>([]);
 
   useImperativeHandle(cref, () => ({
-    open: (params: any) => {
-      if (params?.moduleName) {
+    open: (moduleName: any, dashboardId: any) => {
+      if (moduleName) {
         setType('edit');
-        setTreeSelectId(String(params?.dashboardId));
-        setModuleName(String(params?.moduleName));
+        setTreeSelectId(String(dashboardId));
+        setModuleName(String(moduleName));
       } else {
         setType('create');
         setTreeSelectId('');

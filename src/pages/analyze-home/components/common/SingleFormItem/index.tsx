@@ -239,6 +239,7 @@ const InnerForm: React.FC<any> = (props: any) => {
               style={{ width: '200px' }}
               placeholder="请输入别名"
               onPressEnter={changeFiterAilas}
+              maxLength={30}
             ></Input>
           </FormItem>
         </Condition>

@@ -498,10 +498,10 @@ const getRefreshList = (req: any, res: any) => {
       nextEventTitles: ['当天', '3天', '7天', '15天', '30天'],
       groupData: [
         {
-          init_event_num: '123',
-          next_event_num1: 2,
-          next_event_num2: 2,
-          next_event_num3: 2,
+          init_event_num: 132.445,
+          next_event_num1: 2.555,
+          next_event_num2: 2.888,
+          next_event_num3: 2.777,
           next_event_num4: 2,
           next_event_num0: 2,
           strategy_id: 'id',

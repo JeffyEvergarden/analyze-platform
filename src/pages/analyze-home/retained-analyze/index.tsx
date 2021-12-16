@@ -15,7 +15,7 @@ import {
 import { DownloadOutlined, RetweetOutlined } from '@ant-design/icons';
 import style from './style.less';
 import zhCN from 'antd/lib/locale/zh_CN';
-import { saveAnalysisModule, getModuleData } from './model/api';
+import { saveAnalysisModule, getModuleData, editAnalysisModule } from './model/api';
 // 业务组件
 // import StatisticsSearch from '../components/statistics-search';
 import StatisticsSearch from '../components/statistics-search/testIndex';
@@ -84,6 +84,8 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
 
   //分析类型
   const [moduleName, setModuleName] = useState<any>('');
+  const [moduleId, setModuleId] = useState<any>('');
+  const [boardId, setBoardId] = useState<any>('');
   const [moduleType, setModuleType] = useState<any>('retain');
 
   const getvl = (url: any) => {
@@ -134,9 +136,10 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
       (normalSearchRef?.current as any).getFormData(),
       (lastSearchRef.current as any).getFormData(),
     ]);
+    console.log(allData);
 
     //  分析类型
-    (editModalRef.current as any).open({ moduleName });
+    (editModalRef.current as any).open(moduleName, boardId);
   };
 
   //提交请求
@@ -148,34 +151,64 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
       (lastSearchRef.current as any).getForm(),
     ]);
     //回显所需数据
-    let allData = await Promise.all([
-      (firstSearchRef.current as any).getFormData(),
-      (normalSearchRef?.current as any).getFormData(),
-      (lastSearchRef.current as any).getFormData(),
-    ]);
+    // let allData = await Promise.all([
+    //   (firstSearchRef.current as any).getFormData(),
+    //   (normalSearchRef?.current as any).getFormData(),
+    //   (lastSearchRef.current as any).getFormData(),
+    // ]);
+    let statisticsSearch = await (firstSearchRef.current as any).getFormData();
+    let followUpSearch = await (normalSearchRef?.current as any).getFormData();
+    let compareSearch = await (lastSearchRef.current as any).getFormData();
+    if (compareSearch?.dateRange?.length) {
+      compareSearch.dateRange[0] = compareSearch?.dateRange[0]?.format?.('YYYY-MM-DD');
+      compareSearch.dateRange[1] = compareSearch?.dateRange[1]?.format?.('YYYY-MM-DD');
+    }
     all = Object.assign({}, ...all);
-    allData = Object.assign({}, ...allData);
+    // allData = Object.assign({}, ...allData);
+    let allData = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
     let save = { reqData: all, formData: allData };
-
-    let reqData = {
-      analysisBoard,
-      analysisData: JSON.stringify(save),
-      analysisName,
-      analysisType: moduleType,
-    };
-    saveAnalysisModule(reqData).then((res) => {
-      if (res.resultCode === '000') {
-        message.success('成功');
-        setTimeout(() => {
-          window.close();
-        }, 1500);
-      } else if (Number(res.resultCode) === 403) {
-        message.error('没有权限操作');
-      } else {
-        message.error(res.resultMsg);
-      }
-      (editModalRef.current as any).close();
-    });
+    if (boardId != analysisBoard) {
+      let reqData = {
+        analysisBoard,
+        analysisData: JSON.stringify(save),
+        analysisName,
+        analysisType: moduleType,
+      };
+      saveAnalysisModule(reqData).then((res) => {
+        if (res.resultCode === '000') {
+          message.success('成功');
+          setTimeout(() => {
+            window.close();
+          }, 1500);
+        } else if (Number(res.resultCode) === 403) {
+          message.error('没有权限操作');
+        } else {
+          message.error(res.resultMsg);
+        }
+        (editModalRef.current as any).close();
+      });
+    } else {
+      let reqData = {
+        analysisBoard,
+        analysisData: JSON.stringify(save),
+        analysisName,
+        analysisType: moduleType,
+        analysisId: moduleId,
+      };
+      editAnalysisModule(reqData).then((res) => {
+        if (res.resultCode === '000') {
+          message.success('成功');
+          setTimeout(() => {
+            window.close();
+          }, 1500);
+        } else if (Number(res.resultCode) === 403) {
+          message.error('没有权限操作');
+        } else {
+          message.error(res.resultMsg);
+        }
+        (editModalRef.current as any).close();
+      });
+    }
   };
 
   // 回显
@@ -192,8 +225,10 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     let afterUrl: any = window.location.search;
     if (afterUrl) {
       let obj = getvl(afterUrl);
-      let canshu = obj.moduleId;
-      getModuleData(canshu).then((res: any) => {
+      let moduleId1 = obj.moduleId;
+      setBoardId(obj.dashboardId);
+      setModuleId(moduleId1);
+      getModuleData(moduleId1).then((res: any) => {
         let data = JSON.parse(res?.datas?.analysisData);
         backData(data);
 

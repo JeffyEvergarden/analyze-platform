@@ -208,6 +208,16 @@ export const useListModel = () => {
           value: tableIndex[index],
           title: item,
           dataIndex: tableIndex[index],
+          render: (text: any, record: any) => {
+            if (typeof text === 'number') {
+              let str1 = text.toFixed(0);
+              let str2 = text.toFixed(2);
+              let str: any = Number(str1) === Number(str2) ? str1 : str2;
+              str = Number(str);
+              return str;
+            }
+            return text;
+          },
         });
       }
     });
@@ -231,13 +241,33 @@ export const useListModel = () => {
         title: `${init_event_num?.name}的${init_Metric?.name}`,
         value: 'init_event_num',
         dataIndex: 'init_event_num',
+        render: (text: any, record: any) => {
+          if (typeof text === 'number') {
+            let str1 = text.toFixed(0);
+            let str2 = text.toFixed(2);
+            let str: any = Number(str1) === Number(str2) ? str1 : str2;
+            str = Number(str);
+            return str;
+          }
+          return text;
+        },
       },
       ...step,
     ]);
 
     setChartList(step);
+    console.log(res);
 
     res.groupData.map((item: any, index: any) => {
+      // console.log(item);
+      Object.keys(item).forEach((res) => {
+        if (typeof item[res] === 'number') {
+          let str1 = item[res].toFixed(0);
+          let str2 = item[res].toFixed(2);
+          let str = Number(str1) === Number(str2) ? str1 : str2;
+          item[res] = Number(str);
+        }
+      });
       item.tableIndex = String(index + 1);
     });
     setTableDataList(res.groupData);

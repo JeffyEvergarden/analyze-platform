@@ -1,4 +1,4 @@
-import { request } from 'umi';
+import { request } from '@/services/request';
 
 // 获取总揽数据
 export const getTableList = async (params?: any) => {
@@ -36,7 +36,6 @@ export async function getFieldList(params?: { [key: string]: any }) {
 export async function getRefreshList(params: any) {
   return request('/bgs/retain/query', {
     method: 'POST',
-
     data: params,
   });
 }
@@ -48,6 +47,15 @@ export async function saveAnalysisModule(data: any) {
     data,
   });
 }
+
+//编辑
+export async function editAnalysisModule(data: any) {
+  return request('/bgs/dashboard/analysis/modify', {
+    method: 'POST',
+    data,
+  });
+}
+
 //回显
 export async function getModuleData(id: string) {
   return request('/bgs/dashboard/analysis/detail/' + id, {
