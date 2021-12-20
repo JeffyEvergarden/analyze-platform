@@ -101,6 +101,8 @@ const LineChart: React.FC<any> = (props: TableProps) => {
     });
 
     const outputData = [header, ...outputDataList];
+    console.log(outputData);
+    console.log(header);
 
     // const tableDOM: HTMLElement | null = document.getElementById(`${tableId}`);
     // const cpTableNode: any = tableDOM?.cloneNode(true);

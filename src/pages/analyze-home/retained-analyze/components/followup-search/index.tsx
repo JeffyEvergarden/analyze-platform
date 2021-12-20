@@ -195,6 +195,8 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       },
       //数据回显
       async setForm(obj: any) {
+        console.log(obj);
+        obj.innerList[0].alias = obj?.alias;
         form.setFieldsValue({ childrenList: [obj] });
         setBehaviorList(obj?.EventList);
       },
