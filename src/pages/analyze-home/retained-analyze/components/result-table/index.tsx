@@ -83,15 +83,42 @@ const LineChart: React.FC<any> = (props: TableProps) => {
   };
 
   const exportExcel = () => {
-    const tableDOM: HTMLElement | null = document.getElementById(`${tableId}`);
-    const cpTableNode: any = tableDOM?.cloneNode(true);
-    const tempBody: any = cpTableNode?.querySelector('tbody');
-    // const tempTr = cpTableNode?.querySelector('.ant-table-measure-row');
-    // tempBody.removeChild(tempTr);
-
-    let ws = XLSX.utils.table_to_sheet(cpTableNode, {
-      raw: true,
+    const dataList: any = data;
+    if (dataList?.length === 0) {
+      return;
+    }
+    const header: any = {};
+    column?.map((item: any) => {
+      header[item.dataIndex] = item?.title;
     });
+    const outputDataList: any[] = [];
+    dataList?.map((data: any) => {
+      let obj: any = {};
+      Object.keys(header)?.map((item) => {
+        obj[item] = data[item] ? data[item] : data[item] == 0 ? 0 : '-';
+      });
+      outputDataList.push(obj);
+    });
+
+    const outputData = [header, ...outputDataList];
+
+    // const tableDOM: HTMLElement | null = document.getElementById(`${tableId}`);
+    // const cpTableNode: any = tableDOM?.cloneNode(true);
+    // const tempBody: any = cpTableNode?.querySelector('tbody');
+    // // const tempTr = cpTableNode?.querySelector('.ant-table-measure-row');
+    // // tempBody.removeChild(tempTr);
+    // console.log(cpTableNode);
+
+    //数据
+    // let ws = XLSX.utils.table_to_sheet(cpTableNode, {
+    let ws = XLSX.utils.json_to_sheet(outputData, {
+      header: Object.keys(header),
+      // raw: true,
+      skipHeader: true,
+    });
+    console.log(ws);
+
+    //初始化
     let wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws);
     XLSX.writeFile(wb, `留存分析${moment().format('YYYYMMDDHHmmss')}.xlsx`);

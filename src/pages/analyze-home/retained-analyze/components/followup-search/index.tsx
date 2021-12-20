@@ -143,6 +143,13 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
         if (fieldsValue) {
           let formData = form.getFieldValue('childrenList')[0];
           console.log(formData);
+          // formData.forEach((item: any) => {});
+          let init_event_num = formData.EventList?.find((item: any) => {
+            return item.value == formData?.event;
+          });
+          let init_Metric = init_event_num?.metricsList?.find((item: any) => {
+            return item.value == formData?.attribute;
+          });
 
           return {
             nextEvent: formData?.event,
@@ -158,6 +165,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
               dataType: formData?.innerList[0]?.dataType,
             },
             otherName: formData?.alias,
+            defOtherName: `${init_event_num.name}的${init_Metric.name}`,
           };
         } else {
           return false;
@@ -170,7 +178,17 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
         if (fieldsValue) {
           const formData = form.getFieldValue('childrenList')[0];
-          return { last: formData };
+          let init_event_num = formData.EventList?.find((item: any) => {
+            return item.value == formData?.event;
+          });
+          let init_Metric = init_event_num?.metricsList?.find((item: any) => {
+            return item.value == formData?.attribute;
+          });
+          return {
+            last: Object.assign({}, formData, {
+              defOtherName: `${init_event_num.name}的${init_Metric.name}`,
+            }),
+          };
         } else {
           return false;
         }

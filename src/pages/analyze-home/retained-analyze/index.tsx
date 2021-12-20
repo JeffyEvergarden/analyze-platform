@@ -123,11 +123,14 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     console.log(all);
     if (statisticsSearch && followUpSearch && compareSearch) {
       console.log(eventList);
-
-      getTable(all, eventList || formEventList);
+      if (eventList.length) {
+        getTable(all, eventList);
+      } else {
+        getTable(all, formEventList);
+      }
     }
     //别名
-    setOtherName(all.otherName);
+    setOtherName(all.otherName || all.defOtherName);
   };
   //  保存
   const save = async () => {
@@ -141,7 +144,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
       (normalSearchRef?.current as any).getFormData(),
       (lastSearchRef.current as any).getFormData(),
     ]);
-    console.log(all);
+    // console.log(JSON.stringify(allData));
 
     console.log(allData);
 
@@ -236,11 +239,15 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     let afterUrl: any = window.location.search;
     if (afterUrl) {
       let obj = getvl(afterUrl);
-      let moduleId1 = obj.moduleId;
-      setBoardId(obj.dashboardId);
+      let moduleId1 = obj?.moduleId;
+      setBoardId(obj?.dashboardId);
       setModuleId(moduleId1);
       getModuleData(moduleId1).then((res: any) => {
+        console.log(res);
+
         let data = JSON.parse(res?.datas?.analysisData);
+        console.log(data);
+
         backData(data);
 
         setModuleName(res?.datas?.analysisName);

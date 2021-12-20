@@ -133,7 +133,7 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
               />
             </Tooltips>
           </div>
-          <div>{dataJson?.formData?.last?.innerList?.[0]?.alias}</div>
+          <div>{dataJson?.formData?.last?.alias || dataJson?.formData?.last?.defOtherName}</div>
         </div>
       }
       style={{ marginTop: '10px' }}
