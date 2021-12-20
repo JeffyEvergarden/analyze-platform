@@ -2,6 +2,7 @@ import { message } from 'antd';
 import React, { useState } from 'react';
 import { getEventList, getFieldList, getBehaviorList, getRefreshList } from './api';
 import { groupByList } from './const';
+import { toFixed2 } from '@/utils/utils';
 
 export const useSearchModel = () => {
   const [eventList, setEventList] = useState<any[]>([]);
@@ -212,6 +213,7 @@ export const useListModel = () => {
             if (typeof text === 'number') {
               let str1 = text.toFixed(0);
               let str2 = text.toFixed(2);
+              // let str2 = toFixed2(text);
               let str: any = Number(str1) === Number(str2) ? str1 : str2;
               str = Number(str);
               return str;
@@ -245,6 +247,8 @@ export const useListModel = () => {
           if (typeof text === 'number') {
             let str1 = text.toFixed(0);
             let str2 = text.toFixed(2);
+
+            // let str2 = toFixed2(text);
             let str: any = Number(str1) === Number(str2) ? str1 : str2;
             str = Number(str);
             return str;
@@ -264,6 +268,7 @@ export const useListModel = () => {
         if (typeof item[res] === 'number') {
           let str1 = item[res].toFixed(0);
           let str2 = item[res].toFixed(2);
+          // let str2 = toFixed2(item[res]);
           let str = Number(str1) === Number(str2) ? str1 : str2;
           item[res] = Number(str);
         }

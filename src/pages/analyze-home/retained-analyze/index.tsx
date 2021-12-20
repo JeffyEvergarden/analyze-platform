@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useModel } from 'umi';
 import {
   Space,
@@ -32,6 +32,7 @@ import { groupByList } from './model/const';
 // import { useTableModel } from './model';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+import XLSX from 'xlsx';
 
 import EditModal from '../SaveModel/modal';
 
@@ -76,6 +77,8 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   const lastSearchRef = useRef(null);
 
   const normalSearchRef = useRef(null);
+
+  const tableRef = useRef<any>();
   // 表格、折线数据
   // const { column, tableData, lineData, getTableDataList } = useTableModel();
 
@@ -244,6 +247,10 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     getPreConfig('RETAIN_STRATEGY');
   }, []);
 
+  const handleExport = useCallback(() => {
+    tableRef.current?.exportExcel();
+  }, []);
+
   return (
     <ConfigProvider locale={zhCN}>
       <div className={style['anaylze-page']}>
@@ -318,7 +325,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
                 <div>
                   <span>结果</span>
                   <Divider type="vertical"></Divider>
-                  <DownloadOutlined onClick={() => {}}></DownloadOutlined>
+                  <DownloadOutlined onClick={handleExport}></DownloadOutlined>
                   <Tooltip placement="top" title={'刷新并重置勾选'}>
                     <RetweetOutlined onClick={refreshList} style={{ marginLeft: '16px' }} />
                   </Tooltip>
@@ -342,6 +349,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
                 data={tableDataList}
                 getData={setSelectedRowDatas}
                 chartList={chartList}
+                cref={tableRef}
               />
             </div>
           </Card>

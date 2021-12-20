@@ -69,7 +69,8 @@
     "react-sortablejs": "^6.0.0",
     "sortablejs": "^1.14.0",
     "umi": "^3.5.0",
-    "umi-serve": "^1.9.10"
+    "umi-serve": "^1.9.10",
+    "xlsx": "^0.17.4"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.0.2",

@@ -2,7 +2,8 @@ import React, { useEffect, useImperativeHandle } from 'react';
 // 通用组件
 import { message, Table } from 'antd';
 import { useState } from 'react';
-
+import XLSX from 'xlsx';
+import moment from 'moment';
 interface TableProps {
   cref?: any;
   column?: any[];
@@ -21,7 +22,7 @@ const LineChart: React.FC<any> = (props: TableProps) => {
     setCurrent(val);
   };
 
-  const { column, data, id, getData, chartList } = props;
+  const { column, data, id, getData, chartList, cref } = props;
   const tableId = `result-table-${id}`;
 
   // 默认勾选5条数据
@@ -80,6 +81,27 @@ const LineChart: React.FC<any> = (props: TableProps) => {
     selectedRows,
     onChange: onSelectChange,
   };
+
+  const exportExcel = () => {
+    const tableDOM: HTMLElement | null = document.getElementById(`${tableId}`);
+    const cpTableNode: any = tableDOM?.cloneNode(true);
+    const tempBody: any = cpTableNode?.querySelector('tbody');
+    const tempTr = cpTableNode?.querySelector('.ant-table-measure-row');
+    tempBody.removeChild(tempTr);
+
+    let ws = XLSX.utils.table_to_sheet(cpTableNode, {
+      raw: true,
+    });
+    let wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws);
+    XLSX.writeFile(wb, `留存分析${moment().format('YYYYMMDDHHmmss')}.xlsx`);
+  };
+
+  useImperativeHandle(cref, () => ({
+    exportExcel: () => {
+      exportExcel();
+    },
+  }));
 
   return (
     <Table
