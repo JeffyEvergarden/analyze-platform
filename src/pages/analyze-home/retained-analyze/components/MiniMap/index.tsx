@@ -6,7 +6,9 @@ import { DownloadOutlined, RetweetOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { message, Table, Card, Divider, Tooltip as Tooltips } from 'antd';
 import { useListModel } from './model';
-
+import XLSX from 'xlsx';
+import moment from 'moment';
+// import
 // interface LineChartProps {
 //   cref?: any;
 //   selectData: any;
@@ -89,6 +91,24 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
       setSelectedRows(val);
     }
   };
+
+  const exportExcel = () => {
+    const tableDOM: HTMLElement | null = document.getElementById(`${'result-table'}`);
+    const cpTableNode: any = tableDOM?.cloneNode(true);
+    const tempBody: any = cpTableNode?.querySelector('tbody');
+    const tempTr = cpTableNode?.querySelector('.ant-table-measure-row');
+    if (tempTr) {
+      tempBody.removeChild(tempTr);
+    }
+
+    let ws = XLSX.utils.table_to_sheet(cpTableNode, {
+      raw: true,
+    });
+    let wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws);
+    XLSX.writeFile(wb, `留存分析${moment().format('YYYYMMDDHHmmss')}.xlsx`);
+  };
+
   //表格行选择
   const rowSelection = {
     selectedRowKeys,
@@ -151,7 +171,7 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
         <Geom type="line" position="date*value" size={2} color={'type'} shape={'circle'} />
       </Chart>
       <Table
-        // id={tableId}
+        id={'result-table'}
         dataSource={tableDataList}
         columns={tableList}
         rowSelection={rowSelection}

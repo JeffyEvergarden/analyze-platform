@@ -86,8 +86,8 @@ const LineChart: React.FC<any> = (props: TableProps) => {
     const tableDOM: HTMLElement | null = document.getElementById(`${tableId}`);
     const cpTableNode: any = tableDOM?.cloneNode(true);
     const tempBody: any = cpTableNode?.querySelector('tbody');
-    const tempTr = cpTableNode?.querySelector('.ant-table-measure-row');
-    tempBody.removeChild(tempTr);
+    // const tempTr = cpTableNode?.querySelector('.ant-table-measure-row');
+    // tempBody.removeChild(tempTr);
 
     let ws = XLSX.utils.table_to_sheet(cpTableNode, {
       raw: true,

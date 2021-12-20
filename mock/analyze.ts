@@ -612,10 +612,17 @@ const getRefreshList = (req: any, res: any) => {
   });
 };
 
+const getbackshow = (req: any, res: any) => {
+  res.json({
+    datas: [],
+  });
+};
+
 export default {
   'GET /bgs/analysis/retain/events/dict': getEventList,
   'GET /bgs/analysis/retain/behavior/dict': getBehaviorList,
   'GET /bgs/analysis/dict/fields': getFieldList,
   'GET /bgs/analysis/table/list': getTableList,
+  'GET /bgs/dashboard/analysis/detail/': getbackshow,
   'POST /bgs/retain/query': getRefreshList,
 };

@@ -112,7 +112,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   const editModalRef = useRef(null);
 
   // 查询
-  const refreshList = async () => {
+  const refreshList = async (formEventList: any) => {
     let statisticsSearch = await (firstSearchRef.current as any).getForm(); //初始行为数据处理为接口需要参数
     let followUpSearch = await (normalSearchRef?.current as any).getForm(); //后续行为数据处理为接口需要参数
     let compareSearch = await (lastSearchRef.current as any).getForm(); //对比查看数据处理为接口需要参数
@@ -122,7 +122,9 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     let all = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
     console.log(all);
     if (statisticsSearch && followUpSearch && compareSearch) {
-      getTable(all, eventList);
+      console.log(eventList);
+
+      getTable(all, eventList || formEventList);
     }
     //别名
     setOtherName(all.otherName);
@@ -139,6 +141,8 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
       (normalSearchRef?.current as any).getFormData(),
       (lastSearchRef.current as any).getFormData(),
     ]);
+    console.log(all);
+
     console.log(allData);
 
     //  分析类型
@@ -170,6 +174,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     // allData = Object.assign({}, ...allData);
     let allData = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
     let save = { reqData: all, formData: allData };
+
     if (boardId != analysisBoard) {
       let reqData = {
         analysisBoard,
@@ -219,12 +224,15 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     (firstSearchRef.current as any).setForm(obj?.formData?.first);
     (normalSearchRef?.current as any).setForm(obj?.formData?.last);
     (lastSearchRef.current as any).setForm(obj?.formData?.compare);
-    refreshList();
+    refreshList(obj?.formData?.first?.EventList || []);
   };
 
   // mounted初始化
   useEffect(() => {
     console.log(location);
+    getPreConfig('RETAIN_STRATEGY');
+    console.log(eventList);
+
     let afterUrl: any = window.location.search;
     if (afterUrl) {
       let obj = getvl(afterUrl);
@@ -244,7 +252,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
       //   backData(formData);
       // }
     }
-    getPreConfig('RETAIN_STRATEGY');
+    // getPreConfig('RETAIN_STRATEGY');
   }, []);
 
   const handleExport = useCallback(() => {
