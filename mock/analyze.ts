@@ -623,11 +623,169 @@ const getbackshow = (req: any, res: any) => {
   });
 };
 
+const getPublicDashboardData = (req: any, res: any) => {
+  res.json({
+    datas: [
+      {
+        createTime: '2021-06-29 17:34:12',
+        dashboards: [
+          {
+            analysisTemplates: null,
+            createTime: '2021-06-29 17:34:12',
+            dashboardCreator: 'ujiangjiahao',
+            dashboardDir: '123456',
+            dashboardId: '502c512',
+            dashboardModifier: null,
+            dashboardName: 'fake1',
+            modifyTime: '2021-06-29 17:34:12',
+          },
+          {
+            analysisTemplates: null,
+            createTime: '2021-06-29 17:34:12',
+            dashboardCreator: 'ujiangjiahao',
+            dashboardDir: '1234562',
+            dashboardId: '502c5122',
+            dashboardModifier: null,
+            dashboardName: 'fake2',
+            modifyTime: '2021-06-29 17:34:12',
+          },
+        ],
+        dirCreator: 'ujiangjiahao',
+        dirDept: 1137,
+        dirId: '1123344566',
+        dirModifier: null,
+        dirName: '公共-科技发展部',
+        dirType: 'public',
+        modifyTime: '2021-06-29 17:34:12',
+      },
+    ],
+    resultCode: '000',
+    resultMsg: 'success',
+  });
+};
+
+const getTeamDashboard = (req: any, res: any) => {
+  res.json({
+    datas: [
+      {
+        createTime: '2021-06-29 17:34:12',
+        dashboards: [
+          {
+            analysisTemplates: null,
+            createTime: '2021-06-29 17:34:12',
+            dashboardCreator: 'ujiangjiahao',
+            dashboardDir: '12134546',
+            dashboardId: '502c2512',
+            dashboardModifier: null,
+            dashboardName: 'fake1',
+            modifyTime: '2021-06-29 17:34:12',
+          },
+          {
+            analysisTemplates: null,
+            createTime: '2021-06-29 17:34:12',
+            dashboardCreator: 'ujiangjiahao',
+            dashboardDir: '122343562',
+            dashboardId: '502c52122',
+            dashboardModifier: null,
+            dashboardName: 'fake2',
+            modifyTime: '2021-06-29 17:34:12',
+          },
+        ],
+        dirCreator: 'ujiangjiahao',
+        dirDept: 1137,
+        dirId: '11233445616',
+        dirModifier: null,
+        dirName: '科技发展部',
+        dirType: 'team',
+        modifyTime: '2021-06-29 17:34:12',
+      },
+    ],
+    resultCode: '000',
+    resultMsg: 'success',
+  });
+};
+
+const getPersonalDashboard = (req: any, res: any) => {
+  res.json({
+    datas: [
+      {
+        createTime: '2021-06-29 17:34:12',
+        dashboards: [
+          {
+            analysisTemplates: null,
+            createTime: '2021-06-29 17:34:12',
+            dashboardCreator: 'ujiangjiahao',
+            dashboardDir: '123422156',
+            dashboardId: '502c533212',
+            dashboardModifier: null,
+            dashboardName: 'fake',
+            modifyTime: '2021-06-29 17:34:12',
+          },
+          {
+            analysisTemplates: null,
+            createTime: '2021-06-29 17:34:12',
+            dashboardCreator: 'ujiangjiahao',
+            dashboardDir: '1234544162',
+            dashboardId: '502c52231122',
+            dashboardModifier: null,
+            dashboardName: 'fake',
+            modifyTime: '2021-06-29 17:34:12',
+          },
+        ],
+        dirCreator: 'ujiangjiahao',
+        dirDept: 1137,
+        dirId: '1123344566777',
+        dirModifier: null,
+        dirName: '111',
+        dirType: 'personal',
+        modifyTime: '2021-06-29 17:34:12',
+      },
+      {
+        createTime: null,
+        dashboards: [
+          {
+            analysisTemplates: null,
+            createTime: '2021-06-29 17:34:12',
+            dashboardCreator: 'ujiangjiahao',
+            dashboardDir: '123422156',
+            dashboardId: '502c533212',
+            dashboardModifier: null,
+            dashboardName: 'fake',
+            modifyTime: '2021-06-29 17:34:12',
+          },
+          {
+            analysisTemplates: null,
+            createTime: '2021-06-29 17:34:12',
+            dashboardCreator: 'ujiangjiahao',
+            dashboardDir: '1234544162',
+            dashboardId: '502c52231122',
+            dashboardModifier: null,
+            dashboardName: 'fake',
+            modifyTime: '2021-06-29 17:34:12',
+          },
+        ],
+        dirCreator: 'ujiangjiahao',
+        dirDept: 1137,
+        dirId: null,
+        dirModifier: null,
+        dirName: '收到的分享',
+        dirType: 'receive',
+        modifyTime: '2021-06-29 17:34:12',
+      },
+    ],
+    resultCode: '000',
+    resultMsg: 'success',
+  });
+};
+
 export default {
   'GET /bgs/analysis/retain/events/dict': getEventList,
   'GET /bgs/analysis/retain/behavior/dict': getBehaviorList,
   'GET /bgs/analysis/dict/fields': getFieldList,
   'GET /bgs/analysis/table/list': getTableList,
   'GET /bgs/dashboard/analysis/detail/:id': getbackshow,
+  'GET /bgs/dashboard/dir/public/list': getPublicDashboardData,
+  'GET /bgs/dashboard/dir/team/list': getTeamDashboard,
+  'GET /bgs/dashboard/dir/personal/list': getPersonalDashboard,
   'POST /bgs/retain/query': getRefreshList,
 };
