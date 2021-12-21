@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useModel } from 'umi';
+import { useModel, useLocation } from 'umi';
 import {
   Space,
   Button,
@@ -48,7 +48,7 @@ interface AnalyzePageProps {
 
 const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   const { expand = true, modelType } = props;
-
+  const location: any = useLocation();
   // 是否默认展开 key
   const CollapseKey = expand ? ['1', '2', '3', '4'] : [];
 
@@ -236,9 +236,31 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     getPreConfig('RETAIN_STRATEGY');
     console.log(eventList);
 
-    let afterUrl: any = window.location.search;
-    if (afterUrl) {
-      let obj = getvl(afterUrl);
+    // let afterUrl: any = window.location.search;
+    // if (afterUrl) {
+    //   let obj = getvl(afterUrl);
+    //   let moduleId1 = obj?.moduleId;
+    //   setBoardId(obj?.dashboardId);
+    //   setModuleId(moduleId1);
+    //   getModuleData(moduleId1).then((res: any) => {
+    //     console.log(res);
+
+    //     let data = JSON.parse(res?.datas?.analysisData);
+    //     console.log(data);
+
+    //     backData(data);
+
+    //     setModuleName(res?.datas?.analysisName);
+    //     setModuleType(res?.datas?.analysisType);
+    //   });
+    //   // console.log(obj);
+    //   // let formData = obj?.formData && JSON.parse(obj?.formData);
+    //   // if (formData) {
+    //   //   backData(formData);
+    //   // }
+    // }
+    if (location.search) {
+      let obj = location?.query;
       let moduleId1 = obj?.moduleId;
       setBoardId(obj?.dashboardId);
       setModuleId(moduleId1);
