@@ -2,7 +2,7 @@ import { request } from '@/services/request';
 
 // 获取总揽数据
 export const getTableList = async (params?: any) => {
-  return request(`/bgs/analysis/table/list`, {
+  return request(`/bd/analysis/table/list`, {
     method: 'get',
     params,
   });
@@ -10,7 +10,7 @@ export const getTableList = async (params?: any) => {
 
 /** 获取事件列表 **/
 export async function getEventList(params?: { [key: string]: any }) {
-  return request('/bgs/analysis/retain/events/dict', {
+  return request('/bd/analysis/retain/events/dict', {
     method: 'GET',
     params,
   });
@@ -18,7 +18,7 @@ export async function getEventList(params?: { [key: string]: any }) {
 
 /** 获取后续列表 **/
 export async function getBehaviorList(params?: { [key: string]: any }) {
-  return request('/bgs/analysis/retain/behavior/dict', {
+  return request('/bd/analysis/retain/behavior/dict', {
     method: 'GET',
     params,
   });
@@ -26,7 +26,7 @@ export async function getBehaviorList(params?: { [key: string]: any }) {
 
 /** 获取属性映射列表 **/
 export async function getFieldList(params?: { [key: string]: any }) {
-  return request('/bgs/analysis/dict/fields', {
+  return request('/bd/analysis/dict/fields', {
     method: 'GET',
     params,
   });
@@ -34,7 +34,7 @@ export async function getFieldList(params?: { [key: string]: any }) {
 
 /** 刷新列表 **/
 export async function getRefreshList(params: any) {
-  return request('/bgs/retain/query', {
+  return request('/bd/retain/query', {
     method: 'POST',
     data: params,
   });
@@ -42,7 +42,7 @@ export async function getRefreshList(params: any) {
 
 //保存
 export async function saveAnalysisModule(data: any) {
-  return request('/bgs/dashboard/analysis/create', {
+  return request('/bd/dashboard/analysis/create', {
     method: 'POST',
     data,
   });
@@ -50,7 +50,7 @@ export async function saveAnalysisModule(data: any) {
 
 //编辑
 export async function editAnalysisModule(data: any) {
-  return request('/bgs/dashboard/analysis/modify', {
+  return request('/bd/dashboard/analysis/modify', {
     method: 'POST',
     data,
   });
@@ -58,7 +58,7 @@ export async function editAnalysisModule(data: any) {
 
 //回显
 export async function getModuleData(id: string) {
-  return request('/bgs/dashboard/analysis/detail/' + id, {
+  return request('/bd/dashboard/analysis/detail/' + id, {
     method: 'get',
   });
 }

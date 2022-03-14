@@ -65,11 +65,11 @@ const MenuManagement: React.FC<any> = (props: any) => {
     // 其他分析的
     let type: string = row.typeKey;
     if (['strategy', 'ynf', 'sub_activity', 'activity'].includes(type)) {
-      let otherPageUrl: string = prefix + '/bgs/analyze/index.html/createModule?';
+      let otherPageUrl: string = prefix + '/bd/analyze/index.html/createModule?';
       let commonQuery: string = `dashboardId=${row.analysisBoard}&moduleId=${row.analysisId}&type=${row.typeKey}`;
       window.open(otherPageUrl + commonQuery);
     } else if (type === 'funnel') {
-      let otherPageUrl: string = prefix + '/bgs/analyze/index.html/funnel?';
+      let otherPageUrl: string = prefix + '/bd/analyze/index.html/funnel?';
       let obj: any = {};
       let keys: any[] = [
         'startTime',

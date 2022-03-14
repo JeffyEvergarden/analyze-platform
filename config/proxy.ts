@@ -8,7 +8,7 @@
  */
 export default {
   dev: {
-    '/bgs/': {
+    '/bd/': {
       target: '', //'http://11.113.0.77:26062',
       changeOrigin: true,
       pathRewrite: { '^': '' },

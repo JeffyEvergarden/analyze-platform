@@ -165,14 +165,14 @@ const createDir = (req: any, res: any) => {
 
 export default {
   'GET /management/menu': getMenuList, // 获取所有模块
-  'GET /bgs/dashboard/board/list/:id': getCurrentMenuList, // 获取当前子模块
+  'GET /bd/dashboard/board/list/:id': getCurrentMenuList, // 获取当前子模块
   'POST /management/menu/add': addNewLink, // 添加模块
-  'DELETE /bgs/dashboard/analysis/delete/:id`': deleteLink, // 删除模块
+  'DELETE /bd/dashboard/analysis/delete/:id`': deleteLink, // 删除模块
   'POST /management/menu/update': updateLink, // 修改模块
-  'POST /bgs/dashboard/dir/create': createDir, // 创建目录
-  'POST /bgs/dashboard/dir/modify': createDir, // 修改目录
-  'DELETE /bgs/dashboard/dir/delete/:id': createDir, // 删除目录
-  'POST /bgs/dashboard/board/create': createDir, // 创建看板
-  'POST /bgs/dashboard/board/modify': createDir, // 修改看板
-  'DELETE /bgs/dashboard/board/delete/:id': createDir, // 删除看板
+  'POST /bd/dashboard/dir/create': createDir, // 创建目录
+  'POST /bd/dashboard/dir/modify': createDir, // 修改目录
+  'DELETE /bd/dashboard/dir/delete/:id': createDir, // 删除目录
+  'POST /bd/dashboard/board/create': createDir, // 创建看板
+  'POST /bd/dashboard/board/modify': createDir, // 修改看板
+  'DELETE /bd/dashboard/board/delete/:id': createDir, // 删除看板
 };

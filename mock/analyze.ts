@@ -779,13 +779,13 @@ const getPersonalDashboard = (req: any, res: any) => {
 };
 
 export default {
-  'GET /bgs/analysis/retain/events/dict': getEventList,
-  'GET /bgs/analysis/retain/behavior/dict': getBehaviorList,
-  'GET /bgs/analysis/dict/fields': getFieldList,
-  'GET /bgs/analysis/table/list': getTableList,
-  'GET /bgs/dashboard/analysis/detail/:id': getbackshow,
-  'GET /bgs/dashboard/dir/public/list': getPublicDashboardData,
-  'GET /bgs/dashboard/dir/team/list': getTeamDashboard,
-  'GET /bgs/dashboard/dir/personal/list': getPersonalDashboard,
-  'POST /bgs/retain/query': getRefreshList,
+  'GET /bd/analysis/retain/events/dict': getEventList,
+  'GET /bd/analysis/retain/behavior/dict': getBehaviorList,
+  'GET /bd/analysis/dict/fields': getFieldList,
+  'GET /bd/analysis/table/list': getTableList,
+  'GET /bd/dashboard/analysis/detail/:id': getbackshow,
+  'GET /bd/dashboard/dir/public/list': getPublicDashboardData,
+  'GET /bd/dashboard/dir/team/list': getTeamDashboard,
+  'GET /bd/dashboard/dir/personal/list': getPersonalDashboard,
+  'POST /bd/retain/query': getRefreshList,
 };
