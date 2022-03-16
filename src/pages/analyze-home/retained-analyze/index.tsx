@@ -341,6 +341,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
             </Panel>
           </Collapse>
         </div>
+
         <Spin spinning={loading}>
           {/* 测试功能 */}
           <div className={style['select-box']} style={{ marginTop: '10px' }}>

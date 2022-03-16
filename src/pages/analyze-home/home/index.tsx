@@ -15,9 +15,13 @@ const HomePage: React.FC = (props: any) => {
     <ConfigProvider locale={zhCN}>
       <div className={style['zy-column']}>
         <div className={style['title-box']}>
-          <Link to="/analyzehome/retained">
+          <Link to="/analyzehome/retained" style={{ marginRight: '16px' }}>
             <UsergroupDeleteOutlined style={{ marginRight: '8px', fontSize: '16px' }} />
             <span style={{ fontSize: '16px' }}>留存分析</span>
+          </Link>
+          <Link to="/analyzehome/advertising">
+            <UsergroupDeleteOutlined style={{ marginRight: '8px', fontSize: '16px' }} />
+            <span style={{ fontSize: '16px' }}>广告分析</span>
           </Link>
         </div>
 

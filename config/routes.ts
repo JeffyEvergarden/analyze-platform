@@ -35,6 +35,11 @@ export default [
         path: '/analyzehome/retained',
         component: './analyze-home/retained-analyze',
       },
+      {
+        name: '敏捷分析-广告分析',
+        path: '/analyzehome/advertising',
+        component: './analyze-home/advertising-analyze',
+      },
       { redirect: '/analyzehome/retained' },
       { component: './404' },
     ],
