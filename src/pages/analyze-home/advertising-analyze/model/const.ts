@@ -5,6 +5,34 @@ export const modelTypeList: any[] = [
   },
 ];
 
+//通用
+export const OperatorList: any[] = [
+  {
+    name: '求和',
+    value: 'SUM',
+  },
+  {
+    name: '最大',
+    value: 'MAX',
+  },
+  {
+    name: '最小',
+    value: 'MIN',
+  },
+  {
+    name: '次均',
+    value: 'AVG',
+  },
+  {
+    name: '人均',
+    value: 'DISTINCT_AVG',
+  },
+  {
+    name: '去重',
+    value: 'COUNT_DISTINCT',
+  },
+];
+
 export const statisticNumbericList: any[] = [
   {
     name: '求和',

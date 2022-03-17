@@ -28,7 +28,7 @@ const SaveRecordModal: React.FC<SaveRecordModalProps> = (props: any) => {
       }
       setModalVisible(true);
     },
-    close: (params: any) => {
+    close: () => {
       setModalVisible(false);
     },
   }));

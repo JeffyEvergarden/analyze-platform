@@ -8,6 +8,17 @@ const fetchFieldInfo = (req: any, res: any) => {
   return res.json(fieldInfo);
 };
 
+const getSqlInfo = (req: any, res: any) => {
+  return res.json({
+    code: '200000',
+    data: {
+      dataSource: '1__table',
+      sliceId: '1',
+    },
+    msg: '处理成功',
+  });
+};
+
 const metricsData = [
   {
     id: '1',
@@ -182,4 +193,5 @@ const fieldInfo = [
 export default {
   'GET /bd/analysis/dict/events': fetchMetricsInfo,
   'GET /bd/analysis/dict/fields': fetchFieldInfo,
+  'GET /bd/dashboard/analysis/config': getSqlInfo,
 };

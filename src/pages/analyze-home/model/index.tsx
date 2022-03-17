@@ -263,9 +263,6 @@ export const useListModel = () => {
   const getTable = async (obj: any, eventList: any) => {
     setLoading(true);
     let res: any = await getRefreshList(obj);
-    // console.log(res);
-    // console.log(eventList);
-    // res.status
 
     processEvent(res.data, obj, eventList);
     //groupFields

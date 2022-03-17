@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useModel, useLocation } from 'umi';
+import { useModel, useLocation, history } from 'umi';
 import {
   Space,
   Button,
@@ -12,7 +12,7 @@ import {
   ConfigProvider,
   message,
 } from 'antd';
-import { PlusCircleOutlined, DownloadOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 import zhCN from 'antd/lib/locale/zh_CN';
 import style from './style.less';
 // 业务组件
@@ -20,18 +20,27 @@ import StatisticsSearch from './components/statistic-search';
 import GlobalSearch from './components/global-search';
 import CompareSearch from './components/compare-search';
 import Table from './components/result-table';
+import EditModal from '../SaveModel/modal';
+import Condition from './components/common/Condition';
 
 // 共有数据源
 import { modelTypeList } from './model/const';
-import { useSearchParamsModel, useFilterModel, useAdvertiseModel } from './model';
+import { useSearchParamsModel, useFilterModel, useAdvertiseModel, useBaseModel } from './model';
+
+import { SubAtTransFormDataToSupersetRequestData } from '@/utils/utils';
+import { getModuleDetail } from './model';
+import { updateModuleData } from './model/api';
+import { saveAnalysisModule } from '../retained-analyze/model/api';
 
 const { Panel } = Collapse;
 const { Option } = Select;
 
 const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
-  const { expand = true, modelType } = props;
-  const location: any = useLocation();
-  const CollapseKey = expand ? ['1', '2', '3', '4'] : [];
+  const { type = 'create', id, dirId } = props;
+
+  const show = !(type == 'read');
+  const query: any = history.location.query || {};
+  const CollapseKey = ['1', '2', '3', '4'];
 
   const StatisticSearchRef = useRef(null);
   const GlobalSearchRef = useRef(null);
@@ -39,11 +48,21 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   const tableRef = useRef(null);
 
   // 搜索条件---选择分析模型
-  const [selectModelType, setSelectModelType] = useState<string>(modelType || '01');
+  const [selectModelType, setSelectModelType] = useState<string>('01');
 
   const { eventData, dictList, queryEvent, queryDict } = useSearchParamsModel();
+  const { baseInfo, getSqlBaseInfo } = useBaseModel();
   const { filterList, filterList2, setFilter } = useFilterModel();
-  const { activityData, dynamicColumns, symmary, getYNFList, clearData } = useAdvertiseModel();
+  const { loading, setLoading, activityData, dynamicColumns, summary, getYNFList, clearData } =
+    useAdvertiseModel();
+
+  const [moduleData, setModuleData] = useState<any>({});
+  const [moduleId, setModuleId] = useState<any>(id || query.moduleId || '');
+  const [moduleName, setModuleName] = useState<any>('');
+  const [moduleType, setModuleType] = useState<any>('sub_activity');
+  const [treeSelectId, setTreeSelectId] = useState<any>(dirId || query.dashboardId || '');
+  //记录看板Id
+  const [dashboardId, setDashboardId] = useState<any>(dirId || query.dashboardId || '');
 
   const addStatisticBt = (
     <>
@@ -75,38 +94,170 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
     </>
   );
 
-  // 查询
-  const refreshList = async (formEventList: any) => {
-    let statisticsSearch = await (StatisticSearchRef.current as any).getForm(); //初始行为数据处理为接口需要参数
-    let followUpSearch = await (GlobalSearchRef?.current as any).getForm(); //后续行为数据处理为接口需要参数
-    let compareSearch = await (CompareSearchRef.current as any).getForm(); //对比查看数据处理为接口需要参数
-    // console.log(statisticsSearch);
-    // console.log(followUpSearch);
-    // console.log(compareSearch);
-    let all = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
-    console.log(all);
-    // if (statisticsSearch && followUpSearch && compareSearch) {
-    //   console.log(eventList);
-    //   if (eventList.length) {
-    //     getTable(all, eventList);
-    //   } else {
-    //     getTable(all, formEventList);
-    //   }
-    // }
+  // 刷新数据
+  const refreshList = async () => {
+    try {
+      const [statisticsSearch, globalSearch, compareSearch] = await Promise.all([
+        (StatisticSearchRef.current as any).getForm(),
+        (GlobalSearchRef?.current as any).getForm(),
+        (CompareSearchRef.current as any).getForm(),
+      ]);
+      let flag = Object.keys(baseInfo).length > 0;
+      if (!flag) {
+        message.warning('获取不到数据库信息');
+        return null;
+      }
+
+      //汇总
+      const map: any = {}; // 别名map 对象 key=>alisa
+      if (!statisticsSearch.childrenList) {
+        return null;
+      } else {
+        //生成别名映射
+        statisticsSearch.childrenList.forEach((item: any, index: any) => {
+          if (item.alias) {
+            item.index = index;
+            const name = `${item.event || ''}_${item.attribute || ''}_${item.fnName || ''}`;
+            let i = 0;
+            map[index + '_' + name] = item.alias;
+          }
+        });
+      }
+      if (statisticsSearch.childrenList.length === 0) {
+        message.warning('请至少添加一个选择统计事件');
+        return null;
+      }
+      if (globalSearch.childrenList.length === 0) {
+        message.warning('请至少添加一个全局筛选事件');
+        return null;
+      }
+      const formDataList = SubAtTransFormDataToSupersetRequestData(
+        {
+          statisticData: statisticsSearch,
+          globalData: globalSearch,
+          compareData: compareSearch,
+        },
+        baseInfo,
+      );
+
+      getYNFList(formDataList, eventData, map, baseInfo);
+    } catch (e) {
+      message.error('查询错误');
+      setLoading(false);
+    }
+
     // //别名
     // setOtherName(all.otherName || all.defOtherName);
   };
+
+  const getModuleInfo = (moduleId: any) => {
+    getModuleDetail(moduleId).then((res) => {
+      if (res.resultCode === '000') {
+        setModuleData(JSON.parse(res.datas.analysisData));
+        setModuleName(res.datas.analysisName);
+      } else {
+        message.error(res?.resultMsg || '获取模板详情失败');
+      }
+    });
+  };
   const init = async () => {
     await queryEvent('sub_activity');
+    if (moduleId) {
+      await getModuleInfo(moduleId);
+    }
   };
   useEffect(() => {
+    getSqlBaseInfo({ theme: 'sub_activity' });
     queryDict();
     init();
   }, []);
 
+  useEffect(() => {
+    let flag = Object.keys(baseInfo).length > 0 && Object.keys(moduleData).length > 0;
+    let fake: any = null;
+    if (flag && type === 'read') {
+      fake = setTimeout(() => {
+        refreshList();
+      }, 300);
+    }
+    return () => {
+      clearTimeout(fake);
+    };
+  }, [baseInfo, moduleData]);
+
   const handleExport = useCallback(() => {
     (tableRef.current as any)?.exportExcel();
   }, []);
+
+  const editModalRef = useRef(null);
+  //打开编辑弹窗
+  const showSaveConfig = async () => {
+    const [statisticsSearch, globalSearch, compareSearch] = await Promise.all([
+      (StatisticSearchRef.current as any).getForm(),
+      (GlobalSearchRef?.current as any).getForm(),
+      (CompareSearchRef.current as any).getForm(),
+    ]);
+    (editModalRef.current as any).open({
+      treeSelectId,
+      moduleName,
+    });
+  };
+
+  //保存看板
+  const saveModuleData = async ({ moduleName, treeSelectId }: any) => {
+    const [statisticsSearch, globalSearch, compareSearch] = await Promise.all([
+      (StatisticSearchRef.current as any).getForm(),
+      (GlobalSearchRef?.current as any).getForm(),
+      (CompareSearchRef.current as any).getForm(),
+    ]);
+    if (statisticsSearch) {
+      statisticsSearch?.childrenList?.forEach((item: any) => {
+        item.edit = false;
+      });
+    }
+    const analysisData = JSON.stringify({
+      statisticsSearch,
+      globalSearch,
+      compareSearch,
+      moduleType,
+    });
+    console.log(analysisData);
+
+    const param: any = {
+      analysisData,
+      analysisBoard: treeSelectId, //选的看板
+      analysisName: moduleName, //自定义的看板名称
+      analysisType: 'event',
+    };
+
+    if (!moduleId || (moduleId && treeSelectId !== dashboardId)) {
+      saveAnalysisModule(param).then((res: any) => {
+        if (res.resultCode === '000') {
+          setModuleName(moduleName);
+          message.success('保存成功');
+          (editModalRef.current as any).close();
+          const info = res.datas || {};
+          setModuleId(info.analysisId || '');
+          setModuleId(info.analysisBoard || '');
+        } else {
+          message.error(res?.resultMsg);
+        }
+        (editModalRef.current as any).close();
+      });
+    } else {
+      //更新
+      param.analysisId = moduleId;
+      updateModuleData(param).then((res: any) => {
+        setModuleName(moduleName);
+        if (res.resultCode === '000') {
+          message.success('保存成功');
+          (editModalRef.current as any).close();
+        } else {
+          message.error('保存成功');
+        }
+      });
+    }
+  };
 
   return (
     <ConfigProvider locale={zhCN}>
@@ -159,19 +310,25 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
 
         <Spin spinning={false}>
           {/* 测试功能 */}
-          <div className={style['select-box']} style={{ marginTop: '10px' }}>
-            <Button type="primary" onClick={refreshList}>
-              查询
-            </Button>
-            {/* <Button onClick={save} style={{ marginLeft: '10px' }}>
-              保存到看板
-            </Button> */}
+          <Condition r-show={show}>
+            <div className={style['select-box']} style={{ marginTop: '10px' }}>
+              <Button
+                icon={<ReloadOutlined />}
+                type="primary"
+                onClick={refreshList}
+                loading={loading}
+              >
+                刷新数据
+              </Button>
+              <Button onClick={showSaveConfig} style={{ marginLeft: '10px' }}>
+                保存
+              </Button>
 
-            {/* <Button onClick={backData} style={{ marginLeft: '10px' }}>
+              {/* <Button onClick={backData} style={{ marginLeft: '10px' }}>
               回显
             </Button> */}
-          </div>
-
+            </div>
+          </Condition>
           <Card
             title={
               <div className={style['result']}>
@@ -186,11 +343,20 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
             style={{ marginTop: '10px' }}
           >
             <div className={style['table-box']} style={{ marginTop: '10px' }}>
-              <Table id={1} column={dynamicColumns} data={activityData} cref={tableRef} />
+              <Table
+                id={1}
+                column={dynamicColumns}
+                data={activityData}
+                cref={tableRef}
+                summary={summary}
+                operationType={type}
+              />
             </div>
           </Card>
         </Spin>
       </div>
+
+      <EditModal cref={editModalRef} onSave={saveModuleData}></EditModal>
     </ConfigProvider>
   );
 };

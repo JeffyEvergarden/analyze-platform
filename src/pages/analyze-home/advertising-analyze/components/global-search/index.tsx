@@ -81,7 +81,7 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
       async getForm() {
         const fieldsValue: any = await form.validateFields();
         console.log(fieldsValue);
-
+        return fieldsValue;
         // if (fieldsValue) {
         //   const formData = form.getFieldValue('childrenList');
         //   return {

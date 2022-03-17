@@ -1,21 +1,15 @@
-import React, { useEffect, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useImperativeHandle } from 'react';
 // 通用组件
-import {
-  Form,
-  Select,
-  Button,
-  Space,
-  ConfigProvider,
-  DatePicker,
-  Tooltip,
-  InputNumber,
-  message,
-} from 'antd';
-import { PlusSquareOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Form, Select, Space, DatePicker, InputNumber } from 'antd';
 import { timeUnitList } from '../../model/const';
 import moment from 'moment';
 
 const { RangePicker } = DatePicker;
+
+const map: any = {
+  day_id: '事件发生日期',
+  batch_date: '批次日期',
+};
 
 interface CompareSearchProps {
   cref: any;
@@ -29,12 +23,15 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   const [form] = Form.useForm();
   const { cref, list } = props;
 
+  const [selectDateType, setSelectDateVal] = useState<any>('');
+
   useImperativeHandle(cref, () => {
     return {
       async getForm() {
         try {
           const fieldsValue: any = await form.validateFields();
           console.log(fieldsValue);
+          return fieldsValue;
           // let strategy_name = form.getFieldValue('groupBy').find((item: any) => {
           //   return item == 'strategy_name';
           // });
@@ -89,6 +86,21 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
     };
   });
 
+  const onchangeDateVal = (text: any, item: any) => {
+    setSelectDateVal(text);
+    let groupVal = form.getFieldValue('groupBy');
+    let keys = Object.keys(map);
+    groupVal = groupVal.filter((item: any) => {
+      return !keys.includes(item);
+    });
+    if (groupVal) {
+      groupVal.push(text);
+    }
+    form.setFieldsValue({
+      groupBy: groupVal,
+    });
+  };
+
   // 初始化
   useEffect(() => {
     // 数据初始化
@@ -103,21 +115,37 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
         <Select style={{ width: '50%' }} mode="multiple" placeholder="请选择分组">
           {list.map((item: any, index: number) => {
             return (
-              <Option key={index} value={item.code}>
+              <Option key={item.code} value={item.code}>
                 {item.name}
               </Option>
             );
           })}
+          {selectDateType && (
+            <Option key={selectDateType} value={selectDateType}>
+              {map[selectDateType]}
+            </Option>
+          )}
         </Select>
       </FormItem>
 
       <Space align="baseline" style={{ marginRight: '32px' }}>
-        <FormItem name="dateRange" label="选择日期">
+        <FormItem name="dateType">
+          <Select
+            style={{ width: '150px' }}
+            placeholder="请选择日期类型"
+            onChange={onchangeDateVal}
+          >
+            <Option value={'day_id'}>事件发生日期</Option>
+            <Option value={'batch_date'}>批次日期</Option>
+          </Select>
+        </FormItem>
+
+        <FormItem name="daterange">
           <RangePicker
-            format="YYYY-MM-DD"
-            style={{ width: '300px' }}
-            placeholder={['开始日期', '结束日期']}
-            showTime={false}
+          // format="YYYY-MM-DD"
+          // style={{ width: '300px' }}
+          // placeholder={['开始日期', '结束日期']}
+          // showTime={false}
           ></RangePicker>
         </FormItem>
 
