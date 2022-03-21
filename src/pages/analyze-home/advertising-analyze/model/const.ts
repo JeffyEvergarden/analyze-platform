@@ -97,19 +97,19 @@ export const numberTypeList: any[] = [
 
 export const arrayTypeList: any[] = [
   {
-    value: 'equal',
+    value: '=',
     name: '等于',
   },
   {
-    value: 'notequal',
+    value: '!=',
     name: '不等于',
   },
   {
-    value: 'contain',
+    value: 'in',
     name: '包含',
   },
   {
-    value: 'not contain',
+    value: 'not in',
     name: '不包含',
   },
 ];
@@ -135,8 +135,40 @@ export const timeUnitList: any[] = [
     name: '小时',
     value: 'hour',
   },
+];
+
+// 标题列表
+export const TitleList: any[] = [
   {
-    name: '分钟',
-    value: 'minute',
+    key: 'activity_id',
+    label: '活动ID',
+  },
+  {
+    key: 'activity_name',
+    label: '活动名称',
+  },
+  {
+    key: 'prod_type',
+    label: '产品类型',
+  },
+  {
+    key: 'praticipation_type',
+    label: '参与方式',
+  },
+  {
+    key: 'prod_code',
+    label: '进件产品',
+  },
+  {
+    key: 'channel_num',
+    label: '渠道',
+  },
+  {
+    key: 'day_id',
+    label: '事件发生日期',
+  },
+  {
+    key: 'batch_date',
+    label: '批次日期',
   },
 ];

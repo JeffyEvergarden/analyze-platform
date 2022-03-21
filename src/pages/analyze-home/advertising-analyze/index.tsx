@@ -22,12 +22,12 @@ import CompareSearch from './components/compare-search';
 import Table from './components/result-table';
 import EditModal from '../SaveModel/modal';
 import Condition from './components/common/Condition';
-
+import ColumnModal from './components/column-modal';
 // 共有数据源
 import { modelTypeList } from './model/const';
 import { useSearchParamsModel, useFilterModel, useAdvertiseModel, useBaseModel } from './model';
 
-import { SubAtTransFormDataToSupersetRequestData } from '@/utils/utils';
+import { supersetRequestData } from './model/process';
 import { getModuleDetail } from './model';
 import { updateModuleData } from './model/api';
 import { saveAnalysisModule } from '../retained-analyze/model/api';
@@ -53,13 +53,25 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   const { eventData, dictList, queryEvent, queryDict } = useSearchParamsModel();
   const { baseInfo, getSqlBaseInfo } = useBaseModel();
   const { filterList, filterList2, setFilter } = useFilterModel();
-  const { loading, setLoading, activityData, dynamicColumns, summary, getYNFList, clearData } =
-    useAdvertiseModel();
+  const {
+    loading, // loading
+    setLoading,
+    diyColumn, // 自定义指标可选项
+    summary, // 总结数据
+    getAdvertiseList, // 获取数据
+    // clearData, // 清除数据
+    setProcessDiyColumn, // 已选择的自定义指标
+
+    hadProcessedColumn,
+    hadProcessedData,
+  } = useAdvertiseModel();
 
   const [moduleData, setModuleData] = useState<any>({});
   const [moduleId, setModuleId] = useState<any>(id || query.moduleId || '');
   const [moduleName, setModuleName] = useState<any>('');
+
   const [moduleType, setModuleType] = useState<any>('sub_activity');
+
   const [treeSelectId, setTreeSelectId] = useState<any>(dirId || query.dashboardId || '');
   //记录看板Id
   const [dashboardId, setDashboardId] = useState<any>(dirId || query.dashboardId || '');
@@ -131,7 +143,9 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         message.warning('请至少添加一个全局筛选事件');
         return null;
       }
-      const formDataList = SubAtTransFormDataToSupersetRequestData(
+
+      // 加工url参数
+      const formDataList = supersetRequestData(
         {
           statisticData: statisticsSearch,
           globalData: globalSearch,
@@ -139,8 +153,8 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         },
         baseInfo,
       );
-
-      getYNFList(formDataList, eventData, map, baseInfo);
+      // 查询数据
+      getAdvertiseList(formDataList, eventData, map, baseInfo);
     } catch (e) {
       message.error('查询错误');
       setLoading(false);
@@ -160,14 +174,16 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
       }
     });
   };
+
   const init = async () => {
-    await queryEvent('sub_activity');
+    await queryEvent('sub_activity'); // todo 要换
     if (moduleId) {
       await getModuleInfo(moduleId);
     }
   };
+
   useEffect(() => {
-    getSqlBaseInfo({ theme: 'sub_activity' });
+    getSqlBaseInfo({ theme: 'sub_activity' }); // todo 要换
     queryDict();
     init();
   }, []);
@@ -189,6 +205,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
     (tableRef.current as any)?.exportExcel();
   }, []);
 
+  // 编辑弹窗的ref
   const editModalRef = useRef(null);
   //打开编辑弹窗
   const showSaveConfig = async () => {
@@ -221,6 +238,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
       compareSearch,
       moduleType,
     });
+    console.log('查询参数:----------');
     console.log(analysisData);
 
     const param: any = {
@@ -257,6 +275,25 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         }
       });
     }
+  };
+
+  // 添加自定义弹窗 columnModalRef
+  const columnModalRef = useRef(null);
+  const openModal = () => {
+    if (hadProcessedData?.length < 1) {
+      message.warning('当前查询暂无数据');
+      return null;
+    }
+    if (diyColumn?.length < 1) {
+      message.warning('请先筛选查询数据再添加自定义指标');
+      return null;
+    }
+    (columnModalRef.current as any).open();
+  };
+
+  const confirmDIYColumn = (val: any) => {
+    console.log(val);
+    setProcessDiyColumn(val?.list || []);
   };
 
   return (
@@ -337,16 +374,23 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
                   <Divider type="vertical"></Divider>
                   <DownloadOutlined onClick={handleExport}></DownloadOutlined>
                 </div>
-                {/* <div>{otherName}</div> */}
+                <Condition r-if={show}>
+                  {/* 非只读模式 */}
+                  <div>
+                    <Button type="link" icon={<PlusCircleOutlined />} onClick={openModal}>
+                      添加自定义计算列
+                    </Button>
+                  </div>
+                </Condition>
               </div>
             }
             style={{ marginTop: '10px' }}
           >
             <div className={style['table-box']} style={{ marginTop: '10px' }}>
               <Table
-                id={1}
-                column={dynamicColumns}
-                data={activityData}
+                id={'advertise-table'}
+                column={hadProcessedColumn}
+                data={hadProcessedData}
                 cref={tableRef}
                 summary={summary}
                 operationType={type}
@@ -355,6 +399,8 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
           </Card>
         </Spin>
       </div>
+
+      <ColumnModal cref={columnModalRef} list={diyColumn} confirm={confirmDIYColumn}></ColumnModal>
 
       <EditModal cref={editModalRef} onSave={saveModuleData}></EditModal>
     </ConfigProvider>

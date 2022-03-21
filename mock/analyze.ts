@@ -6,7 +6,7 @@ const getEventList = (req: any, res: any) => {
   res.json([
     {
       id: '1',
-      code: 'LQHTXCG',
+      code: 'fate',
       name: '命运冠位指定',
       associatedFields: [
         {
@@ -89,11 +89,33 @@ const getEventList = (req: any, res: any) => {
           dictCode: undefined,
           dictValues: [],
         },
+        {
+          canGroupBy: '1',
+          id: '5',
+          code: 'activity_name',
+          name: '活动名称',
+          dataType: 'string',
+          dictCode: undefined,
+          dictValues: [],
+        },
+        {
+          canGroupBy: '1',
+          id: '6',
+          code: 'activity_id',
+          name: '活动ID',
+          dataType: 'string',
+          dictCode: undefined,
+          dictValues: [],
+        },
       ],
       metrics: [
         {
           name: '用户数',
           expression: '用户数',
+        },
+        {
+          name: '进件笔数',
+          expression: '进件笔数',
         },
         {
           name: '提现成功人数',
@@ -171,6 +193,10 @@ const getEventList = (req: any, res: any) => {
         {
           name: '用户数',
           expression: '用户数',
+        },
+        {
+          name: '进件笔数',
+          expression: '进件笔数',
         },
         {
           name: '提现成功人数',
@@ -780,6 +806,7 @@ const getPersonalDashboard = (req: any, res: any) => {
 
 export default {
   'GET /bd/analysis/retain/events/dict': getEventList,
+  'GET /bd/analysis/dict/events': getEventList,
   'GET /bd/analysis/retain/behavior/dict': getBehaviorList,
   'GET /bd/analysis/dict/fields': getFieldList,
   'GET /bd/analysis/table/list': getTableList,

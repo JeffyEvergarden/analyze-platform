@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import {
   fetchMetricsInfo,
   fetchFieldInfo,
@@ -8,10 +8,12 @@ import {
   fetchSqlBaseInfo,
   getModuleData,
 } from './api';
-import { OperatorList } from './const';
+import { OperatorList, TitleList } from './const';
 
+// 加密参数
 const sha256 = require('crypto-js/sha256');
 
+// 获取日期
 function getCurrentData(da: Date) {
   const date = da || new Date();
   const year = date.getFullYear();
@@ -20,6 +22,7 @@ function getCurrentData(da: Date) {
   return `${year}-${month}-${day}`;
 }
 
+// 查询下拉参数
 export const useSearchParamsModel = () => {
   const [eDataFinish, setEDataFinish] = useState<Boolean>(false);
   const [eventData, setEventData] = useState<any[]>([]);
@@ -56,6 +59,7 @@ export const useSearchParamsModel = () => {
   };
 };
 
+// 取交集和并集
 export const useFilterModel = () => {
   const [filterList, setFilterList] = useState<any[]>([]);
   const [filterList2, setFilterList2] = useState<any[]>([]);
@@ -85,6 +89,8 @@ export const useFilterModel = () => {
 
     setFilterList([...resultArr]);
     setFilterList2(compareArr);
+
+    console.log(resultArr, compareArr);
   };
 
   return {
@@ -94,13 +100,77 @@ export const useFilterModel = () => {
   };
 };
 
+// 排序方式 // 列名
+const sorter = (columnName: any) => {
+  return (a: any, b: any) => {
+    // 默认排序方式  数字大小 -> 活动名称
+    let ta = a['activity_name'];
+    let tb = b['activity_name'];
+    if (ta !== tb) {
+      return ta > tb ? 1 : -1;
+    }
+    a = a[columnName];
+    b = b[columnName];
+    let na = Number(a);
+    let nb = Number(b);
+    if (!isNaN(na) && !isNaN(nb)) {
+      return na - nb;
+    } else if (!isNaN(na) || !isNaN(nb)) {
+      return !isNaN(na) ? 1 : -1;
+    } else {
+      return a >= b ? 1 : -1;
+    }
+  };
+};
+
+// 数值的常规渲染
+const normalRender = (text: any) => {
+  // 渲染方式
+  if (text instanceof Date) {
+    return getCurrentData(text); // 时间
+  } else if (typeof text !== 'number') {
+    return text;
+  } else {
+    text = text || 0;
+    let str1 = Number(text.toFixed(0));
+    let str2 = Number(text.toFixed(2));
+    let str = Number(str1) === Number(str2) ? str1 : str2;
+    return str;
+  }
+};
+
+const numberRender = (text: any) => {
+  if (isNaN(text)) {
+    return '-';
+  } else {
+    return normalRender(Number(text));
+  }
+};
+
+const percentRender = (text: any) => {
+  if (isNaN(text)) {
+    return '-';
+  } else {
+    return (Number(text) * 100).toFixed(2) + '%';
+  }
+};
+
+// 获取广告分析数据
 export const useAdvertiseModel = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const fake = useRef<any>({}); //记录id
 
   //表格数据
-  const [activityData, setActivityData] = useState<any[]>([]);
-  const [dynamicColumns, setDynamicColumns] = useState<any[]>([]);
+  const [normalData, setActivityData] = useState<any[]>([]); // 正常表格数据 副本
+  const [dynamicColumns, setDynamicColumns] = useState<any[]>([]); // 正常列 副本
+
+  const [diyColumn, setDiyColumn] = useState<any[]>([]); // 可以去选择的指标
+
+  const [processDiyColumn, setProcessDiyColumn] = useState<any[]>([]); // 已选择的指标
+
+  const [hadProcessedColumn, setHadProcessedColumn] = useState<any[]>([]); // 已加工列名
+
+  const [hadProcessedData, setHadProcessedData] = useState<any[]>([]); // 已加工数据
 
   //合计list
   const [summary, setSummary] = useState<any>({});
@@ -110,7 +180,8 @@ export const useAdvertiseModel = () => {
     setDynamicColumns([]);
   };
 
-  const fetchYNFInfo = async (formDataList: any, baseInfo?: any) => {
+  // 2.发起查询信号
+  const startSendMsg = async (formDataList: any, baseInfo?: any) => {
     const id = sha256(Date.now().toString()).toString().slice(1, 17);
     fake.current.id = id;
     const tempFormDataList: any[] = JSON.parse(JSON.stringify(formDataList));
@@ -123,9 +194,11 @@ export const useAdvertiseModel = () => {
     return await sendMsg(data, { form_data: { slice_id: baseInfo.sliceId } });
   };
 
-  const processYNFList = (resList: any = [], eventData: any = [], nameMap: any = {}) => {
+  // 5.加工表格
+  const processResponseList = (resList: any = [], eventData: any = [], nameMap: any = {}) => {
     try {
       const dynamicTableColumn: any[] = [];
+      const diyColumnList: any[] = [];
       const objList: any[] = [];
       const map: any = [];
       let groupby: any[] = [];
@@ -135,11 +208,13 @@ export const useAdvertiseModel = () => {
         }
         const formData = resData.form_data;
         groupby = formData.groupby || [];
+        // 指标名称
         const [, metric] = formData.metrics;
         formData?.groupby.map((item: any) => {
           if (map.indexOf(item) === -1) {
             map.push(item);
             const extra: any = {};
+            // 找到世间默认为降序
             if (['day_id', 'batch_date'].indexOf(item) > -1) {
               extra.defaultSortOrder = 'descend';
             }
@@ -148,40 +223,11 @@ export const useAdvertiseModel = () => {
             }
             dynamicTableColumn.push({
               ...extra,
-              title: [{ label: '' }].find((i: any) => i.key === item)?.label || '',
+              title: TitleList.find((i: any) => i.key === item)?.label || '',
               dataIndex: item,
               sortDirection: ['descend', 'ascend'],
-              sorter: (a: any, b: any) => {
-                let ta = a['activity_name'];
-                let tb = b['activity_name'];
-                if (ta !== tb) {
-                  return ta > tb ? 1 : -1;
-                }
-                a = a[item];
-                b = b[item];
-                let na = Number(a);
-                let nb = Number(b);
-                if (!isNaN(na) && !isNaN(nb)) {
-                  return na - nb;
-                } else if (!isNaN(na) || !isNaN(nb)) {
-                  return !isNaN(na) ? 1 : -1;
-                } else {
-                  return a >= b ? 1 : -1;
-                }
-              },
-              render: (text: any) => {
-                if (text instanceof Date) {
-                  return getCurrentData(text);
-                } else if (typeof text !== 'number') {
-                  return text;
-                } else {
-                  text = text || 0;
-                  let str1 = Number(text.toFixed(0));
-                  let str2 = Number(text.toFixed(2));
-                  let str = Number(str1) === Number(str2) ? str1 : str2;
-                  return str;
-                }
-              },
+              sorter: sorter(item),
+              render: normalRender,
             });
           }
         });
@@ -256,37 +302,12 @@ export const useAdvertiseModel = () => {
             title: nameMap?.[titleKey] || titleRealName,
             dataIndex: titleName,
             sortDirection: ['descend', 'ascend'],
-            sorter: (a: any, b: any) => {
-              let ta = a['activity_name'];
-              let tb = b['activity_name'];
-              if (ta !== tb) {
-                return ta > tb ? 1 : -1;
-              }
-              a = a[titleName];
-              b = b[titleName];
-              let na = Number(a);
-              let nb = Number(b);
-              if (!isNaN(na) && !isNaN(nb)) {
-                return na - nb;
-              } else if (!isNaN(na) || !isNaN(nb)) {
-                return !isNaN(na) ? 1 : -1;
-              } else {
-                return a >= b ? 1 : -1;
-              }
-            },
-            render: (text: any) => {
-              if (text instanceof Date) {
-                return getCurrentData(text);
-              } else if (typeof text !== 'number') {
-                return text;
-              } else {
-                text = text || 0;
-                let str1 = Number(text.toFixed(0));
-                let str2 = Number(text.toFixed(2));
-                let str = Number(str1) === Number(str2) ? str1 : str2;
-                return str;
-              }
-            },
+            sorter: sorter(titleName),
+            render: normalRender,
+          });
+          diyColumnList.push({
+            value: titleName,
+            label: nameMap?.[titleKey] || titleRealName,
           });
         }
         resData?.data?.records?.map((r: any, rIndex: any) => {
@@ -317,8 +338,10 @@ export const useAdvertiseModel = () => {
           }
         });
       });
+
       //去重 把重复的列过滤
       setDynamicColumns(dynamicTableColumn); //去重
+      setDiyColumn(diyColumnList); // diy可选列
       let summaryObj: any = {
         activity_name: '合计',
       };
@@ -335,45 +358,109 @@ export const useAdvertiseModel = () => {
           summaryObj[name] += typeof obItem[name] === 'number' ? obItem[name] : 0;
         });
       });
+
       setSummary(summaryObj);
+      console.log('汇总数据: -----');
+      console.log(objList);
+      console.log('自定义指标: -----');
+      console.log(diyColumnList);
 
       return objList;
     } catch (e) {
+      console.log(e);
       clearData();
       return [];
     }
   };
+
+  // todo
+  const processDepByDivColumns = (columns: any[], tableData: any[]) => {
+    const newColumns: any[] = [...columns]; // 新列
+
+    // 自定义 ------
+    processDiyColumn.forEach((item: any, index: number) => {
+      let render: any = numberRender;
+      if (item.condition === '÷') {
+        render = percentRender;
+      }
+
+      newColumns.push({
+        title: item.alias,
+        dataIndex: '_diy_' + index,
+        sortDirection: ['descend', 'ascend'],
+        sorter: sorter('_diy_' + index),
+        render: render,
+        width: 150,
+      });
+    });
+
+    // 新数据 ------
+    const newData: any[] = tableData.map((item: any, i: number) => {
+      let obj: any = {};
+      processDiyColumn.forEach((_column: any, index: number) => {
+        let val1: any = item[_column.compare1];
+        let val2: any = item[_column.compare2];
+        let condition = _column.condition;
+        if (!isNaN(val1) && !isNaN(val2)) {
+          if (condition === '+') {
+            obj['_diy_' + index] = Number(val1) + Number(val2);
+          } else if (condition === '-') {
+            obj['_diy_' + index] = Number(val1) - Number(val2);
+          } else if (condition === '÷') {
+            obj['_diy_' + index] = Number(val2) === 0 ? undefined : Number(val1) / Number(val2);
+          } else if (condition === 'x') {
+            obj['_diy_' + index] = Number(val1) * Number(val2);
+          }
+        }
+      });
+      return {
+        ...item,
+        ...obj,
+      };
+    });
+
+    return [newColumns, newData];
+    // -------
+  };
+
+  // 4.加工表格 (做基本判空处理)
   const processList = (resList: any) => {
     if (!Array.isArray(resList)) {
       setLoading(false);
       clearData();
+      message.warning('暂无数据');
       return;
     }
-    const frontActivityList: any[] = processYNFList(
+    const frontActivityList: any[] = processResponseList(
       resList || [],
       fake.current.eventData,
-      fake.current.nameMap,
+      fake.current.nameMap, // 别名
     );
     setActivityData(frontActivityList);
     setLoading(false);
   };
+
+  // 3.开始轮询
   const startLoop = (time: any) => {
-    if (time > 12) {
+    if (time > 20) {
+      // 当这次查询时长超过20s取消
       setLoading(false);
-      message.warning('超时异常');
+      message.warning('查询超时异常');
       return;
     }
     if (!fake.current.id) {
+      // huo
       setLoading(false);
-      message.warning('获取不到异步id');
+      message.warning('获取不到异步请求信号id');
       return;
     }
     fake.current.timeFn = setTimeout(async () => {
       let res: any = await getRequsetList({ id: fake.current.id });
       if (res.resultCode == '000') {
-        processList(res?.datas || []);
+        processList(res?.datas || []); // 触发回调加工
         clearTimeout(fake.current.timeFn);
       } else if (res.resultCode == '439') {
+        // 439 待机回调中
         startLoop(time + 2);
       } else {
         message.error(res?.resultMsg || '未知系统异常');
@@ -381,7 +468,11 @@ export const useAdvertiseModel = () => {
       }
     }, time * 1000);
   };
-  const getYNFList = async (
+
+  // 1.主方法
+  // 调用 查询信号接口
+  // 发起 回调轮询
+  const getAdvertiseList = async (
     formDataList: any = [],
     eventData: any = [],
     nameMap: any = {},
@@ -390,21 +481,33 @@ export const useAdvertiseModel = () => {
     fake.current.eventData = eventData;
     fake.current.nameMap = nameMap;
     setLoading(true);
-    const data: any = await fetchYNFInfo(formDataList, baseInfo);
+    const data: any = await startSendMsg(formDataList, baseInfo);
     startLoop(3);
   };
+
+  useEffect(() => {
+    const [columns, datas] = processDepByDivColumns(dynamicColumns, normalData);
+    setHadProcessedColumn(columns);
+    setHadProcessedData(datas);
+  }, [processDiyColumn, dynamicColumns, normalData]);
 
   return {
     loading,
     setLoading,
-    activityData,
+    normalData,
     dynamicColumns,
+    diyColumn,
     summary,
-    getYNFList,
+    getAdvertiseList,
     clearData,
+    processDiyColumn, // 自定义指标
+    setProcessDiyColumn,
+    hadProcessedColumn,
+    hadProcessedData,
   };
 };
 
+// 获取基础信息 dataSource 和 sliceId
 export const useBaseModel = () => {
   const [baseInfo, setBaseInfo] = useState<any>({});
   const getSqlBaseInfo = async (params: any) => {
@@ -426,6 +529,7 @@ export const useBaseModel = () => {
   };
 };
 
+// 获取详情, 回显示数据
 export async function getModuleDetail(id: string) {
   return getModuleData(id);
 }

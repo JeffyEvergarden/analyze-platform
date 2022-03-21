@@ -17,6 +17,7 @@ export function toFixed2(x: any) {
   return s_x;
 }
 
+// 时间单位 --> 秒数
 const changeWindowsCount = (count: any, unit: any) => {
   if (unit === 'day') {
     return Number(count) * 24 * 60 * 60;
@@ -29,7 +30,9 @@ const changeWindowsCount = (count: any, unit: any) => {
   }
 };
 
-const formYNFInit = ({ statisticData, globalData, compareData, rawData }: any) => {
+// --------------------
+// 加工参数
+const processRequestForm = ({ statisticData, globalData, compareData, rawData }: any) => {
   const formDataList: any[] = [];
   statisticData?.childrenList?.forEach((item: any) => {
     const obj = JSON.parse(JSON.stringify(rawData));
@@ -184,8 +187,8 @@ const formYNFInit = ({ statisticData, globalData, compareData, rawData }: any) =
   });
   return formDataList;
 };
-
-export const SubAtTransFormDataToSupersetRequestData = (
+// 加工superset参数
+export const supersetRequestData = (
   { statisticData, globalData, compareData }: any,
   baseInfo: any,
 ) => {
@@ -195,7 +198,7 @@ export const SubAtTransFormDataToSupersetRequestData = (
     viz_type: 'table',
     url_params: {},
     time_range_endpoints: ['inclusive', 'inclusive'],
-    granularity_sqla: compareData.dateType || 'day_id',
+    granularity_sqla: compareData.dateType || 'day_id', // 时间纬度
     time_grain_sqla: '', //事件维度
     time_range: '',
     metrics: ['order_count'],
@@ -211,7 +214,7 @@ export const SubAtTransFormDataToSupersetRequestData = (
     send_time_range: false,
     show_legend: true,
   };
-  const formDataList = formYNFInit({
+  const formDataList = processRequestForm({
     statisticData,
     globalData,
     compareData,

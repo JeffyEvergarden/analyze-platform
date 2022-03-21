@@ -141,10 +141,7 @@ const ResultTable: React.FC<any> = (props: TableProps) => {
       dataSource={data}
       columns={column}
       pagination={{ current, onChange: changePage }}
-      rowKey={(record) => {
-        return `${record.tableIndex}`;
-        // return record;
-      }}
+      rowKey={'index'}
       summary={summaryHtml}
       scroll={extra}
     ></Table>

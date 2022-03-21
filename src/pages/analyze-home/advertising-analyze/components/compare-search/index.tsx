@@ -105,7 +105,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   useEffect(() => {
     // 数据初始化
     form.setFieldsValue({
-      groupBy: ['strategy_name'],
+      groupBy: ['activity_name'],
     });
   }, []);
 

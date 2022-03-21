@@ -124,29 +124,6 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
         const fieldsValue: any = await form.validateFields();
         console.log(fieldsValue);
         return fieldsValue;
-        // if (fieldsValue) {
-        //   const formData = form.getFieldValue('childrenList');
-        //   return {
-        //     initEvent: formData[0]?.event,
-        //     initMetric: formData[0]?.attribute,
-        //     associatedField: formData[0]?.associatedField,
-        //     relation: formData[0]?.relation,
-        //     conditions: formData[0]?.innerList?.map((item: any) => {
-        //       return {
-        //         field: item.attr,
-        //         function: item.op,
-        //         params: Array.isArray(item.value)
-        //           ? item.value.join()
-        //           : item.value.format
-        //           ? item.value.format('YYYY-MM-DD')
-        //           : item.value,
-        //         dataType: item.dataType,
-        //       };
-        //     }),
-        //   };
-        // } else {
-        //   return false;
-        // }
       },
       //获取当前表单选择数据
       async getFormData() {
@@ -188,7 +165,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     const inUseFields: any[] = [];
     const metrics: any[] =
       eventDataList.find((item: any) => item.code == tempChildrenList?.event)?.metrics || [];
-    console.log(metrics);
+    // console.log(metrics);
 
     return metrics.map((item: any, index: any) => {
       return (
