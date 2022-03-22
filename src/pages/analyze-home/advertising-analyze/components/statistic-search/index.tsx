@@ -135,7 +135,9 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       },
       //数据回显
       async setForm(obj: any) {
-        form.setFieldsValue({ childrenList: [obj] });
+        form.setFieldsValue(obj);
+        const list = form.getFieldValue('childrenList') || [];
+        setFilter?.(list, eventList);
       },
       addStatistic: () => {
         addOther();
@@ -219,11 +221,9 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
   useEffect(() => {
     if (eventList?.length > 0) {
-      if (initData?.childrenList.length > 0) {
-        form.setFieldsValue({
-          childrenList: [...initData.chlidrenList],
-        });
-        setFilter?.(form.getFieldValue('childrenList'), eventList);
+      const list = form.getFieldValue('childrenList') || [];
+      if (list?.length > 0) {
+        setFilter?.(list, eventList);
       } else {
         addOther();
       }

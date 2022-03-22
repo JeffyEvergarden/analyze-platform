@@ -18,6 +18,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['off'],
     '@typescript-eslint/dot-notation': ['off'],
     '@typescript-eslint/no-shadow': ['off'],
+    '@typescript-eslint/no-loop-func': ['off'],
     'spaced-comment': 'off',
     'object-shorthand': 'off',
     'prefer-template': 'off',

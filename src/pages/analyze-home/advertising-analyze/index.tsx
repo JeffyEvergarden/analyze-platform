@@ -11,6 +11,7 @@ import {
   Spin,
   ConfigProvider,
   message,
+  Tag,
 } from 'antd';
 import { PlusCircleOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 import zhCN from 'antd/lib/locale/zh_CN';
@@ -31,6 +32,7 @@ import { supersetRequestData } from './model/process';
 import { getModuleDetail } from './model';
 import { updateModuleData } from './model/api';
 import { saveAnalysisModule } from '../retained-analyze/model/api';
+import moment from 'moment';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -42,9 +44,9 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   const query: any = history.location.query || {};
   const CollapseKey = ['1', '2', '3', '4'];
 
-  const StatisticSearchRef = useRef(null);
-  const GlobalSearchRef = useRef(null);
-  const CompareSearchRef = useRef(null);
+  const StatisticSearchRef = useRef<any>(null);
+  const GlobalSearchRef = useRef<any>(null);
+  const CompareSearchRef = useRef<any>(null);
   const tableRef = useRef(null);
 
   // 搜索条件---选择分析模型
@@ -57,11 +59,12 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
     loading, // loading
     setLoading,
     diyColumn, // 自定义指标可选项
+    processDiyColumn,
     summary, // 总结数据
     getAdvertiseList, // 获取数据
     // clearData, // 清除数据
     setProcessDiyColumn, // 已选择的自定义指标
-
+    setTitleList,
     hadProcessedColumn,
     hadProcessedData,
   } = useAdvertiseModel();
@@ -114,6 +117,9 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         (GlobalSearchRef?.current as any).getForm(),
         (CompareSearchRef.current as any).getForm(),
       ]);
+
+      console.log(statisticsSearch, globalSearch, compareSearch);
+
       let flag = Object.keys(baseInfo).length > 0;
       if (!flag) {
         message.warning('获取不到数据库信息');
@@ -164,10 +170,33 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
     // setOtherName(all.otherName || all.defOtherName);
   };
 
-  const getModuleInfo = (moduleId: any) => {
-    getModuleDetail(moduleId).then((res) => {
+  const getModuleInfo = (moduleId: any, type?: any) => {
+    getModuleDetail(moduleId, type).then((res) => {
       if (res.resultCode === '000') {
-        setModuleData(JSON.parse(res.datas.analysisData));
+        let moduleData = JSON.parse(res?.datas?.analysisData || '{}');
+        StatisticSearchRef.current.setForm(moduleData?.statisticsSearch);
+        GlobalSearchRef.current.setForm(moduleData?.globalSearch);
+        let _compareSearch = moduleData?.compareSearch || {};
+        _compareSearch = {
+          ..._compareSearch,
+          daterange: _compareSearch?.daterange?.map?.((item: any) => {
+            if (typeof item === 'string') {
+              try {
+                let str = moment(item);
+                return str;
+              } catch (e) {
+                return undefined;
+              }
+            } else {
+              return undefined;
+            }
+          }),
+        };
+
+        CompareSearchRef.current.setForm(_compareSearch);
+        let arr = moduleData?.processDiyColumn;
+        setProcessDiyColumn(Array.isArray(arr) ? arr : []);
+        setModuleData(moduleData);
         setModuleName(res.datas.analysisName);
       } else {
         message.error(res?.resultMsg || '获取模板详情失败');
@@ -178,7 +207,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   const init = async () => {
     await getPreConfig('sub_activity_2'); // 获取两边数据
     if (moduleId) {
-      await getModuleInfo(moduleId);
+      await getModuleInfo(moduleId, 'advertise');
     }
   };
 
@@ -208,6 +237,10 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   const editModalRef = useRef(null);
   //打开编辑弹窗
   const showSaveConfig = async () => {
+    if (hadProcessedData?.length === 0) {
+      message.warning('请先进行数据查询,再进行保存');
+      return null;
+    }
     const [statisticsSearch, globalSearch, compareSearch] = await Promise.all([
       (StatisticSearchRef.current as any).getForm(),
       (GlobalSearchRef?.current as any).getForm(),
@@ -231,12 +264,22 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         item.edit = false;
       });
     }
+    //处理日期
+    let _compareSearch = {
+      ...compareSearch,
+      daterange:
+        compareSearch?.daterange?.map?.((item: any) => {
+          return item?.format?.() || undefined;
+        }) || [],
+    };
     const analysisData = JSON.stringify({
       statisticsSearch,
       globalSearch,
-      compareSearch,
-      moduleType,
+      compareSearch: _compareSearch,
+      moduleType, // 查表类型
+      processDiyColumn, // 加工列
     });
+
     console.log('查询参数:----------');
     console.log(analysisData);
 
@@ -295,53 +338,40 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
     setProcessDiyColumn(val?.list || []);
   };
 
+  // 设置标题
+  const setTitle = (list: any[]) => {
+    if (Array.isArray(list)) {
+      setTitleList(list);
+    }
+  };
+
   return (
     <ConfigProvider locale={zhCN}>
       <div className={style['anaylze-page']}>
         {/* 查询条件 */}
         <div className={style['search-box']}>
-          <Collapse defaultActiveKey={CollapseKey} ghost>
-            {/* 选择分析模型 */}
-            <Panel header="选择分析模型" key="1">
-              <Space>
-                <div className={style['zy-row']}>
-                  <span className="label">选择分析模型：</span>
-                  <Select
-                    value={selectModelType}
-                    style={{ width: '250px' }}
-                    placeholder="请选择分析模型"
-                  >
-                    {modelTypeList.map((item: any) => {
-                      return (
-                        <Option value={item.value} key={item.value} disabled={item.disabled}>
-                          {item.name}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </div>
-              </Space>
-            </Panel>
+          <Condition r-show={show}>
+            <Collapse defaultActiveKey={CollapseKey} ghost>
+              {/* 选择统计事件 */}
+              <Panel header="选择统计事件" key="2" extra={addStatisticBt}>
+                <StatisticsSearch
+                  cref={StatisticSearchRef}
+                  fieldMap={fieldMap}
+                  eventList={eventList}
+                  setFilter={setFilter}
+                />
+              </Panel>
 
-            {/* 选择统计事件 */}
-            <Panel header="选择统计事件" key="2" extra={addStatisticBt}>
-              <StatisticsSearch
-                cref={StatisticSearchRef}
-                fieldMap={fieldMap}
-                eventList={eventList}
-                setFilter={setFilter}
-              />
-            </Panel>
+              {/* 全局筛选 */}
+              <Panel header="全局筛选" key="3" extra={addGlobalBt}>
+                <GlobalSearch cref={GlobalSearchRef} list={filterList} fieldMap={fieldMap} />
+              </Panel>
 
-            {/* 全局筛选 */}
-            <Panel header="全局筛选" key="3" extra={addGlobalBt}>
-              <GlobalSearch cref={GlobalSearchRef} list={filterList} fieldMap={fieldMap} />
-            </Panel>
-
-            <Panel header="对比查看" key="4">
-              <CompareSearch cref={CompareSearchRef} list={unionList} />
-            </Panel>
-          </Collapse>
+              <Panel header="对比查看" key="4">
+                <CompareSearch cref={CompareSearchRef} list={unionList} setFilter={setTitle} />
+              </Panel>
+            </Collapse>
+          </Condition>
         </div>
 
         <Spin spinning={false}>
@@ -373,14 +403,31 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
                   <Divider type="vertical"></Divider>
                   <DownloadOutlined onClick={handleExport}></DownloadOutlined>
                 </div>
-                <Condition r-if={show}>
-                  {/* 非只读模式 */}
-                  <div>
+
+                {/* 非只读模式 */}
+                <div>
+                  {/* 加工列 */}
+                  {processDiyColumn.map((item: any, index: number) => {
+                    return (
+                      <Tag
+                        color="gold"
+                        closable
+                        key={index}
+                        onClose={() => {
+                          processDiyColumn.splice(index, 1);
+                          setProcessDiyColumn([...processDiyColumn]);
+                        }}
+                      >
+                        {item.alias}
+                      </Tag>
+                    );
+                  })}
+                  <Condition r-if={show}>
                     <Button type="link" icon={<PlusCircleOutlined />} onClick={openModal}>
                       添加自定义计算列
                     </Button>
-                  </div>
-                </Condition>
+                  </Condition>
+                </div>
               </div>
             }
             style={{ marginTop: '10px' }}

@@ -236,7 +236,10 @@ export const useAdvertiseModel = () => {
   const fake = useRef<any>({}); //记录id
 
   //表格数据
+  const [titleList, setTitleList] = useState<any[]>([]); // 列标题列表
+
   const [normalData, setActivityData] = useState<any[]>([]); // 正常表格数据 副本
+
   const [dynamicColumns, setDynamicColumns] = useState<any[]>([]); // 正常列 副本
 
   const [diyColumn, setDiyColumn] = useState<any[]>([]); // 可以去选择的指标
@@ -298,7 +301,7 @@ export const useAdvertiseModel = () => {
             }
             dynamicTableColumn.push({
               ...extra,
-              title: TitleList.find((i: any) => i.key === item)?.label || '',
+              title: titleList.find((i: any) => i.value === item)?.name || '',
               dataIndex: item,
               sortDirection: ['descend', 'ascend'],
               sorter: sorter(item),
@@ -577,6 +580,7 @@ export const useAdvertiseModel = () => {
     clearData,
     processDiyColumn, // 自定义指标
     setProcessDiyColumn,
+    setTitleList, // 列名列表
     hadProcessedColumn,
     hadProcessedData,
   };
@@ -605,6 +609,6 @@ export const useBaseModel = () => {
 };
 
 // 获取详情, 回显示数据
-export async function getModuleDetail(id: string) {
-  return getModuleData(id);
+export async function getModuleDetail(id: string, type?: any) {
+  return getModuleData(id, type);
 }

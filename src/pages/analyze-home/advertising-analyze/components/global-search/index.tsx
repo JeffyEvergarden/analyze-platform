@@ -96,7 +96,7 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
       },
       //数据回显
       async setForm(obj: any) {
-        form.setFieldsValue({ childrenList: [obj] });
+        form.setFieldsValue(obj);
       },
       addGlobal: () => {
         addOuter();
@@ -301,7 +301,7 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                       </Condition>
 
                       <FormItem>
-                        {outIndex > 0 && (
+                        {outIndex > -1 && (
                           <MinusCircleOutlined
                             onClick={() => {
                               remove(outIndex);

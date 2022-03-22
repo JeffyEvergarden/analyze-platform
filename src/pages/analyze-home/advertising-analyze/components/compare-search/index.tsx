@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useImperativeHandle, useMemo } from 'react';
 // 通用组件
 import { Form, Select, Space, DatePicker, InputNumber } from 'antd';
 import { timeUnitList } from '../../model/const';
 import moment from 'moment';
+import { TitleList } from '../../model/const';
 
 const { RangePicker } = DatePicker;
 
@@ -14,6 +15,7 @@ const map: any = {
 interface CompareSearchProps {
   cref: any;
   list: any;
+  setFilter: any;
 }
 
 const { Item: FormItem } = Form;
@@ -21,7 +23,7 @@ const { Option } = Select;
 
 const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   const [form] = Form.useForm();
-  const { cref, list } = props;
+  const { cref, list, setFilter } = props;
 
   const [selectDateType, setSelectDateVal] = useState<any>('');
 
@@ -30,7 +32,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
       async getForm() {
         try {
           const fieldsValue: any = await form.validateFields();
-          console.log(fieldsValue);
+          // console.log(fieldsValue);
           return fieldsValue;
         } catch (e) {}
       },
@@ -54,11 +56,6 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
       },
       //数据回显
       async setForm(obj: any) {
-        if (obj?.dateRange?.length) {
-          obj.dateRange[0] = obj.dateRange[0] && moment?.(obj?.dateRange[0]);
-          obj.dateRange[1] = obj.dateRange[1] && moment?.(obj?.dateRange[1]);
-        }
-
         form.setFieldsValue(obj);
       },
     };
@@ -79,6 +76,33 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
     });
   };
 
+  const computedList = useMemo(() => {
+    let arr = [...list];
+    let len = TitleList.length;
+    let i = len - 1;
+    while (i > -1) {
+      if (
+        !list.some((item: any) => {
+          return item.value === TitleList[i].key;
+        })
+      ) {
+        arr.unshift({
+          value: TitleList[i].key,
+          name: TitleList[i].label,
+        });
+      }
+      i--;
+    }
+    if (selectDateType) {
+      arr.push({
+        value: selectDateType,
+        name: map[selectDateType],
+      });
+    }
+
+    return arr;
+  }, [list, selectDateType]);
+
   // 初始化
   useEffect(() => {
     // 数据初始化
@@ -87,22 +111,21 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
     });
   }, []);
 
+  useEffect(() => {
+    setFilter?.(computedList);
+  }, [computedList]);
+
   return (
     <Form form={form}>
       <FormItem name="groupBy">
         <Select style={{ width: '50%' }} mode="multiple" placeholder="请选择分组">
-          {list.map((item: any, index: number) => {
+          {computedList.map((item: any, index: number) => {
             return (
               <Option key={index} value={item.value}>
                 {item.name}
               </Option>
             );
           })}
-          {selectDateType && (
-            <Option key={selectDateType} value={selectDateType}>
-              {map[selectDateType]}
-            </Option>
-          )}
         </Select>
       </FormItem>
 

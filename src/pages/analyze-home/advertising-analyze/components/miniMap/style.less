@@ -1,0 +1,101 @@
+.anaylze-page {
+  // 全局样式 防止污染
+  :global {
+    // Collapse 修改 样式
+    .ant-collapse-header {
+      padding: 0 !important;
+      padding-top: 16px !important;
+      padding-bottom: 16px !important;
+      padding-left: 16px !important;
+      font-weight: bolder;
+      // 标题
+      font-size: 16px;
+      line-height: 22px !important;
+      background-color: #fafafa;
+
+      .ant-collapse-arrow {
+        // 箭头
+        font-size: 14px !important;
+      }
+    }
+
+    .ant-collapse-content-box {
+      // 内容
+      padding: 0 !important;
+      padding-top: 20px !important;
+      // padding-bottom: 16px !important;
+      padding-left: 32px !important;
+    }
+
+    .ant-collapse-item {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .ant-form-item {
+      // margin-bottom: 12px;
+    }
+  }
+}
+
+.result {
+  display: flex;
+  justify-content: space-between;
+}
+
+// 筛选条件
+.search-box {
+  width: 100%;
+  // padding: 16px 0;
+  background: #fff;
+  border-radius: 4px;
+
+  .label {
+    flex-shrink: 0;
+    width: 90px;
+    margin-right: 12px;
+    text-align: right;
+  }
+
+  .search-content {
+    width: 200px;
+  }
+}
+
+//查询
+.select-box {
+  width: 100%;
+  padding: 16px 32px;
+  background: #fff;
+  border-radius: 4px;
+}
+
+// 图表盒子
+.chart-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 16px 32px;
+  background: #fff;
+  border-radius: 2px;
+
+  .chart-title {
+    margin-bottom: 16px;
+    font-size: 20px;
+    text-align: center;
+  }
+}
+
+.table-box {
+  width: 100%;
+  padding: 16px 32px;
+  background: #fff;
+  border-radius: 2px;
+}
+
+//
+.zy-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}

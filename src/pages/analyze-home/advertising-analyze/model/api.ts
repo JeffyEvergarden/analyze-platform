@@ -36,9 +36,13 @@ export async function fetchSqlBaseInfo(params?: any) {
   });
 }
 
-export async function getModuleData(id: any) {
+export async function getModuleData(id: any, type?: any) {
   return request('/bd/dashboard/analysis/detail/' + id, {
     method: 'get',
+    params: {
+      id,
+      type,
+    },
   });
 }
 

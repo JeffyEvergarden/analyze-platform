@@ -639,6 +639,19 @@ const getRefreshList = (req: any, res: any) => {
 };
 
 const getbackshow = (req: any, res: any) => {
+  if (req.query.type === 'advertise') {
+    res.json({
+      resultCode: '000',
+      datas: {
+        analysisType: '22',
+        analysisName: '33',
+        analysisData:
+          '{"statisticsSearch":{"childrenList":[{"event":"fate","attribute":"用户数","relation":"AND","innerList":[{"subject":"select","operator":"in","params":["test1","test2"]}],"edit":false}]},"globalSearch":{"childrenList":[{"subject":"select","operator":"==","params":"test1"}]},"compareSearch":{"groupBy":["activity_name","prod_code","day_id"],"dateType":"day_id","daterange":["2022-03-01T11:00:25+08:00","2022-04-06T11:00:25+08:00"]},"moduleType":"sub_activity"}',
+      },
+    });
+    return;
+  }
+
   res.json({
     datas: {
       analysisType: '22',
