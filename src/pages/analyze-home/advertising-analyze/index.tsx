@@ -63,6 +63,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
     summary, // 总结数据
     getAdvertiseList, // 获取数据
     // clearData, // 清除数据
+    titleList,
     setProcessDiyColumn, // 已选择的自定义指标
     setTitleList,
     hadProcessedColumn,
@@ -73,7 +74,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   const [moduleId, setModuleId] = useState<any>(id || query.moduleId || '');
   const [moduleName, setModuleName] = useState<any>('');
 
-  const [moduleType, setModuleType] = useState<any>('sub_activity');
+  const moduleType = 'sub_activity_2';
 
   const [treeSelectId, setTreeSelectId] = useState<any>(dirId || query.dashboardId || '');
   //记录看板Id
@@ -171,37 +172,41 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   };
 
   const getModuleInfo = (moduleId: any, type?: any) => {
-    getModuleDetail(moduleId, type).then((res) => {
-      if (res.resultCode === '000') {
-        let moduleData = JSON.parse(res?.datas?.analysisData || '{}');
-        StatisticSearchRef.current.setForm(moduleData?.statisticsSearch);
-        GlobalSearchRef.current.setForm(moduleData?.globalSearch);
-        let _compareSearch = moduleData?.compareSearch || {};
-        _compareSearch = {
-          ..._compareSearch,
-          daterange: _compareSearch?.daterange?.map?.((item: any) => {
-            if (typeof item === 'string') {
-              try {
-                let str = moment(item);
-                return str;
-              } catch (e) {
+    getModuleDetail(moduleId, type)
+      .then((res) => {
+        if (res.resultCode === '000') {
+          let moduleData = JSON.parse(res?.datas?.analysisData || '{}');
+          StatisticSearchRef.current.setForm(moduleData?.statisticsSearch);
+          GlobalSearchRef.current.setForm(moduleData?.globalSearch);
+          let _compareSearch = moduleData?.compareSearch || {};
+          _compareSearch = {
+            ..._compareSearch,
+            daterange: _compareSearch?.daterange?.map?.((item: any) => {
+              if (typeof item === 'string') {
+                try {
+                  let str = moment(item);
+                  return str;
+                } catch (e) {
+                  return undefined;
+                }
+              } else {
                 return undefined;
               }
-            } else {
-              return undefined;
-            }
-          }),
-        };
+            }),
+          };
 
-        CompareSearchRef.current.setForm(_compareSearch);
-        let arr = moduleData?.processDiyColumn;
-        setProcessDiyColumn(Array.isArray(arr) ? arr : []);
-        setModuleData(moduleData);
-        setModuleName(res.datas.analysisName);
-      } else {
-        message.error(res?.resultMsg || '获取模板详情失败');
-      }
-    });
+          CompareSearchRef.current.setForm(_compareSearch);
+          let arr = moduleData?.processDiyColumn;
+          setProcessDiyColumn(Array.isArray(arr) ? arr : []);
+          setModuleData(moduleData);
+          setModuleName(res.datas.analysisName);
+        } else {
+          message.error(res?.resultMsg || '获取模板详情失败');
+        }
+      })
+      .catch(() => {
+        message.error('获取模板详情失败');
+      });
   };
 
   const init = async () => {
@@ -246,10 +251,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
       (GlobalSearchRef?.current as any).getForm(),
       (CompareSearchRef.current as any).getForm(),
     ]);
-    (editModalRef.current as any).open({
-      treeSelectId,
-      moduleName,
-    });
+    (editModalRef.current as any).open(moduleName, treeSelectId);
   };
 
   //保存看板
@@ -278,6 +280,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
       compareSearch: _compareSearch,
       moduleType, // 查表类型
       processDiyColumn, // 加工列
+      titleList,
     });
 
     console.log('查询参数:----------');

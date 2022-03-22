@@ -352,17 +352,17 @@ export const useAdvertiseModel = () => {
         fnName = operatorItem?.name || fnName;
 
         eventData.map((item: any) => {
-          if (item.code === eventName) {
+          if (item.value === eventName) {
             eventZHnName = item.name;
             if (type === 'metric') {
-              const currentMetrics: any = item.metrics?.find(
-                (m: any) => metricsName === m.expression,
+              const currentMetrics: any = item.metricsList?.find(
+                (m: any) => metricsName === m.value,
               );
-              metricsCode = currentMetrics?.expression || metricsName;
-              metricsName = currentMetrics?.name || metricsName;
+              metricsCode = currentMetrics?.value || metricsName;
+              metricsName = currentMetrics?.value || metricsName;
             } else if (type === 'fields') {
-              const currentMetrics: any = item.fields?.find((f: any) => metricsName === f.code);
-              metricsCode = currentMetrics?.code || metricsName;
+              const currentMetrics: any = item.fieldList?.find((f: any) => metricsName === f.value);
+              metricsCode = currentMetrics?.value || metricsName;
               metricsName = currentMetrics?.name || metricsName;
             }
           }
@@ -440,8 +440,8 @@ export const useAdvertiseModel = () => {
       setSummary(summaryObj);
       console.log('汇总数据: -----');
       console.log(objList);
-      console.log('自定义指标: -----');
-      console.log(diyColumnList);
+      // console.log('自定义指标: -----');
+      // console.log(diyColumnList);
 
       return objList;
     } catch (e) {
@@ -576,6 +576,7 @@ export const useAdvertiseModel = () => {
     dynamicColumns,
     diyColumn,
     summary,
+    titleList,
     getAdvertiseList,
     clearData,
     processDiyColumn, // 自定义指标
