@@ -96,27 +96,75 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
     });
     if (item.relation === 'AND') {
       item.innerList.map((innerItem: any) => {
-        obj.adhoc_filters.push({
-          expressionType: 'SIMPLE',
-          subject: innerItem.subject,
-          operator: innerItem.operator,
-          comparator: innerItem.params?.format ? innerItem.params.format() : innerItem.params,
-          clause: 'WHERE',
-          fromFormData: true,
-          isExtra: false,
-          sqlExpression: null,
-          filterOptionName: '',
-        });
+        //介于
+        if (innerItem?.operator == 'between') {
+          if (innerItem?.params instanceof Array) {
+            obj.adhoc_filters.push({
+              expressionType: 'SIMPLE',
+              subject: innerItem.subject,
+              operator: '>=',
+              comparator: innerItem.params?.[0]?.format
+                ? innerItem.params?.[0]?.startOf('day')?.format()
+                : innerItem.params[0],
+              clause: 'WHERE',
+              fromFormData: true,
+              isExtra: false,
+              sqlExpression: null,
+              filterOptionName: '',
+            });
+            obj.adhoc_filters.push({
+              expressionType: 'SIMPLE',
+              subject: innerItem.subject,
+              operator: '<=',
+              comparator: innerItem.params?.[1]?.format
+                ? innerItem.params?.[1]?.endOf('day')?.format()
+                : innerItem.params[1],
+              clause: 'WHERE',
+              fromFormData: true,
+              isExtra: false,
+              sqlExpression: null,
+              filterOptionName: '',
+            });
+          }
+        } else {
+          obj.adhoc_filters.push({
+            expressionType: 'SIMPLE',
+            subject: innerItem.subject,
+            operator: innerItem.operator,
+            comparator: innerItem.params?.format ? innerItem.params.format() : innerItem.params,
+            clause: 'WHERE',
+            fromFormData: true,
+            isExtra: false,
+            sqlExpression: null,
+            filterOptionName: '',
+          });
+        }
       });
     } else if (item.relation === 'OR') {
       const tempFilters: any = [];
       item.innerList.map((innerItem: any) => {
         if (innerItem.operator !== 'in' && innerItem.operator !== 'not in') {
-          tempFilters.push(
-            `${innerItem.subject} ${innerItem.operator == '==' ? '=' : innerItem.operator} '${
-              innerItem.params.valueOf() ? innerItem.params.valueOf() : innerItem.params
-            }'`,
-          );
+          if (innerItem?.operator == 'between') {
+            if (innerItem?.params instanceof Array) {
+              tempFilters.push(
+                `${innerItem.subject} >= '${
+                  innerItem?.params?.[0]?.valueOf()
+                    ? innerItem.params?.[0]?.valueOf()
+                    : innerItem?.params?.[0]
+                }' AND ${innerItem.subject} <= '${
+                  innerItem?.params?.[1]?.valueOf()
+                    ? innerItem.params?.[1]?.valueOf()
+                    : innerItem?.params?.[1]
+                }'`,
+              );
+            }
+          } else {
+            tempFilters.push(
+              `${innerItem.subject} ${innerItem.operator == '==' ? '=' : innerItem.operator} '${
+                innerItem.params.valueOf() ? innerItem.params.valueOf() : innerItem.params
+              }'`,
+            );
+          }
         } else {
           const tempParams: any = [];
           if (innerItem.params instanceof Array) {
@@ -147,17 +195,48 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
     }
     //  全局指标
     globalData?.childrenList?.map((gl: any) => {
-      obj.adhoc_filters.push({
-        expressionType: 'SIMPLE',
-        subject: gl.subject,
-        operator: gl.operator,
-        comparator: gl.params,
-        clause: 'WHERE',
-        fromFormData: true,
-        isExtra: false,
-        sqlExpression: null,
-        filterOptionName: '',
-      });
+      if (gl?.operator == 'between') {
+        if (gl.params instanceof Array) {
+          obj.adhoc_filters.push({
+            expressionType: 'SIMPLE',
+            subject: gl.subject,
+            operator: '>=',
+            comparator: gl?.params?.[0]?.format
+              ? gl?.params?.[0].startOf('day')?.format()
+              : gl?.params?.[0],
+            clause: 'WHERE',
+            fromFormData: true,
+            isExtra: false,
+            sqlExpression: null,
+            filterOptionName: '',
+          });
+          obj.adhoc_filters.push({
+            expressionType: 'SIMPLE',
+            subject: gl.subject,
+            operator: '<=',
+            comparator: gl?.params?.[1]?.format
+              ? gl?.params?.[1].endOf('day')?.format()
+              : gl?.params?.[1],
+            clause: 'WHERE',
+            fromFormData: true,
+            isExtra: false,
+            sqlExpression: null,
+            filterOptionName: '',
+          });
+        }
+      } else {
+        obj.adhoc_filters.push({
+          expressionType: 'SIMPLE',
+          subject: gl.subject,
+          operator: gl.operator,
+          comparator: gl.params,
+          clause: 'WHERE',
+          fromFormData: true,
+          isExtra: false,
+          sqlExpression: null,
+          filterOptionName: '',
+        });
+      }
     });
     //分组
     obj.groupby = compareData.groupBy;

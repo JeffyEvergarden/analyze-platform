@@ -15,6 +15,7 @@ interface GlobalComponentProps {
 
 const { Item: FormItem } = Form;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
   const [form] = Form.useForm();
@@ -198,6 +199,13 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                               <Option value={'>'}>大于</Option>
                               <Option value={'<='}>小于等于</Option>
                               <Option value={'<'}>小于</Option>
+                              {dataType == 'dateTime' ? (
+                                <>
+                                  <Option value={'between'}>介于</Option>
+                                </>
+                              ) : (
+                                <></>
+                              )}
                             </>
                           )}
                           {dataType == 'select' && (
@@ -233,7 +241,11 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                           rules={[{ required: true, message: '请选择' }]}
                           dependencies={['childrenList', outIndex, 'subject']}
                         >
-                          <DatePicker showTime />
+                          {formListValue[outIndex].operator == 'between' ? (
+                            <RangePicker />
+                          ) : (
+                            <DatePicker showTime />
+                          )}
                         </FormItem>
                       </Condition>
 
