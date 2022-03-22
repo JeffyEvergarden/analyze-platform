@@ -8,7 +8,7 @@ import Condition from '../common/Condition';
 
 interface GlobalComponentProps {
   cref: any;
-  dictList?: any;
+  fieldMap?: any;
   initData?: any;
   list?: any;
 }
@@ -18,8 +18,7 @@ const { Option } = Select;
 
 const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
   const [form] = Form.useForm();
-  const { cref, dictList, initData, list } = props;
-  const [selectUserType, setSelectUserType] = useState<string>('01');
+  const { cref, fieldMap, list } = props;
   const [paramsTypeList, setParamsTypeList] = useState<('String' | 'Array')[]>([]);
 
   // 新增全局筛选
@@ -82,30 +81,6 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
         const fieldsValue: any = await form.validateFields();
         console.log(fieldsValue);
         return fieldsValue;
-        // if (fieldsValue) {
-        //   const formData = form.getFieldValue('childrenList');
-        //   return {
-        //     initEvent: formData[0]?.subject,
-        //     initMetric: formData[0]?.operator,
-        //     // initMetric: formData[0]?.operator,
-        //     associatedField: formData[0]?.associatedField,
-        //     relation: formData[0]?.relation,
-        //     conditions: formData[0]?.innerList?.map((item: any) => {
-        //       return {
-        //         field: item.attr,
-        //         function: item.op,
-        //         params: Array.isArray(item.value)
-        //           ? item.value.join()
-        //           : item.value.format
-        //           ? item.value.format('YYYY-MM-DD')
-        //           : item.value,
-        //         dataType: item.dataType,
-        //       };
-        //     }),
-        //   };
-        // } else {
-        //   return false;
-        // }
       },
       //获取当前表单选择数据
       async getFormData() {
@@ -154,33 +129,6 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
       form.setFieldsValue({
         childrenList: [...curList],
       });
-      // console.log('currentFormValue', currentFormValue.innerList[newVal[3]][newVal[4]]);
-      // console.log(newVal?.['value']);
-    }
-  };
-
-  const dictCodeTest = (tempCode: any) => {
-    if (tempCode) {
-      let res = dictList.find((item: any) => item.code === tempCode);
-      if (res) {
-        return true;
-      }
-      return false;
-    } else {
-      return false;
-    }
-  };
-
-  const dictItem = (subject: any) => {
-    const tempCode = list.find((item: any) => item.code === subject)?.dictCode;
-    if (tempCode) {
-      return dictList
-        .find((item: any) => item.code === tempCode)
-        ?.dicts?.map((item: any) => (
-          <Option key={item.value} value={item.value}>
-            {item.name}
-          </Option>
-        ));
     }
   };
 
@@ -192,6 +140,16 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
             <>
               {fields.map((field: any, outIndex: number) => {
                 const formListValue = form.getFieldValue('childrenList');
+                const _currentSubject = formListValue[outIndex].subject;
+                const _currentOp = formListValue[outIndex].operator;
+
+                const _currentSubjectObj = list.find((item: any) => {
+                  return item.value === _currentSubject;
+                });
+                const dataType = _currentSubjectObj?.dataType;
+
+                const subList = _currentSubjectObj?.list || [];
+
                 return (
                   <div key={field.fieldKey}>
                     {/* 前置筛选 */}
@@ -211,7 +169,7 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                         >
                           {list?.map((item: any, index: number) => {
                             return (
-                              <Option key={index} value={item.code} opt={item}>
+                              <Option key={index} value={item.value} opt={item}>
                                 {item.name}
                               </Option>
                             );
@@ -232,7 +190,7 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                             changeAttribute(val, outIndex);
                           }}
                         >
-                          {formListValue[outIndex].dataType !== 'string' && (
+                          {dataType !== 'select' && (
                             <>
                               <Option value={'=='}>等于</Option>
                               <Option value={'!='}>不等于</Option>
@@ -242,27 +200,19 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                               <Option value={'<'}>小于</Option>
                             </>
                           )}
-                          {formListValue[outIndex].dataType == 'string' &&
-                            dictCodeTest(formListValue[outIndex].dictCode) && (
-                              <>
-                                <Option value={'=='}>等于</Option>
-                                <Option value={'!='}>不等于</Option>
-                                <Option value={'in'}>包含</Option>
-                                <Option value={'not in'}>不包含</Option>
-                              </>
-                            )}
-                          {formListValue[outIndex].dataType == 'string' &&
-                            !dictCodeTest(formListValue[outIndex].dictCode) && (
-                              <>
-                                <Option value={'=='}>等于</Option>
-                                <Option value={'!='}>不等于</Option>
-                              </>
-                            )}
+                          {dataType == 'select' && (
+                            <>
+                              <Option value={'=='}>等于</Option>
+                              <Option value={'!='}>不等于</Option>
+                              <Option value={'in'}>包含</Option>
+                              <Option value={'not in'}>不包含</Option>
+                            </>
+                          )}
                         </Select>
                       </FormItem>
 
-                      {/* 数字numbric */}
-                      <Condition r-if={formListValue[outIndex].dataType === 'numbric'}>
+                      {/* 数字number */}
+                      <Condition r-if={dataType === 'number'}>
                         <FormItem
                           name={[field.name, 'params']}
                           key={field.fieldKey + 'params'}
@@ -275,7 +225,7 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                       </Condition>
 
                       {/* 时间dateTime */}
-                      <Condition r-if={formListValue[outIndex].dataType === 'dateTime'}>
+                      <Condition r-if={dataType === 'dateTime'}>
                         <FormItem
                           name={[field.name, 'params']}
                           key={field.fieldKey + 'params'}
@@ -288,13 +238,7 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                       </Condition>
 
                       {/* string */}
-                      <Condition
-                        r-if={
-                          (formListValue[outIndex].dataType === 'string' ||
-                            formListValue[outIndex].dataType == undefined) &&
-                          dictCodeTest(formListValue[outIndex].dictCode)
-                        }
-                      >
+                      <Condition r-if={dataType === 'select'}>
                         {/* 多选 */}
                         <Condition
                           r-if={
@@ -310,7 +254,11 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                             dependencies={['childrenList', outIndex, 'subject']}
                           >
                             <Select mode="multiple" style={{ width: '200px' }} placeholder="请选择">
-                              {dictItem(formListValue[outIndex].subject)}
+                              {subList?.map((item: any) => (
+                                <Option key={item.value} value={item.value}>
+                                  {item.name}
+                                </Option>
+                              ))}
                             </Select>
                           </FormItem>
                         </Condition>
@@ -329,20 +277,18 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                             dependencies={['childrenList', outIndex, 'subject']}
                           >
                             <Select style={{ width: '200px' }} placeholder="请选择">
-                              {dictItem(formListValue[outIndex].subject)}
+                              {subList?.map((item: any) => (
+                                <Option key={item.value} value={item.value}>
+                                  {item.name}
+                                </Option>
+                              ))}
                             </Select>
                           </FormItem>
                         </Condition>
                       </Condition>
 
                       {/* input */}
-                      <Condition
-                        r-if={
-                          (formListValue[outIndex].dataType === 'string' ||
-                            formListValue[outIndex].dataType == undefined) &&
-                          !dictCodeTest(formListValue[outIndex].dictCode)
-                        }
-                      >
+                      <Condition r-if={dataType === 'input'}>
                         <FormItem
                           name={[field.name, 'params']}
                           key={field.fieldKey + 'params'}

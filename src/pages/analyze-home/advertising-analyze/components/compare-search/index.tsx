@@ -32,28 +32,6 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
           const fieldsValue: any = await form.validateFields();
           console.log(fieldsValue);
           return fieldsValue;
-          // let strategy_name = form.getFieldValue('groupBy').find((item: any) => {
-          //   return item == 'strategy_name';
-          // });
-          // console.log(strategy_name);
-
-          // if (fieldsValue) {
-          //   if (!strategy_name) {
-          //     message.info('分组策略名称必选');
-          //     return false;
-          //   }
-          //   let formData = form.getFieldsValue();
-          //   // console.log(formData);
-
-          //   return {
-          //     groupFields: formData?.groupBy,
-          //     startDate: formData.dateRange && formData?.dateRange[0]?.format('YYYY-MM-DD'),
-          //     endDate: formData.dateRange && formData?.dateRange[1]?.format('YYYY-MM-DD'),
-          //     timeStep: formData?.step || -1,
-          //   };
-          // } else {
-          //   return false;
-          // }
         } catch (e) {}
       },
       async getFormData() {
@@ -115,7 +93,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
         <Select style={{ width: '50%' }} mode="multiple" placeholder="请选择分组">
           {list.map((item: any, index: number) => {
             return (
-              <Option key={item.code} value={item.code}>
+              <Option key={index} value={item.value}>
                 {item.name}
               </Option>
             );

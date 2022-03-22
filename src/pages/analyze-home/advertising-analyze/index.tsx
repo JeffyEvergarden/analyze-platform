@@ -50,9 +50,9 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   // 搜索条件---选择分析模型
   const [selectModelType, setSelectModelType] = useState<string>('01');
 
-  const { eventData, dictList, queryEvent, queryDict } = useSearchParamsModel();
+  const { eventList, fieldMap, getPreConfig } = useSearchParamsModel();
   const { baseInfo, getSqlBaseInfo } = useBaseModel();
-  const { filterList, filterList2, setFilter } = useFilterModel();
+  const { filterList, unionList, setFilter } = useFilterModel();
   const {
     loading, // loading
     setLoading,
@@ -154,7 +154,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         baseInfo,
       );
       // 查询数据
-      getAdvertiseList(formDataList, eventData, map, baseInfo);
+      getAdvertiseList(formDataList, eventList, map, baseInfo);
     } catch (e) {
       message.error('查询错误');
       setLoading(false);
@@ -176,15 +176,14 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   };
 
   const init = async () => {
-    await queryEvent('sub_activity'); // todo 要换
+    await getPreConfig('sub_activity_2'); // 获取两边数据
     if (moduleId) {
       await getModuleInfo(moduleId);
     }
   };
 
   useEffect(() => {
-    getSqlBaseInfo({ theme: 'sub_activity' }); // todo 要换
-    queryDict();
+    getSqlBaseInfo({ theme: 'sub_activity_2' }); // 获取配置
     init();
   }, []);
 
@@ -328,19 +327,19 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
             <Panel header="选择统计事件" key="2" extra={addStatisticBt}>
               <StatisticsSearch
                 cref={StatisticSearchRef}
-                dictList={dictList}
-                eventDataList={eventData}
+                fieldMap={fieldMap}
+                eventList={eventList}
                 setFilter={setFilter}
               />
             </Panel>
 
             {/* 全局筛选 */}
             <Panel header="全局筛选" key="3" extra={addGlobalBt}>
-              <GlobalSearch cref={GlobalSearchRef} list={filterList} dictList={dictList} />
+              <GlobalSearch cref={GlobalSearchRef} list={filterList} fieldMap={fieldMap} />
             </Panel>
 
             <Panel header="对比查看" key="4">
-              <CompareSearch cref={CompareSearchRef} list={filterList2} />
+              <CompareSearch cref={CompareSearchRef} list={unionList} />
             </Panel>
           </Collapse>
         </div>

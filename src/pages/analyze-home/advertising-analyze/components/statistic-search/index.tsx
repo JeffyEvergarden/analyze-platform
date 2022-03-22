@@ -18,8 +18,8 @@ import style from './style.less';
 interface StatisticComponentProps {
   cref: any;
   initData?: any;
-  eventDataList: any;
-  dictList: any;
+  eventList: any;
+  fieldMap: any;
   setFilter?: any;
 }
 // 通用方法
@@ -45,23 +45,19 @@ const { Option } = Select;
 
 const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
-  const { cref, eventDataList, dictList, initData, setFilter } = props;
-  const [selectUserType, setSelectUserType] = useState<string>('01');
+  const { cref, eventList, fieldMap, initData, setFilter } = props;
 
   // 修改事件 （传入序号） 一级属性
-  const changeEvent = (index: any) => {
+  const changeEvent = (val: any, opt: any, index: any) => {
     const formValueList = form.getFieldValue('childrenList');
     formValueList[index].attribute = undefined;
     formValueList[index].innerList = [];
     formValueList[index].relation = 'AND';
     formValueList[index].fnName = undefined;
-    formValueList[index].fieldsDict = eventDataList.find(
-      (item: any) => item.code === formValueList[index].event,
-    )?.fields;
     form.setFieldsValue({
       childrenList: [...formValueList],
     });
-    setFilter?.(form.getFieldValue('childrenList'), eventDataList);
+    setFilter?.(form.getFieldValue('childrenList'), eventList);
   };
 
   // 修改第二个选择框
@@ -86,10 +82,10 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   // 添加子筛选
   const addInnerForm = (outIndex: number) => {
     const formValueList: any = form.getFieldValue('childrenList') || [];
-    console.log(formValueList);
+    // console.log(formValueList);
 
     const tempInnerList: any = formValueList?.[outIndex] ? formValueList?.[outIndex].innerList : [];
-    console.log(tempInnerList);
+    // console.log(tempInnerList);
 
     tempInnerList?.push({
       subject: undefined,
@@ -164,16 +160,12 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     const tempChildrenList = form.getFieldValue('childrenList')[index] || [];
     const inUseFields: any[] = [];
     const metrics: any[] =
-      eventDataList.find((item: any) => item.code == tempChildrenList?.event)?.metrics || [];
+      eventList.find((item: any) => item.value == tempChildrenList?.event)?.metricsList || [];
     // console.log(metrics);
 
     return metrics.map((item: any, index: any) => {
       return (
-        <Option
-          disabled={inUseFields.includes(item.expression)}
-          key={`m${index}`}
-          value={item.expression}
-        >
+        <Option disabled={inUseFields.includes(item.value)} key={`m${index}`} value={item.value}>
           {item.name}
         </Option>
       );
@@ -183,54 +175,30 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const fieldsSelectItem = (index: number) => {
     const inUseFields: any[] = [];
     const fields: any[] =
-      eventDataList.find(
-        (item: any) => item.code == form.getFieldValue('childrenList')[index]?.event,
-      )?.fields || [];
+      eventList.find((item: any) => item.value == form.getFieldValue('childrenList')[index]?.event)
+        ?.fieldList || [];
     return fields.map((item: any, index: any) => {
       return (
-        <Option disabled={inUseFields.includes(item.code)} key={`f${index}`} value={item.code}>
+        <Option disabled={inUseFields.includes(item.value)} key={`f${index}`} value={item.value}>
           {item.name}
         </Option>
       );
     });
   };
 
-  // 判断第二个下拉的类型 true 取 fields  false 取 metic
-  const judgeAttributeType = (index: any) => {
-    const formValue = form.getFieldValue('childrenList')[index];
-
-    const fields: any =
-      eventDataList?.find((item: any) => item.code === formValue?.event)?.fields || [];
-    if (fields?.some((item: any) => item.code === formValue.attribute)) {
-      return true;
-    }
-    return false;
-  };
-
-  //判断第三个选的是不是数字
-  const judgeFnName = (index: number) => {
-    const formValue = form.getFieldValue('childrenList')[index];
-    const fields: any =
-      eventDataList?.find((item: any) => item.code === formValue?.event)?.fields || [];
-    if (fields?.find((item: any) => item.code === formValue.attribute)?.dataType === 'numbric') {
-      return true;
-    }
-    return false;
-  };
-
-  const ThirdSelectItem = (index: number) => {
-    return judgeFnName(index) ? (
+  const ThirdSelectItem = (flag: boolean) => {
+    return flag ? (
       <>
-        {statisticNumbericList?.map((item) => (
-          <Option key={item.value} value={item.value}>
+        {statisticNumbericList?.map((item, i) => (
+          <Option key={i} value={item.value}>
             {item.name}
           </Option>
         ))}
       </>
     ) : (
       <>
-        {statisticDefaultList.map((item) => (
-          <Option key={item.value} value={item.value}>
+        {statisticDefaultList.map((item, i) => (
+          <Option key={i} value={item.value}>
             {item.name}
           </Option>
         ))}
@@ -250,17 +218,17 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   };
 
   useEffect(() => {
-    if (eventDataList?.length > 0) {
+    if (eventList?.length > 0) {
       if (initData?.childrenList.length > 0) {
         form.setFieldsValue({
           childrenList: [...initData.chlidrenList],
         });
-        setFilter?.(form.getFieldValue('childrenList'), eventDataList);
+        setFilter?.(form.getFieldValue('childrenList'), eventList);
       } else {
         addOther();
       }
     }
-  }, [eventDataList, initData]);
+  }, [eventList, initData]);
 
   return (
     <Form form={form}>
@@ -271,8 +239,26 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
               {fields.map((field: any, outIndex: number) => {
                 const formListValue = form.getFieldValue('childrenList')[outIndex];
                 // console.log(curItem);
-                const fieldList = formListValue?.fieldsDict || [];
                 const relation = formListValue?.relation;
+
+                const fieldList =
+                  eventList?.find((item: any) => {
+                    return item.value === formListValue?.event;
+                  })?.fieldList || [];
+
+                // 可选属性列表
+                const _fieldList =
+                  eventList?.find((item: any) => item.value === formListValue?.event)?.fieldList ||
+                  [];
+
+                // 当前选中的属性对象
+                const _field = _fieldList?.find?.(
+                  (item: any) => item.value === formListValue?.attribute,
+                );
+
+                const isField = !!_field;
+
+                const isNumber = _field?.dataType === 'number';
 
                 return (
                   <div key={field.fieldKey}>
@@ -288,12 +274,12 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                         <Select
                           placeholder="请选择事件"
                           onChange={(val: any, opt: any) => {
-                            changeEvent(outIndex);
+                            changeEvent(val, opt, outIndex);
                           }}
                         >
-                          {eventDataList?.map((item: any, index: number) => {
+                          {eventList?.map((item: any, index: number) => {
                             return (
-                              <Option key={index} value={item.code} opt={item}>
+                              <Option key={index} value={item.value} opt={item}>
                                 {item.name}
                               </Option>
                             );
@@ -324,14 +310,14 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                       </FormItem>
                       {/* {type} */}
                       {/* 三级筛选 */}
-                      <Condition r-if={judgeAttributeType(outIndex)}>
+                      <Condition r-if={isField}>
                         <FormItem
                           rules={[{ required: true, message: '请选择' }]}
                           name={[field.fieldKey, 'fnName']}
                           fieldKey={[field.fieldKey, 'fnName']}
                           style={{ width: '150px' }}
                         >
-                          <Select placeholder="请选择">{ThirdSelectItem(outIndex)}</Select>
+                          <Select placeholder="请选择">{ThirdSelectItem(isNumber)}</Select>
                         </FormItem>
                       </Condition>
 
@@ -418,7 +404,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                                     field={innerField} // 包含name、 fieldKey
                                     outIndex={outIndex}
                                     form={form}
-                                    dictList={dictList}
+                                    fieldMap={fieldMap}
                                     fieldsList={fieldList}
                                     remove={() => {
                                       // remove(innerIndex);

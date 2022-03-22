@@ -24,78 +24,151 @@ function getCurrentData(da: Date) {
 
 // 查询下拉参数
 export const useSearchParamsModel = () => {
-  const [eDataFinish, setEDataFinish] = useState<Boolean>(false);
-  const [eventData, setEventData] = useState<any[]>([]);
-  const [dictList, setDictList] = useState<any[]>([]);
+  const [eventList, setEventList] = useState<any[]>([]);
+  const [fieldMap, setFieldMap] = useState<Map<string, any[]>>(new Map());
 
-  const queryEvent = async (type: string) => {
-    try {
-      const params = {
-        theme: type,
+  // 数据加工
+  const processEvent = (originList: any, map: any) => {
+    const list: any[] = originList.map((item: any, index: number) => {
+      // 指标列表
+      const metricsList: any[] = item.metrics.map((subItem: any, index: number) => {
+        return {
+          name: subItem.name,
+          value: subItem.expression,
+          type: 'metrics',
+        };
+      });
+      // 属性列表
+      const fieldList: any[] = [];
+      item.fields.forEach((subItem: any, index: number) => {
+        // 需过滤 不可分组的数据
+        if (subItem.canGroupBy !== '1') {
+          return;
+        }
+        let type: string = 'input'; // 输入框
+        let subList: any = undefined; // 下拉框存在 下拉列表
+        if (subItem.dataType === 'dateTime') {
+          // 时间选择框
+          type = subItem.dataType;
+        }
+        if (subItem.dataType === 'string' && map.get(subItem.code)) {
+          // 时间选择框
+          subList = map.get(subItem.code);
+          type = 'select';
+        }
+        if (subItem.dataType === 'numbric') {
+          // 时间选择框
+          subList = map.get(subItem.code) || [];
+          type = 'number';
+        }
+        fieldList.push({
+          name: subItem.name,
+          value: subItem.code,
+          type: 'fields',
+          dataType: type,
+          list: subList,
+        });
+      });
+      return {
+        name: item.name,
+        value: item.code,
+        metricsList,
+        fieldList,
       };
-      setEDataFinish(false);
-      const res: any = await fetchMetricsInfo(params);
-      console.log(res);
-
-      const list = res || [];
-      setEventData([...list]);
-      setEDataFinish(true);
-    } catch (e) {}
+    });
+    setEventList(list);
   };
-  const queryDict = async () => {
-    try {
-      const res = await fetchFieldInfo();
-      const list = res || [];
-      setDictList([...list]);
-    } catch (e) {}
+
+  // 获取事件列表
+  const getEvent = async (theme: any) => {
+    let res: any = await fetchMetricsInfo({ theme: theme });
+
+    const list: any[] = Array.isArray(res) ? res : [];
+    // setEventList(list);
+    return list;
+  };
+
+  // 获取映射列表
+  const getField = async () => {
+    let res: any = await fetchFieldInfo();
+    const list: any[] = Array.isArray(res) ? res : [];
+    const map = new Map();
+    list.forEach((item: any, index: number) => {
+      let name: string = item.code || '';
+      // name / value
+      let subList = item?.dicts || [];
+      if (name && subList && subList.length > 0) {
+        map.set(name, subList);
+      }
+    });
+    setFieldMap(map);
+    return map;
+  };
+
+  const getPreConfig = async (theme: any) => {
+    let [list, map] = await Promise.all([getEvent(theme), getField()]);
+    if (list.length > 0) {
+      processEvent(list, map);
+    }
   };
 
   return {
-    eDataFinish,
-    eventData,
-    dictList,
-    queryEvent,
-    queryDict,
+    eventList,
+    fieldMap,
+    getPreConfig,
   };
 };
 
+// -----------------
+
 // 取交集和并集
 export const useFilterModel = () => {
-  const [filterList, setFilterList] = useState<any[]>([]);
-  const [filterList2, setFilterList2] = useState<any[]>([]);
+  const [filterList, setFilterList] = useState<any[]>([]); // 交集
+  const [unionList, setUnionList] = useState<any[]>([]); // 并集
 
   const setFilter = (formValues: any, eventDataList: any) => {
     let len = 0;
     let tempObj: any = {}; //用于统计不同指标次数
+    let tempMap: any = {};
     let tempArr: Set<any> = new Set(); //存放去重的数组
     let resultArr: any = []; //结果数组
     let compareArr: any = []; //对比并集
 
     formValues?.map((item: any) => {
-      if (item.event && item.fieldsDict instanceof Array) {
+      // 获取指标
+      const list: any[] =
+        eventDataList.find((subItem: any) => {
+          return subItem.value === item.event;
+        })?.fieldList || [];
+      if (list?.length > 0) {
         len++;
       }
-      item?.fieldsDict?.map((f: any) => {
-        tempArr.add(JSON.stringify(f));
-        tempObj[f.code] = tempObj[f.code] ? tempObj[f.code] + 1 : 1;
+      // ----------
+      // ----------
+      list.forEach((ele: any) => {
+        tempObj[ele.value] = tempObj[ele.value] ? tempObj[ele.value] + 1 : 1;
+        if (!tempMap[ele.value]) {
+          tempMap[ele.value] = ele;
+        }
       });
     });
-    const setArr: any = Array.from(tempArr).map((item) => JSON.parse(item));
-    compareArr = [...setArr];
+    const setArr: any = Object.keys(tempMap).map((key) => tempMap[key]);
+    compareArr = [...setArr]; //取并集
 
+    // 过滤出
     resultArr = setArr.filter((item: any) => {
-      return tempObj[item.code] === len;
+      return tempObj[item.value] === len;
     });
 
-    setFilterList([...resultArr]);
-    setFilterList2(compareArr);
+    setFilterList([...resultArr]); // 交集
+    setUnionList(compareArr); // 并集
 
-    console.log(resultArr, compareArr);
+    // console.log(resultArr, compareArr);
   };
 
   return {
     filterList,
-    filterList2,
+    unionList,
     setFilter,
   };
 };
@@ -123,6 +196,7 @@ const sorter = (columnName: any) => {
   };
 };
 
+// ----------------------------
 // 数值的常规渲染
 const normalRender = (text: any) => {
   // 渲染方式
@@ -154,6 +228,7 @@ const percentRender = (text: any) => {
     return (Number(text) * 100).toFixed(2) + '%';
   }
 };
+// ----------------------------
 
 // 获取广告分析数据
 export const useAdvertiseModel = () => {

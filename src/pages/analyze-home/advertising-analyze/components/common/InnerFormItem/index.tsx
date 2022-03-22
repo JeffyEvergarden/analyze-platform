@@ -5,48 +5,45 @@ import Condition from '../Condition';
 import { numberTypeList, arrayTypeList, stringTypeList } from '../../../model/const';
 import { MinusCircleOutlined } from '@ant-design/icons';
 import style from '../style.less';
-import { AnyTypeAnnotation } from '@babel/types';
 
 const { Item: FormItem } = Form;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const InnerForm: React.FC<any> = (props: any) => {
-  const { field, form, outIndex, remove, dictList, fieldsList } = props;
+  const { field, form, outIndex, remove, fieldMap, fieldsList } = props;
   const { key, fieldKey: index } = field;
 
-  const [tempSubject, setTempSubject] = useState<any>();
   const curList: any = form.getFieldValue('childrenList');
   const currentFormValue: any = curList?.[outIndex] || {};
   const currentInnerValue: any = currentFormValue?.innerList[index];
 
-  const type: any = currentInnerValue?.dataType || 'input'; // 类型
-  const selectType: any = currentInnerValue?.selectType || 'single'; // 下拉选择类型
+  const _currentSubject: any = currentInnerValue?.subject;
 
-  const opList: any[] = currentInnerValue?.operatorList || [];
-  const subInnerList: any[] = currentInnerValue?.subList || [];
+  const _currentSubjectItem = fieldsList?.find?.((item: any) => {
+    return item.value === _currentSubject;
+  });
+
+  // console.log('_currentSubjectItem');
+  // console.log(_currentSubject, _currentSubjectItem, fieldsList);
+
+  const type: any = _currentSubjectItem?.dataType || 'input'; // 类型
+
+  const subInnerList: any[] = _currentSubjectItem?.list || [];
+
+  const currentOp: any = currentInnerValue?.operator;
 
   // 修改属性
   const changeAttribute = (val: any, type?: any) => {
     let formValues = form.getFieldValue('childrenList');
-    let formValue = formValues?.[outIndex]?.innerList?.[index];
-    if (type !== 'init') {
-      formValue.operator = undefined;
-    }
-
-    formValue.dataType = fieldsList.find((item: any) => item.code === val)?.dataType;
-    formValue.dictCode = fieldsList.find((item: any) => item.code === val)?.dictCode;
-
-    if (formValue?.params) {
-      if (tempSubject && val !== tempSubject) {
-        formValue.params = undefined;
-      }
-    }
-
+    let _formValue = formValues[outIndex]?.innerList || [];
+    _formValue[index].subject = val;
+    _formValue[index].operator = undefined;
+    _formValue[index].params = undefined;
+    formValues[outIndex].innerList = [..._formValue];
     form.setFieldsValue({
       childrenList: [...formValues],
     });
-    setTempSubject(val);
   };
 
   // 修改操作
@@ -60,12 +57,6 @@ const InnerForm: React.FC<any> = (props: any) => {
       }
     } else {
       //单选切多选
-      // formValue.params instanceof Array
-      //   ? (formValue.params = '')
-      //   : formValue.params
-      //   ? (formValue.params = [formValue.params])
-      //   : (formValue.params = undefined);
-
       if (formValue.params instanceof Array) {
         formValue.params = '';
       } else {
@@ -80,31 +71,6 @@ const InnerForm: React.FC<any> = (props: any) => {
     form.setFieldsValue({
       childrenList: [...formValues],
     });
-  };
-
-  const dictCodeTest = (tempCode: any) => {
-    if (tempCode) {
-      let res = dictList.find((item: any) => item.code === tempCode);
-      if (res) {
-        return true;
-      }
-      return false;
-    } else {
-      return false;
-    }
-  };
-
-  const dictItem = () => {
-    const tempCode = fieldsList.find((item: any) => item.code === tempSubject)?.dictCode;
-    if (tempCode) {
-      return dictList
-        .find((item: any) => item.code === tempCode)
-        ?.dicts?.map((item: any) => (
-          <Option key={item.value} value={item.value}>
-            {item.name}
-          </Option>
-        ));
-    }
   };
 
   return (
@@ -125,7 +91,7 @@ const InnerForm: React.FC<any> = (props: any) => {
           >
             {fieldsList.map((item: any, i: number) => {
               return (
-                <Option key={i} value={item.code} opt={item}>
+                <Option key={i} value={item.value} opt={item}>
                   {item.name}
                 </Option>
               );
@@ -146,8 +112,7 @@ const InnerForm: React.FC<any> = (props: any) => {
               changeOperator(outIndex, index);
             }}
           >
-            {form.getFieldValue('childrenList')[outIndex].innerList[index].dataType !==
-              'string' && (
+            {type !== 'select' && (
               <>
                 <Option value={'=='}>等于</Option>
                 <Option value={'!='}>不等于</Option>
@@ -155,8 +120,7 @@ const InnerForm: React.FC<any> = (props: any) => {
                 <Option value={'>'}>大于</Option>
                 <Option value={'<='}>小于等于</Option>
                 <Option value={'<'}>小于</Option>
-                {form.getFieldValue('childrenList')[outIndex].innerList[index].dataType ==
-                'dateTime' ? (
+                {type == 'dateTime' ? (
                   <>
                     <Option value={'between'}>介于</Option>
                   </>
@@ -165,36 +129,20 @@ const InnerForm: React.FC<any> = (props: any) => {
                 )}
               </>
             )}
-            {form.getFieldValue('childrenList')[outIndex].innerList[index].dataType == 'string' &&
-              dictCodeTest(
-                form.getFieldValue('childrenList')[outIndex].innerList[index].dictCode,
-              ) && (
-                <>
-                  <Option value={'=='}>等于</Option>
-                  <Option value={'!='}>不等于</Option>
-                  <Option value={'in'}>包含</Option>
-                  <Option value={'not in'}>不包含</Option>
-                </>
-              )}
-            {form.getFieldValue('childrenList')[outIndex].innerList[index].dataType == 'string' &&
-              !dictCodeTest(
-                form.getFieldValue('childrenList')[outIndex].innerList[index].dictCode,
-              ) && (
-                <>
-                  <Option value={'=='}>等于</Option>
-                  <Option value={'!='}>不等于</Option>
-                </>
-              )}
+            {type === 'select' && (
+              <>
+                <Option value={'=='}>等于</Option>
+                <Option value={'!='}>不等于</Option>
+                <Option value={'in'}>包含</Option>
+                <Option value={'not in'}>不包含</Option>
+              </>
+            )}
           </Select>
         </FormItem>
 
         {/* ---------------- 分界线 ------------- */}
         {/* 数字numbric */}
-        <Condition
-          r-if={
-            form.getFieldValue('childrenList')[outIndex].innerList[index].dataType === 'numbric'
-          }
-        >
+        <Condition r-if={type === 'number'}>
           <FormItem
             name={[field.name, 'params']}
             fieldKey={[field.fieldKey, 'params']}
@@ -206,42 +154,21 @@ const InnerForm: React.FC<any> = (props: any) => {
         </Condition>
 
         {/* 时间dateTime */}
-        <Condition
-          r-if={
-            form.getFieldValue('childrenList')[outIndex].innerList[index].dataType === 'dateTime'
-          }
-        >
+        <Condition r-if={type === 'dateTime'}>
           <FormItem
             name={[field.name, 'params']}
             fieldKey={[field.fieldKey, 'params']}
             rules={[{ required: true, message: '请选择' }]}
             dependencies={['childrenList', 0, 'innerList', index, 'subject']}
           >
-            {form.getFieldValue('childrenList')[outIndex].innerList[index]?.operator ==
-            'between' ? (
-              <RangePicker />
-            ) : (
-              <DatePicker showTime />
-            )}
+            {currentOp == 'between' ? <RangePicker /> : <DatePicker showTime />}
           </FormItem>
         </Condition>
 
         {/* string */}
-        <Condition
-          r-if={
-            (form.getFieldValue('childrenList')[outIndex].innerList[index].dataType === 'string' ||
-              form.getFieldValue('childrenList')[outIndex].innerList[index].dataType ==
-                undefined) &&
-            dictCodeTest(form.getFieldValue('childrenList')[outIndex].innerList[index].dictCode)
-          }
-        >
+        <Condition r-if={type === 'select'}>
           {/* 多选 */}
-          <Condition
-            r-if={
-              form.getFieldValue('childrenList')[outIndex].innerList[index].operator == 'in' ||
-              form.getFieldValue('childrenList')[outIndex].innerList[index].operator == 'not in'
-            }
-          >
+          <Condition r-if={currentOp == 'in' || currentOp == 'not in'}>
             <FormItem
               name={[field.name, 'params']}
               fieldKey={[field.fieldKey, 'params']}
@@ -249,17 +176,16 @@ const InnerForm: React.FC<any> = (props: any) => {
               dependencies={['childrenList', 0, 'innerList', index, 'subject']}
             >
               <Select mode="multiple" style={{ width: '200px' }} placeholder="请选择">
-                {dictItem()}
+                {subInnerList?.map((item: any, index: number) => (
+                  <Option key={index} value={item.value}>
+                    {item.name}
+                  </Option>
+                ))}
               </Select>
             </FormItem>
           </Condition>
           {/* 单选 */}
-          <Condition
-            r-if={
-              form.getFieldValue('childrenList')[outIndex].innerList[index].operator != 'in' &&
-              form.getFieldValue('childrenList')[outIndex].innerList[index].operator != 'not in'
-            }
-          >
+          <Condition r-if={currentOp !== 'in' && currentOp !== 'not in'}>
             <FormItem
               name={[field.name, 'params']}
               fieldKey={[field.fieldKey, 'params']}
@@ -267,21 +193,18 @@ const InnerForm: React.FC<any> = (props: any) => {
               dependencies={['childrenList', 0, 'innerList', index, 'subject']}
             >
               <Select style={{ width: '200px' }} placeholder="请选择">
-                {dictItem()}
+                {subInnerList?.map((item: any, index: number) => (
+                  <Option key={index} value={item.value}>
+                    {item.name}
+                  </Option>
+                ))}
               </Select>
             </FormItem>
           </Condition>
         </Condition>
 
         {/* input */}
-        <Condition
-          r-if={
-            (form.getFieldValue('childrenList')[outIndex].innerList[index].dataType === 'string' ||
-              form.getFieldValue('childrenList')[outIndex].innerList[index].dataType ==
-                undefined) &&
-            !dictCodeTest(form.getFieldValue('childrenList')[outIndex].innerList[index].dictCode)
-          }
-        >
+        <Condition r-if={type === 'input'}>
           <FormItem
             name={[field.name, 'params']}
             fieldKey={[field.fieldKey, 'params']}
