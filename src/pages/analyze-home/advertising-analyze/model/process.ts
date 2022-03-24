@@ -146,23 +146,27 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
         if (innerItem.operator !== 'in' && innerItem.operator !== 'not in') {
           if (innerItem?.operator == 'between') {
             if (innerItem?.params instanceof Array) {
+              let list: any[] = innerItem.params.map((item: any) => {
+                let _params = item;
+                if (typeof _params !== 'number') {
+                  _params = `${_params}`;
+                }
+                return _params;
+              });
               tempFilters.push(
-                `${innerItem.subject} >= '${
-                  innerItem?.params?.[0]?.valueOf()
-                    ? innerItem.params?.[0]?.valueOf()
-                    : innerItem?.params?.[0]
-                }' AND ${innerItem.subject} <= '${
-                  innerItem?.params?.[1]?.valueOf()
-                    ? innerItem.params?.[1]?.valueOf()
-                    : innerItem?.params?.[1]
-                }'`,
+                `${innerItem.subject} >= ${list?.[0]} AND ${innerItem.subject} <= ${list?.[1]}`,
               );
             }
           } else {
+            let _params = innerItem.params;
+            if (typeof _params !== 'number') {
+              _params = `${_params}`;
+            }
+
             tempFilters.push(
-              `${innerItem.subject} ${innerItem.operator == '==' ? '=' : innerItem.operator} '${
-                innerItem.params.valueOf() ? innerItem.params.valueOf() : innerItem.params
-              }'`,
+              `${innerItem.subject} ${
+                innerItem.operator == '==' ? '=' : innerItem.operator
+              } '${_params}`,
             );
           }
         } else {

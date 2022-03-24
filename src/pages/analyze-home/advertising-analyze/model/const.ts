@@ -151,10 +151,10 @@ export const TitleList: any[] = [
     key: 'prod_type',
     label: '产品类型',
   },
-  {
-    key: 'praticipation_type',
-    label: '参与方式',
-  },
+  // {
+  //   key: 'praticipation_type',
+  //   label: '参与方式',
+  // },
   {
     key: 'prod_code',
     label: '进件产品',

@@ -57,6 +57,6 @@ const getList = (req: any, res: any) => {
 
 export default {
   'GET /bd/dashboard/analysis/config': getSqlInfo,
-  'GET /bd/analysis/explore_active': sendMsg,
+  'POST /bd/analysis/explore_active': sendMsg,
   'GET /bd/analysis/explore_activity_result/:id': getList,
 };

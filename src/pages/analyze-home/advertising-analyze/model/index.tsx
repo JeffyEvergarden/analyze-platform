@@ -267,7 +267,7 @@ export const useAdvertiseModel = () => {
       querySqls: tempFormDataList,
       queryId: id,
     };
-    console.log(data);
+    // console.log(data);
 
     return await sendMsg(data, { form_data: { slice_id: baseInfo.sliceId } });
   };
