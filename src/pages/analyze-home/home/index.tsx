@@ -23,7 +23,7 @@ const HomePage: React.FC = (props: any) => {
   }, []);
 
   const goToLink = (obj: any) => {
-    console.log(obj);
+    // console.log(obj);
     setCurrent(obj.key);
     history.replace(obj.key);
   };

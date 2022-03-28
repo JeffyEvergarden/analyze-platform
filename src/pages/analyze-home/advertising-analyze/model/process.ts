@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 //格式化两位小数
 export function toFixed2(x: any) {
   let f_x = parseFloat(x);
@@ -148,6 +150,9 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
             if (innerItem?.params instanceof Array) {
               let list: any[] = innerItem.params.map((item: any) => {
                 let _params = item;
+                if (_params instanceof moment) {
+                  _params = (_params as any).format?.();
+                }
                 if (typeof _params !== 'number') {
                   _params = `${_params}`;
                 }
@@ -159,6 +164,9 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
             }
           } else {
             let _params = innerItem.params;
+            if (_params instanceof moment) {
+              _params = (_params as any).format?.();
+            }
             if (typeof _params !== 'number') {
               _params = `${_params}`;
             }
@@ -166,7 +174,7 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
             tempFilters.push(
               `${innerItem.subject} ${
                 innerItem.operator == '==' ? '=' : innerItem.operator
-              } '${_params}`,
+              } ${_params}`,
             );
           }
         } else {

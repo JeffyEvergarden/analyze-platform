@@ -315,7 +315,9 @@ export const useAdvertiseModel = () => {
           (item: any) => item?.subject === 'event_type',
         )?.comparator; //获取key
         //当前项的event_type中文名称
-        const eventItem: any = eventData.find((item: any) => item.code === eventName) || {};
+        console.log('eventData');
+        console.log(eventData);
+        const eventItem: any = eventData.find((item: any) => item.value === eventName) || {};
 
         let eventZHnName = eventItem?.name || ''; //以及下拉中文名
         //从eventdata找到code对应的label
@@ -323,7 +325,7 @@ export const useAdvertiseModel = () => {
         //找列名
         let type: string = ''; //二级下拉类型
         let metricsName: string = ''; //二级下拉name
-        let eventCode: string = eventItem?.code || ''; //一级下拉key
+        let eventCode: string = eventItem?.value || ''; //一级下拉key
         let metricsCode: string = ''; //二级下拉key
         let fnName: string | undefined = ''; //二级下拉name
         let fnCode: string = ''; //三级下拉key
@@ -559,8 +561,12 @@ export const useAdvertiseModel = () => {
     fake.current.eventData = eventData;
     fake.current.nameMap = nameMap;
     setLoading(true);
-    const data: any = await startSendMsg(formDataList, baseInfo);
-    startLoop(3);
+    const res: any = await startSendMsg(formDataList, baseInfo);
+    if (res?.resultCode === '000') {
+      startLoop(3);
+    } else {
+      message.warning(res?.resultMsg || '网络异常');
+    }
   };
 
   useEffect(() => {

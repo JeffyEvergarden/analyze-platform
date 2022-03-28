@@ -318,6 +318,7 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                             onClick={() => {
                               remove(outIndex);
                             }}
+                            style={{ marginLeft: '10px', fontSize: '18px', color: '#A0A0A0' }}
                           />
                         )}
                       </FormItem>

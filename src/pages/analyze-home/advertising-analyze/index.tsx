@@ -275,12 +275,12 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         }) || [],
     };
     const analysisData = JSON.stringify({
-      statisticsSearch,
-      globalSearch,
-      compareSearch: _compareSearch,
+      statisticsSearch, // 三大 - 选择统计事件
+      globalSearch, // 三大 - 全局查询参数
+      compareSearch: _compareSearch, // 三大 - 对比查询参数
       moduleType, // 查表类型
       processDiyColumn, // 加工列
-      titleList,
+      titleList, // 提供给表格列名
     });
 
     console.log('查询参数:----------');

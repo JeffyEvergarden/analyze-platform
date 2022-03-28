@@ -38,8 +38,11 @@ const MiniMap: React.FC<any> = (props: any) => {
   const [moduleData, setModuleData] = useState<any>({});
   const [moduleId, setModuleId] = useState<any>(id || query.moduleId || '');
 
+  const [msg, setMsg] = useState<any>('');
+
   // 刷新数据
   const refreshList = async () => {
+    setMsg('');
     try {
       const { statisticsSearch, globalSearch, compareSearch } = moduleData;
 
@@ -51,7 +54,8 @@ const MiniMap: React.FC<any> = (props: any) => {
 
       //汇总
       const map: any = {}; // 别名map 对象 key=>alisa
-      if (!statisticsSearch.childrenList) {
+      if (!statisticsSearch || !globalSearch || !statisticsSearch.childrenList) {
+        setMsg('查询配置信息异常');
         return null;
       } else {
         //生成别名映射
@@ -81,7 +85,7 @@ const MiniMap: React.FC<any> = (props: any) => {
       // 查询数据
       getAdvertiseList(formDataList, eventList, map, baseInfo);
     } catch (e) {
-      message.error('查询错误');
+      setMsg('查询异常');
       setLoading(false);
     }
 
@@ -177,6 +181,8 @@ const MiniMap: React.FC<any> = (props: any) => {
                   <span>结果</span>
                   <Divider type="vertical"></Divider>
                   <DownloadOutlined onClick={handleExport}></DownloadOutlined>
+
+                  <span style={{ color: 'red', marginLeft: '30px' }}>{msg}</span>
                 </div>
 
                 {/* 非只读模式 */}
