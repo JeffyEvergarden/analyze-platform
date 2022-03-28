@@ -124,6 +124,32 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
     });
   }, []);
 
+  useEffect(() => {
+    if (list.length > 0) {
+      // 去掉不在list里面的字段
+      const formValues = form.getFieldValue('childrenList');
+      let _formValues =
+        formValues?.filter?.((item: any) => {
+          return list.some((subItem: any) => {
+            return item.subject === subItem.value;
+          });
+        }) || [];
+      if (_formValues.length === 0) {
+        form.setFieldsValue({
+          childrenList: [
+            {
+              subject: undefined,
+              operator: undefined,
+              params: undefined,
+            },
+          ],
+        });
+      } else {
+        form.setFieldsValue({ childrenList: _formValues });
+      }
+    }
+  }, [list]);
+
   return (
     <Form form={form}>
       <Form.List name="childrenList">
