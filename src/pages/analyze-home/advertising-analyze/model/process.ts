@@ -252,8 +252,8 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
     });
     //分组
     obj.groupby = [...compareData.groupBy, 'event_occur_time'];
-    //时间维度
-    obj.time_grain_sqla = 'P1D';
+    // //时间维度
+    // obj.time_grain_sqla = 'P1D';
     //时间范围
     if (compareData.daterange?.length === 2) {
       const time1 = compareData.daterange[0].format('YYYY-MM-DD');
