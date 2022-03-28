@@ -23,11 +23,12 @@ const getList = (req: any, res: any) => {
 
   const datas = mertics.map((key: string) => {
     let arr = new Array(10).fill(0);
+    let time_field = 'event_occur_time'; // day_id
     arr = arr.map((item: any, index: number) => {
       return {
         activity_id: 'fate',
         activity_name: '命运冠位指定',
-        day_id: (20210925 + index).toString(),
+        [time_field]: (20210925 + index).toString(),
         [key]: Number((Math.random() * 1000).toFixed(0)),
       };
     });
@@ -35,7 +36,7 @@ const getList = (req: any, res: any) => {
     return {
       form_data: {
         metrics: ['order_count', key],
-        groupby: ['activity_id', 'activity_name', 'day_id'],
+        groupby: ['activity_id', 'activity_name', time_field],
         adhoc_filters: [
           {
             subject: 'event_type',

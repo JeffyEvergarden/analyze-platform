@@ -35,17 +35,22 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
     });
   };
 
-  // 修改事件 （传入序号） 一级属性
   const changeSubject = (val: any, outIndex: any) => {
     const formValues = form.getFieldValue('childrenList');
     const formValue = formValues?.[outIndex];
     formValue.operator = undefined;
     formValue.params = undefined;
-    formValue.dataType = list.find((item: any) => item.code === val)?.dataType;
-    formValue.dictCode = list.find((item: any) => item.code === val)?.dictCode;
 
     form.setFieldsValue({
       childrenList: [...formValues],
+    });
+  };
+
+  const removeIndex = (index: number) => {
+    const tempChildrenList = form.getFieldValue('childrenList') || [];
+    tempChildrenList.splice(index, 1);
+    form.setFieldsValue({
+      childrenList: [...tempChildrenList],
     });
   };
 
@@ -119,31 +124,16 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
     });
   }, []);
 
-  const fieldChangeFunc = (changedFields: any, allFields: any) => {
-    // console.log('fieldChangeFunc', changedFields);
-    if (changedFields[0]?.name?.length === 5) {
-      let newVal = [...changedFields[0]?.name];
-      const curList: any = form.getFieldValue(newVal[0]);
-      const currentFormValue: any = curList?.[newVal[1]] || {};
-      currentFormValue.innerList = currentFormValue[newVal[2]] || [];
-      currentFormValue.innerList[newVal[3]][newVal[4]] = changedFields[0]?.value;
-      form.setFieldsValue({
-        childrenList: [...curList],
-      });
-    }
-  };
-
   return (
-    <Form form={form} onFieldsChange={fieldChangeFunc}>
+    <Form form={form}>
       <Form.List name="childrenList">
         {(fields, { add, remove }) => {
           return (
             <>
               {fields.map((field: any, outIndex: number) => {
                 const formListValue = form.getFieldValue('childrenList');
-                const _currentSubject = formListValue[outIndex].subject;
-                const _currentOp = formListValue[outIndex].operator;
-
+                const _currentSubject = formListValue[outIndex]?.subject;
+                const _currentOp = formListValue[outIndex]?.operator;
                 const _currentSubjectObj = list.find((item: any) => {
                   return item.value === _currentSubject;
                 });
@@ -152,12 +142,12 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                 const subList = _currentSubjectObj?.list || [];
 
                 return (
-                  <div key={field.fieldKey}>
+                  <div key={field.key}>
                     {/* 前置筛选 */}
                     <Space align="baseline" style={{ height: '32px', marginBottom: '24px' }}>
                       {/* 一级筛选 */}
                       <FormItem
-                        rules={[{ required: true, message: '请选择事件' }]}
+                        rules={[{ required: true, message: '请选择条件' }]}
                         name={[field.fieldKey, 'subject']}
                         fieldKey={[field.fieldKey, 'subject']}
                         style={{ width: '200px' }}
@@ -241,23 +231,14 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                           rules={[{ required: true, message: '请选择' }]}
                           dependencies={['childrenList', outIndex, 'subject']}
                         >
-                          {formListValue[outIndex].operator == 'between' ? (
-                            <RangePicker />
-                          ) : (
-                            <DatePicker showTime />
-                          )}
+                          {_currentOp == 'between' ? <RangePicker /> : <DatePicker showTime />}
                         </FormItem>
                       </Condition>
 
                       {/* string */}
                       <Condition r-if={dataType === 'select'}>
                         {/* 多选 */}
-                        <Condition
-                          r-if={
-                            formListValue[outIndex].operator == 'in' ||
-                            formListValue[outIndex].operator == 'not in'
-                          }
-                        >
+                        <Condition r-if={_currentOp == 'in' || _currentOp == 'not in'}>
                           <FormItem
                             name={[field.name, 'params']}
                             key={field.fieldKey + 'params'}
@@ -275,12 +256,7 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                           </FormItem>
                         </Condition>
                         {/* 单选 */}
-                        <Condition
-                          r-if={
-                            formListValue[outIndex].operator != 'in' &&
-                            formListValue[outIndex].operator != 'not in'
-                          }
-                        >
+                        <Condition r-if={_currentOp != 'in' && _currentOp != 'not in'}>
                           <FormItem
                             name={[field.name, 'params']}
                             key={field.fieldKey + 'params'}
@@ -316,7 +292,8 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                         {outIndex > -1 && (
                           <MinusCircleOutlined
                             onClick={() => {
-                              remove(outIndex);
+                              console.log('删除:' + outIndex);
+                              removeIndex(outIndex);
                             }}
                             style={{ marginLeft: '10px', fontSize: '18px', color: '#A0A0A0' }}
                           />

@@ -8,7 +8,7 @@ import {
   fetchSqlBaseInfo,
   getModuleData,
 } from './api';
-import { OperatorList, TitleList } from './const';
+import { OperatorList, TitleList, ExtraList } from './const';
 
 // 加密参数
 const sha256 = require('crypto-js/sha256');
@@ -280,6 +280,7 @@ export const useAdvertiseModel = () => {
       const objList: any[] = [];
       const map: any = [];
       let groupby: any[] = [];
+      const _titleList = titleList.concat(ExtraList);
       resList.map((resData: any, index: any) => {
         if (!resData.data) {
           return;
@@ -293,15 +294,16 @@ export const useAdvertiseModel = () => {
             map.push(item);
             const extra: any = {};
             // 找到世间默认为降序
-            if (['day_id', 'batch_date'].indexOf(item) > -1) {
+            if (['event_occur_time'].indexOf(item) > -1) {
               extra.defaultSortOrder = 'descend';
             }
             if (index < 2) {
               extra.fixed = 'left';
             }
+
             dynamicTableColumn.push({
               ...extra,
-              title: titleList.find((i: any) => i.value === item)?.name || '',
+              title: _titleList.find((i: any) => i.value === item)?.name || '',
               dataIndex: item,
               sortDirection: ['descend', 'ascend'],
               sorter: sorter(item),

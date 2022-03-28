@@ -140,35 +140,15 @@ export const timeUnitList: any[] = [
 // 标题列表
 export const TitleList: any[] = [
   {
-    key: 'activity_id',
-    label: '活动ID',
+    key: 'advertchannel',
+    label: '广告投放渠道',
   },
+];
+
+// 补充字段
+export const ExtraList: any[] = [
   {
-    key: 'activity_name',
-    label: '活动名称',
-  },
-  {
-    key: 'prod_type',
-    label: '产品类型',
-  },
-  // {
-  //   key: 'praticipation_type',
-  //   label: '参与方式',
-  // },
-  {
-    key: 'prod_code',
-    label: '进件产品',
-  },
-  {
-    key: 'channel_num',
-    label: '渠道',
-  },
-  {
-    key: 'day_id',
-    label: '事件发生日期',
-  },
-  {
-    key: 'batch_date',
-    label: '批次日期',
+    value: 'event_occur_time',
+    name: '事件发生日期',
   },
 ];

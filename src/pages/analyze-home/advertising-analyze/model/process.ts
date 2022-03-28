@@ -251,9 +251,9 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
       }
     });
     //分组
-    obj.groupby = compareData.groupBy;
+    obj.groupby = [...compareData.groupBy, 'event_occur_time'];
     //时间维度
-    obj.time_grain_sqla = compareData.dateUnit;
+    obj.time_grain_sqla = 'P1D';
     //时间范围
     if (compareData.daterange?.length === 2) {
       const time1 = compareData.daterange[0].format('YYYY-MM-DD');
@@ -261,12 +261,12 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
       const timeRange = `${time1}T00:00:00+08:00 : ${time2}23:59:59+08:00`;
       obj.time_range = timeRange;
     }
-    if (compareData.windowsCount && compareData.windowsUnit) {
+    if (compareData.windowCount && compareData.windowUnit) {
       obj.adhoc_filters.push({
         expressionType: 'SIMPLE',
-        subject: 'dekta_time',
+        subject: 'dekta_time', // todo
         operator: '<=',
-        comparator: changeWindowsCount(compareData.windowsCount, compareData.windowsUnit),
+        comparator: changeWindowsCount(compareData.windowCount, compareData.windowUnit),
         clause: 'WHERE',
         fromFormData: true,
         isExtra: false,
@@ -289,7 +289,7 @@ export const supersetRequestData = (
     viz_type: 'table',
     url_params: {},
     time_range_endpoints: ['inclusive', 'inclusive'],
-    granularity_sqla: compareData.dateType || 'day_id', // 时间纬度
+    granularity_sqla: 'event_occur_time', // 时间纬度 todo
     time_grain_sqla: '', //事件维度
     time_range: '',
     metrics: ['order_count'],

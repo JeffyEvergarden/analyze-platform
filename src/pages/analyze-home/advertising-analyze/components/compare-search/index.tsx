@@ -80,6 +80,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
     let arr = [...list];
     let len = TitleList.length;
     let i = len - 1;
+    // 取完并集  和  TitleList 再取并集
     while (i > -1) {
       if (
         !list.some((item: any) => {
@@ -93,21 +94,19 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
       }
       i--;
     }
-    if (selectDateType) {
-      arr.push({
-        value: selectDateType,
-        name: map[selectDateType],
-      });
-    }
+    // 过滤掉不显示的字段
+    // arr = arr.filter((item: any) => {
+    //   return !['event_occur_time'].includes(item.value);
+    // });
 
     return arr;
-  }, [list, selectDateType]);
+  }, [list]);
 
   // 初始化
   useEffect(() => {
     // 数据初始化
     form.setFieldsValue({
-      groupBy: ['activity_name'],
+      groupBy: ['advertchannel'],
     });
   }, []);
 
@@ -130,16 +129,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
       </FormItem>
 
       <Space align="baseline" style={{ marginRight: '32px' }}>
-        <FormItem name="dateType">
-          <Select
-            style={{ width: '150px' }}
-            placeholder="请选择日期类型"
-            onChange={onchangeDateVal}
-          >
-            <Option value={'day_id'}>事件发生日期</Option>
-            <Option value={'batch_date'}>批次日期</Option>
-          </Select>
-        </FormItem>
+        <span>事件发生日期</span>
 
         <FormItem name="daterange">
           <RangePicker
