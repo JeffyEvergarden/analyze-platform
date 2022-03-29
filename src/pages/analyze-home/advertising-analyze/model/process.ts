@@ -258,7 +258,7 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
     if (compareData.daterange?.length === 2) {
       const time1 = compareData.daterange[0].format('YYYY-MM-DD');
       const time2 = compareData.daterange[1].format('YYYY-MM-DD');
-      const timeRange = `${time1}T00:00:00+08:00 : ${time2}23:59:59+08:00`;
+      const timeRange = `${time1}T00:00:00+08:00 : ${time2}T23:59:59+08:00`;
       obj.time_range = timeRange;
     }
     if (compareData.windowCount && compareData.windowUnit) {

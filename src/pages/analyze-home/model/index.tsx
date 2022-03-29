@@ -138,14 +138,14 @@ export const useBehaviorModel = () => {
           // 时间选择框
           type = subItem.dataType;
         }
-        if (subItem.dataType === 'string' && map.get(subItem.code)) {
+        if (subItem.dataType === 'string' && map.get(subItem.dictCode)) {
           // 时间选择框
-          subList = map.get(subItem.code);
+          subList = map.get(subItem.dictCode);
           type = 'select';
         }
         if (subItem.dataType === 'numberic') {
           // 时间选择框
-          subList = map.get(subItem.code) || [];
+          subList = map.get(subItem.dictCode) || [];
           type = 'number';
         }
         fieldList.push({
