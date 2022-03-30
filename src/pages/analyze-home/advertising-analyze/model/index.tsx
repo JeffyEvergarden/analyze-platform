@@ -51,14 +51,14 @@ export const useSearchParamsModel = () => {
           // 时间选择框
           type = subItem.dataType;
         }
-        if (subItem.dataType === 'string' && map.get(subItem.code)) {
+        if (subItem.dataType === 'string' && map.get(subItem.dictCode)) {
           // 时间选择框
-          subList = map.get(subItem.code);
+          subList = map.get(subItem.dictCode);
           type = 'select';
         }
         if (subItem.dataType === 'numbric') {
           // 时间选择框
-          subList = map.get(subItem.code) || [];
+          subList = map.get(subItem.dictCode) || [];
           type = 'number';
         }
         fieldList.push({
@@ -140,7 +140,8 @@ export const useFilterModel = () => {
         eventDataList.find((subItem: any) => {
           return subItem.value === item.event;
         })?.fieldList || [];
-      if (list?.length > 0) {
+      if (item.event) {
+        // 表示选了 事件
         len++;
       }
       // ----------
@@ -159,7 +160,8 @@ export const useFilterModel = () => {
     resultArr = setArr.filter((item: any) => {
       return tempObj[item.value] === len;
     });
-
+    // 输出个数
+    console.log(tempObj);
     setFilterList([...resultArr]); // 交集
     setUnionList(compareArr); // 并集
 

@@ -19,7 +19,7 @@ const sendMsg = (req: any, res: any) => {
 };
 
 const getList = (req: any, res: any) => {
-  const mertics = ['用户数', '进件笔数'];
+  const mertics = ['用户数', '进件笔数', 'A', 'B', 'C', 'D', 'E', 'V', 'H', 'I', 'J'];
 
   const datas = mertics.map((key: string) => {
     let arr = new Array(10).fill(0);

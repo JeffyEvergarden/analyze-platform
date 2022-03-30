@@ -109,7 +109,7 @@ const ResultTable: React.FC<any> = (props: TableProps) => {
   const extra = useMemo(() => {
     const obj: any = {};
     let len = columnsData.length;
-    if (len > 10) {
+    if (len > 8) {
       obj.x = len * 120;
     }
     return obj;

@@ -98,9 +98,23 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
     // arr = arr.filter((item: any) => {
     //   return !['event_occur_time'].includes(item.value);
     // });
-
     return arr;
   }, [list]);
+
+  useEffect(() => {
+    if (computedList.length > 0) {
+      let groupVal = form.getFieldValue('groupBy') || [];
+      let keys = computedList.map((item: any) => {
+        return item.value;
+      });
+      groupVal = groupVal.filter((item: any) => {
+        return keys.includes(item);
+      });
+      form.setFieldsValue({
+        groupBy: [...groupVal],
+      });
+    }
+  }, [computedList]);
 
   // 初始化
   useEffect(() => {

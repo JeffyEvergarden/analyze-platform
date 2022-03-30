@@ -19,7 +19,7 @@ const { RangePicker } = DatePicker;
 
 const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
   const [form] = Form.useForm();
-  const { cref, fieldMap, list } = props;
+  const { cref, list } = props;
   const [paramsTypeList, setParamsTypeList] = useState<('String' | 'Array')[]>([]);
 
   // 新增全局筛选

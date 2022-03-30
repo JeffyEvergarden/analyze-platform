@@ -113,6 +113,15 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     });
   };
 
+  const removeIndex = (index: number) => {
+    const tempChildrenList = form.getFieldValue('childrenList') || [];
+    tempChildrenList.splice(index, 1);
+    setFilter?.(tempChildrenList, eventList);
+    form.setFieldsValue({
+      childrenList: [...tempChildrenList],
+    });
+  };
+
   useImperativeHandle(cref, () => {
     return {
       //获取接口所需数据
@@ -323,7 +332,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
                       <MinusCircleOutlined
                         onClick={() => {
-                          removeOut(outIndex);
+                          removeIndex(outIndex);
                         }}
                         style={{ marginLeft: '10px', fontSize: '20px', color: '#A0A0A0' }}
                       />
@@ -363,6 +372,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                             onPressEnter={() => {
                               changeFilterAlias(field, outIndex);
                             }}
+                            maxLength={20}
                           ></Input>
                         </FormItem>
                       </Condition>

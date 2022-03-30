@@ -154,7 +154,7 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
                   _params = (_params as any).format?.();
                 }
                 if (typeof _params !== 'number') {
-                  _params = `${_params}`;
+                  _params = `'${_params}'`;
                 }
                 return _params;
               });
@@ -168,7 +168,7 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
               _params = (_params as any).format?.();
             }
             if (typeof _params !== 'number') {
-              _params = `${_params}`;
+              _params = `'${_params}'`;
             }
 
             tempFilters.push(
