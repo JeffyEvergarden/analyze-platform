@@ -2,17 +2,12 @@ import React, { useEffect, useImperativeHandle, useState } from 'react';
 // 通用组件
 import { Form, Select, Button, Space, Input } from 'antd';
 
-import {
-  PlusSquareOutlined,
-  MinusCircleOutlined,
-  HighlightOutlined,
-  PlusOutlined,
-  EditOutlined,
-} from '@ant-design/icons';
+import { PlusSquareOutlined, MinusCircleOutlined, HighlightOutlined } from '@ant-design/icons';
 // 定制组件
 import Condition from '../common/Condition';
 import InnerFormItem from '../common/InnerFormItem';
 import { statisticNumbericList, statisticDefaultList } from '../../model/const';
+import { propcessInitForm } from '../../../model/util';
 import style from './style.less';
 
 interface StatisticComponentProps {
@@ -144,6 +139,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       },
       //数据回显
       async setForm(obj: any) {
+        obj = propcessInitForm(obj);
         form.setFieldsValue(obj);
         const list = form.getFieldValue('childrenList') || [];
         setFilter?.(list, eventList);

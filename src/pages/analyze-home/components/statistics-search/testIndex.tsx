@@ -8,7 +8,8 @@ import Condition from '../common/Condition';
 import InnerFormItem from '../common/InnerFormItem';
 import { statisticNumbericList, statisticDefaultList } from '../model/const';
 import style from './style.less';
-import StepForm from '@ant-design/pro-form/lib/layouts/StepsForm/StepForm';
+
+import { propcessInitForm } from '../../model/util';
 
 interface StatisticComponentProps {
   cref: any;
@@ -182,6 +183,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       },
       //数据回显
       async setForm(obj: any) {
+        obj = propcessInitForm(obj);
         form.setFieldsValue({ childrenList: [obj] });
       },
     };

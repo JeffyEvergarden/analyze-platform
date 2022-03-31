@@ -9,6 +9,7 @@ import InnerFormItem from '../../../components/common/InnerFormItem';
 import SingleFormItem from '../../../components/common/SingleFormItem';
 import { statisticNumbericList, statisticDefaultList } from '../../../components/model/const';
 import style from './style.less';
+import { propcessInitForm } from '../../../model/util';
 
 interface StatisticComponentProps {
   cref: any;
@@ -195,7 +196,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       },
       //数据回显
       async setForm(obj: any) {
-        console.log(obj);
+        obj = propcessInitForm(obj);
         obj.innerList[0].alias = obj?.alias;
         form.setFieldsValue({ childrenList: [obj] });
         setBehaviorList(obj?.EventList);
@@ -218,21 +219,6 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     });
     addInnerForm(0);
   }, [change]);
-
-  // useEffect(() => {
-  //   addInnerForm(0);
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log(test);
-
-  //   const curList = form.getFieldValue('childrenList');
-  //   const currentFormValue: any = curList?.[0] || {};
-  //   currentFormValue.event = undefined;
-  //   form.setFieldsValue({
-  //     childrenList: [...curList],
-  //   });
-  // }, [test]);
 
   const fieldChangeFunc = (changedFields: any, allFields: any) => {
     // console.log('fieldChangeFunc', changedFields);
@@ -324,18 +310,6 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                               </Option>
                             );
                           })}
-                          {/* 属性列表 */}
-                          {/* {fieldList.length > 0 && (
-                            <Select.OptGroup label="----">
-                              {fieldList.map((item: any, index: any) => {
-                                return (
-                                  <Option key={`field_${index}`} value={item.value} opt={item}>
-                                    {item.name}
-                                  </Option>
-                                );
-                              })}
-                            </Select.OptGroup>
-                          )} */}
                         </Select>
                       </FormItem>
                       {/* {type} */}

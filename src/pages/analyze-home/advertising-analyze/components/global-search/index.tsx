@@ -6,6 +6,8 @@ import { PlusSquareOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-desi
 // 定制组件
 import Condition from '../common/Condition';
 
+import { propcessInitForm } from '../../../model/util';
+
 interface GlobalComponentProps {
   cref: any;
   fieldMap?: any;
@@ -102,6 +104,8 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
       },
       //数据回显
       async setForm(obj: any) {
+        obj = propcessInitForm(obj);
+        console.log(obj);
         form.setFieldsValue(obj);
       },
       addGlobal: () => {
