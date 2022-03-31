@@ -79,15 +79,8 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     currentFormValue.associatedField = undefined; // 关联主体
     currentFormValue.relation = 'AND';
     // console.log(opt);
-    // 指标列表
-    currentFormValue.metricsList = opt.opt.metricsList || [];
-    // 属性列表
-    currentFormValue.fieldList = opt.opt.fieldList || [];
     //关联主体
     currentFormValue.associatedFieldsList = opt.opt.associatedFieldsList || [];
-    //一级筛选的数据
-    currentFormValue.EventList = list;
-
     form.setFieldsValue({
       childrenList: [...curList],
     });
@@ -184,6 +177,9 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       //数据回显
       async setForm(obj: any) {
         obj = propcessInitForm(obj);
+        if (obj.event) {
+          getBehavior('RETAIN_STRATEGY_NEXT', obj.event);
+        }
         form.setFieldsValue({ childrenList: [obj] });
       },
     };
@@ -254,8 +250,13 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
               {fields.map((field: any, outIndex: number) => {
                 const curItem = form.getFieldValue('childrenList')[outIndex];
                 // console.log(curItem);
-                const metricsList = curItem?.metricsList || [];
-                const fieldList = curItem?.fieldList || [];
+                const _event = curItem?.event;
+                const _curItemObj: any = list.find((item: any) => {
+                  return item.value === _event;
+                });
+                const metricsList: any = _curItemObj?.metricsList || [];
+                const fieldList = _curItemObj?.fieldList || [];
+
                 const associatedFieldsList = curItem?.associatedFieldsList || [];
 
                 const type: string = curItem?.type || ''; // 判断是 指标 还是 属性

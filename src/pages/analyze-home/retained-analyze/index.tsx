@@ -227,62 +227,31 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     (firstSearchRef.current as any).setForm(obj?.formData?.first);
     (normalSearchRef?.current as any).setForm(obj?.formData?.last);
     (lastSearchRef.current as any).setForm(obj?.formData?.compare);
-    refreshList(obj?.formData?.first?.EventList || []);
+    refreshList(eventList || []);
   };
 
   // mounted初始化
   useEffect(() => {
-    console.log(location);
     getPreConfig('RETAIN_STRATEGY');
-    console.log(eventList);
+  }, []);
 
-    // let afterUrl: any = window.location.search;
-    // if (afterUrl) {
-    //   let obj = getvl(afterUrl);
-    //   let moduleId1 = obj?.moduleId;
-    //   setBoardId(obj?.dashboardId);
-    //   setModuleId(moduleId1);
-    //   getModuleData(moduleId1).then((res: any) => {
-    //     console.log(res);
-
-    //     let data = JSON.parse(res?.datas?.analysisData);
-    //     console.log(data);
-
-    //     backData(data);
-
-    //     setModuleName(res?.datas?.analysisName);
-    //     setModuleType(res?.datas?.analysisType);
-    //   });
-    //   // console.log(obj);
-    //   // let formData = obj?.formData && JSON.parse(obj?.formData);
-    //   // if (formData) {
-    //   //   backData(formData);
-    //   // }
-    // }
-    if (location.search) {
+  useEffect(() => {
+    if (eventList?.length > 0 && location.search) {
       let obj = location?.query;
-      let moduleId1 = obj?.moduleId;
+      let _moduleId = obj?.moduleId;
       setBoardId(obj?.dashboardId);
-      setModuleId(moduleId1);
-      getModuleData(moduleId1).then((res: any) => {
-        console.log(res);
-
+      setModuleId(_moduleId);
+      getModuleData(_moduleId).then((res: any) => {
+        // console.log(res);
         let data = JSON.parse(res?.datas?.analysisData);
         console.log(data);
-
         backData(data);
 
         setModuleName(res?.datas?.analysisName);
         setModuleType(res?.datas?.analysisType);
       });
-      // console.log(obj);
-      // let formData = obj?.formData && JSON.parse(obj?.formData);
-      // if (formData) {
-      //   backData(formData);
-      // }
     }
-    // getPreConfig('RETAIN_STRATEGY');
-  }, []);
+  }, [eventList]);
 
   const handleExport = useCallback(() => {
     tableRef.current?.exportExcel();

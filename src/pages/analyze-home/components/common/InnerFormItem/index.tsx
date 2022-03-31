@@ -19,8 +19,25 @@ const InnerForm: React.FC<any> = (props: any) => {
   const type: any = currentInnerValue?.dataType || 'input'; // 类型
   const selectType: any = currentInnerValue?.selectType || 'single'; // 下拉选择类型
 
-  const opList: any[] = currentInnerValue?.operatorList || [];
-  const subInnerList: any[] = currentInnerValue?.subList || [];
+  const _currentAttr = currentInnerValue?.attr;
+  const _currentObj = list.find((item: any) => {
+    return item.value === _currentAttr;
+  });
+
+  const _dataType = _currentObj?.dataType;
+  let opList: any[] = []; // 二级列表
+  // 二级列表
+  if (_dataType === 'number' || _dataType === 'dateTime') {
+    opList = numberTypeList;
+  } else if (_dataType === 'string') {
+    opList = stringTypeList;
+  } else if (_dataType === 'select') {
+    opList = arrayTypeList;
+  } else if (_dataType === 'input') {
+    opList = arrayTypeList;
+  }
+
+  const subInnerList: any[] = _currentObj?.list || [];
 
   // console.log('重新渲染---:' + field.fieldKey);
   // useEffect(() => {}, []);
@@ -31,26 +48,16 @@ const InnerForm: React.FC<any> = (props: any) => {
     // console.log(currentFormValue);
     // console.log(currentInnerValue);
     currentInnerValue.dataType = options.opt.dataType || '';
-    let subList: any[] = options.opt.list || []; // 三级下拉列表
+    // let subList: any[] = options.opt.list || []; // 三级下拉列表
     // console.log(val);
     // console.log(map);
     // console.log(subList);
-    let operatorList: any[] = []; // 二级列表
+
     currentInnerValue.attr = val;
     currentInnerValue.op = undefined;
     currentInnerValue.value = undefined;
     // 二级列表
-    if (currentInnerValue.dataType === 'number' || currentInnerValue.dataType === 'dateTime') {
-      operatorList = numberTypeList;
-    } else if (currentInnerValue.dataType === 'string') {
-      operatorList = stringTypeList;
-    } else if (currentInnerValue.dataType === 'select') {
-      operatorList = arrayTypeList;
-    } else if (currentInnerValue.dataType === 'input') {
-      operatorList = arrayTypeList;
-    }
-    currentInnerValue.operatorList = operatorList;
-    currentInnerValue.subList = subList;
+    // currentInnerValue.subList = subList;
     // ----------------
     currentFormValue.innerList[index] = currentInnerValue;
     currentFormValue.innerList = [...currentFormValue.innerList];
@@ -62,7 +69,6 @@ const InnerForm: React.FC<any> = (props: any) => {
   // 修改操作
   const changeOperator = (val: any, options: any, index: number) => {
     // console.log(val);
-    console.log(currentInnerValue, 'twotwotwo');
 
     currentInnerValue.op = val;
     // 多选

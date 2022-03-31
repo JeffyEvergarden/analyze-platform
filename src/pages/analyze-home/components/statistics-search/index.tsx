@@ -154,8 +154,13 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
               {fields.map((field: any, outIndex: number) => {
                 const curItem = form.getFieldValue('childrenList')[outIndex];
                 // console.log(curItem);
-                const metricsList = curItem.metricsList || [];
-                const fieldList = curItem.fieldList || [];
+                // 当前所选的事件
+                const _event = curItem?.event;
+                const _curItemObj: any = list.find((item: any) => {
+                  return item.value === _event;
+                });
+                const metricsList: any = _curItemObj?.metricsList || [];
+                const fieldList = _curItemObj?.fieldList || [];
                 const associatedFieldsList = curItem.associatedFields || [];
 
                 const type: string = curItem.type || ''; // 判断是 指标 还是 属性

@@ -56,25 +56,18 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
-    console.log(change);
-
     if (index < 0 || typeof index !== 'number') {
       return;
     }
     const curList = form.getFieldValue('childrenList');
     const currentFormValue: any = curList?.[index] || {};
-    console.log(val);
-    console.log(opt);
-    console.log(curList);
+
     // 清除子对象其他值
     currentFormValue?.innerList?.forEach((item: any) => {
       item.attr = undefined;
       item.op = undefined;
       item.value = undefined;
     });
-    // currentFormValue.innerList[0].op = undefined;
-    // currentFormValue.innerList[0].value = undefined;
-    // currentFormValue.innerList[0].alias = undefined;
 
     // 清除当前对象其他值
     currentFormValue.attribute = undefined; // 第二属性 指标
@@ -83,11 +76,11 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
     // console.log(opt);
     // 指标列表
-    currentFormValue.metricsList = opt.opt.metricsList || [];
-    // 属性列表
-    currentFormValue.fieldList = opt.opt.fieldList || [];
-    //一级筛选
-    currentFormValue.EventList = list;
+    // currentFormValue.metricsList = opt.opt.metricsList || [];
+    // // 属性列表
+    // currentFormValue.fieldList = opt.opt.fieldList || [];
+    // //一级筛选
+    // currentFormValue.EventList = list;
     form.setFieldsValue({
       childrenList: [...curList],
     });
@@ -145,7 +138,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
           let formData = form.getFieldValue('childrenList')[0];
           console.log(formData);
           // formData.forEach((item: any) => {});
-          let init_event_num = formData.EventList?.find((item: any) => {
+          let init_event_num: any = list?.find((item: any) => {
             return item.value == formData?.event;
           });
           let init_Metric = init_event_num?.metricsList?.find((item: any) => {
@@ -166,7 +159,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
               dataType: formData?.innerList[0]?.dataType,
             },
             otherName: formData?.alias,
-            defOtherName: `${init_event_num.name}的${init_Metric.name}`,
+            defOtherName: `${init_event_num?.name || '-'}的${init_Metric?.name || '-'}`,
           };
         } else {
           return false;
@@ -179,7 +172,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
         if (fieldsValue) {
           const formData = form.getFieldValue('childrenList')[0];
-          let init_event_num = formData.EventList?.find((item: any) => {
+          let init_event_num: any = list?.find((item: any) => {
             return item.value == formData?.event;
           });
           let init_Metric = init_event_num?.metricsList?.find((item: any) => {
@@ -199,7 +192,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
         obj = propcessInitForm(obj);
         obj.innerList[0].alias = obj?.alias;
         form.setFieldsValue({ childrenList: [obj] });
-        setBehaviorList(obj?.EventList);
+        setBehaviorList(list);
       },
     };
   });
@@ -245,11 +238,15 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
               {fields?.map((field: any, outIndex: number) => {
                 const curItem = form.getFieldValue('childrenList')[outIndex];
                 // console.log(curItem);
-                const metricsList = curItem?.metricsList || [];
-                const fieldList = curItem?.fieldList || [];
+                const _event = curItem?.event;
+                const _curItemObj: any = list.find((item: any) => {
+                  return item.value === _event;
+                });
+                const metricsList: any = _curItemObj?.metricsList || [];
+                const fieldList = _curItemObj?.fieldList || [];
 
-                const type: string = curItem?.type || ''; // 判断是 指标 还是 属性
-                const dataType: string = curItem?.dataType || ''; // 判断数据类型
+                const type: string = _curItemObj?.type || ''; // 判断是 指标 还是 属性
+                const dataType: string = _curItemObj?.dataType || ''; // 判断数据类型
                 let subList: any[] = []; // 三级下拉列表
                 if (type === 'fields' && dataType === 'number') {
                   subList = statisticNumbericList;
