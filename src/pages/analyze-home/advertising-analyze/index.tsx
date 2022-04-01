@@ -255,7 +255,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   };
 
   //保存看板
-  const saveModuleData = async ({ moduleName, treeSelectId }: any) => {
+  const saveModuleData = async (analysisName: any, analysisBoard: any) => {
     const [statisticsSearch, globalSearch, compareSearch] = await Promise.all([
       (StatisticSearchRef.current as any).getForm(),
       (GlobalSearchRef?.current as any).getForm(),
@@ -288,9 +288,9 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
 
     const param: any = {
       analysisData,
-      analysisBoard: treeSelectId, //选的看板
-      analysisName: moduleName, //自定义的看板名称
-      analysisType: 'event',
+      analysisBoard: analysisBoard, //选的看板
+      analysisName: analysisName, //自定义的看板名称
+      analysisType: moduleType,
     };
 
     if (!moduleId || (moduleId && treeSelectId !== dashboardId)) {
@@ -322,6 +322,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
     }
   };
 
+  // ---------------
   // 添加自定义弹窗 columnModalRef
   const columnModalRef = useRef(null);
   const openModal = () => {
