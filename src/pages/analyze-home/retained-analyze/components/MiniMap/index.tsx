@@ -94,17 +94,44 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
   };
 
   const exportExcel = () => {
-    const tableDOM: HTMLElement | null = document.getElementById(`${'result-table'}`);
-    const cpTableNode: any = tableDOM?.cloneNode(true);
-    const tempBody: any = cpTableNode?.querySelector('tbody');
-    const tempTr = cpTableNode?.querySelector('.ant-table-measure-row');
-    if (tempTr) {
-      tempBody.removeChild(tempTr);
+    const dataList: any = tableDataList;
+    if (dataList?.length === 0) {
+      return;
     }
-
-    let ws = XLSX.utils.table_to_sheet(cpTableNode, {
-      raw: true,
+    const header: any = {};
+    tableList?.map((item: any) => {
+      header[item.dataIndex] = item?.title;
     });
+    const outputDataList: any[] = [];
+    dataList?.map((data: any) => {
+      let obj: any = {};
+      Object.keys(header)?.map((item) => {
+        obj[item] = data[item] ? data[item] : data[item] == 0 ? 0 : '-';
+      });
+      outputDataList.push(obj);
+    });
+
+    const outputData = [header, ...outputDataList];
+    console.log(outputData);
+    console.log(header);
+
+    // const tableDOM: HTMLElement | null = document.getElementById(`${tableId}`);
+    // const cpTableNode: any = tableDOM?.cloneNode(true);
+    // const tempBody: any = cpTableNode?.querySelector('tbody');
+    // // const tempTr = cpTableNode?.querySelector('.ant-table-measure-row');
+    // // tempBody.removeChild(tempTr);
+    // console.log(cpTableNode);
+
+    //数据
+    // let ws = XLSX.utils.table_to_sheet(cpTableNode, {
+    let ws = XLSX.utils.json_to_sheet(outputData, {
+      header: Object.keys(header),
+      // raw: true,
+      skipHeader: true,
+    });
+    console.log(ws);
+
+    //初始化
     let wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws);
     XLSX.writeFile(wb, `留存分析${moment().format('YYYYMMDDHHmmss')}.xlsx`);
@@ -124,7 +151,11 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
           <div>
             <span>结果</span>
             <Divider type="vertical"></Divider>
-            <DownloadOutlined onClick={() => {}}></DownloadOutlined>
+            <DownloadOutlined
+              onClick={() => {
+                exportExcel();
+              }}
+            ></DownloadOutlined>
             <Tooltips placement="top" title={'刷新并重置勾选'}>
               <RetweetOutlined
                 onClick={() => {
