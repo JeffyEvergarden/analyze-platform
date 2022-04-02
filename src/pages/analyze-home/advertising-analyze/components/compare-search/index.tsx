@@ -33,7 +33,11 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
         try {
           const fieldsValue: any = await form.validateFields();
           // console.log(fieldsValue);
-          return fieldsValue;
+          if (fieldsValue) {
+            return fieldsValue;
+          } else {
+            return false;
+          }
         } catch (e) {}
       },
       async getFormData() {

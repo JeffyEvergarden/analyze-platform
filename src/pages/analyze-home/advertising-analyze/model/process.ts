@@ -193,17 +193,19 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
           );
         }
       });
-      obj.adhoc_filters.push({
-        expressionType: 'SQL',
-        subject: null,
-        operator: null,
-        comparator: null,
-        clause: 'WHERE',
-        fromFormData: true,
-        isExtra: false,
-        sqlExpression: tempFilters.join(' OR '),
-        filterOptionName: '',
-      });
+      if (item.innerList?.length) {
+        obj.adhoc_filters.push({
+          expressionType: 'SQL',
+          subject: null,
+          operator: null,
+          comparator: null,
+          clause: 'WHERE',
+          fromFormData: true,
+          isExtra: false,
+          sqlExpression: tempFilters.join(' OR '),
+          filterOptionName: '',
+        });
+      }
     }
     //  全局指标
     globalData?.childrenList?.map((gl: any) => {
