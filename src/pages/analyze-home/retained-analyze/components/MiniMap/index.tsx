@@ -38,8 +38,9 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
 
   //table数据加工
   useEffect(() => {
+    const list: any[] = dataJson.reqData?._eventList || dataJson?.formData?.first?.EventList || [];
     if (dataJson.reqData && dataJson.formData) {
-      getTable(dataJson?.reqData, dataJson?.formData?.first?.EventList);
+      getTable(dataJson?.reqData, list);
     }
   }, [dataJson]);
 

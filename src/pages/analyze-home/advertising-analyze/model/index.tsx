@@ -280,7 +280,8 @@ export const useAdvertiseModel = () => {
       const dynamicTableColumn: any[] = [];
       const diyColumnList: any[] = [];
       const objList: any[] = [];
-      const map: any = [];
+      const map: any = []; // 列名字段
+      const titleMap = {}; // 列名中文字段
       let groupby: any[] = [];
       const _titleList = titleList.concat(ExtraList);
       resList.map((resData: any, index: any) => {
@@ -291,7 +292,7 @@ export const useAdvertiseModel = () => {
         groupby = formData.groupby || [];
         // 指标名称
         const [, metric] = formData.metrics;
-        formData?.groupby.map((item: any) => {
+        formData?.groupby.map((item: any, i: number) => {
           if (map.indexOf(item) === -1) {
             map.push(item);
             const extra: any = {};
@@ -299,7 +300,7 @@ export const useAdvertiseModel = () => {
             if (['event_occur_time'].indexOf(item) > -1) {
               extra.defaultSortOrder = 'descend';
             }
-            if (index < 2) {
+            if (i < 5) {
               extra.fixed = 'left';
             }
 
@@ -378,7 +379,7 @@ export const useAdvertiseModel = () => {
         let titleKey = `${index}_${eventCode || ''}_${metricsCode || ''}_${fnCode || ''}`;
         let titleName = index + eventZHnName + metricsName + fnName;
         let titleRealName = eventZHnName + metricsName + fnName;
-
+        titleMap[titleName] = titleRealName;
         //未加入过的新列名
         if (map.indexOf(titleName) === -1) {
           map.push(titleName);
@@ -431,6 +432,13 @@ export const useAdvertiseModel = () => {
       };
       map.forEach((name: any) => {
         if (groupby.indexOf(name) > -1) {
+          return;
+        }
+        if (
+          (titleMap[name] && titleMap[name].indexOf('人均') > -1) ||
+          titleMap[name].indexOf('次均') > -1
+        ) {
+          summaryObj[name] = '-';
           return;
         }
         summaryObj[name] = 0;

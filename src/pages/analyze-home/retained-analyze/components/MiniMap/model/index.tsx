@@ -24,7 +24,7 @@ export const useListModel = () => {
     let step: any = [];
     //步长
     res.nextEventTitles.forEach((item: any, index: any) => {
-      console.log(item);
+      // console.log(item);
       if (index < res.nextEventTitleNum) {
         step.push({
           value: tableIndex[index],
@@ -54,7 +54,7 @@ export const useListModel = () => {
     let init_Metric = init_event_num?.metricsList?.find((item: any) => {
       return item.value == obj.initMetric;
     });
-    console.log(init_event_num);
+    // console.log(init_event_num);
 
     setTableList([
       { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex' },

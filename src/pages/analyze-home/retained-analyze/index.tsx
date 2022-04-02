@@ -90,24 +90,6 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   const [boardId, setBoardId] = useState<any>('');
   const [moduleType, setModuleType] = useState<any>('retain');
 
-  const getvl = (url: any) => {
-    let obj: any = {},
-      index = url.indexOf('?'), // 看url有没有参数
-      params = url.substr(index + 1); // 截取url参数部分 name = aaa & age = 20
-
-    if (index != -1) {
-      // 有参数时
-      let parr = params.split('&'); // 将参数分割成数组 ["name = aaa", "age = 20"]
-      for (let i of parr) {
-        // 遍历数组
-        let arr = i.split('='); // 1） i name = aaa   arr = [name, aaa]  2）i age = 20  arr = [age, 20]
-        obj[arr[0]] = arr[1]; // obj[arr[0]] = name, obj.name = aaa   obj[arr[0]] = age, obj.age = 20
-      }
-    }
-
-    return obj;
-  };
-
   const editModalRef = useRef(null);
 
   // 查询
@@ -154,17 +136,12 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   //提交请求
   const saveSubmit = async (analysisName: any, analysisBoard: any) => {
     //请求所需数据
-    let all = await Promise.all([
+    let all: any = await Promise.all([
       (firstSearchRef.current as any).getForm(),
       (normalSearchRef?.current as any).getForm(),
       (lastSearchRef.current as any).getForm(),
     ]);
-    //回显所需数据
-    // let allData = await Promise.all([
-    //   (firstSearchRef.current as any).getFormData(),
-    //   (normalSearchRef?.current as any).getFormData(),
-    //   (lastSearchRef.current as any).getFormData(),
-    // ]);
+
     let statisticsSearch = await (firstSearchRef.current as any).getFormData();
     let followUpSearch = await (normalSearchRef?.current as any).getFormData();
     let compareSearch = await (lastSearchRef.current as any).getFormData();
@@ -172,10 +149,16 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
       compareSearch.dateRange[0] = compareSearch?.dateRange[0]?.format?.('YYYY-MM-DD');
       compareSearch.dateRange[1] = compareSearch?.dateRange[1]?.format?.('YYYY-MM-DD');
     }
+
     all = Object.assign({}, ...all);
+    // 过滤没用的东西
+    all._eventList = eventList.filter((item: any) => {
+      return item.value === all.initEvent;
+    });
     // allData = Object.assign({}, ...allData);
     let allData = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
     let save = { reqData: all, formData: allData };
+    console.log(save);
 
     if (boardId != analysisBoard) {
       let reqData = {

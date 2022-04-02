@@ -54,9 +54,16 @@ const ColumnModal: React.FC<BaseFormProps> = (props) => {
   };
 
   useImperativeHandle(cref, () => ({
-    open() {
+    open(_list: any[]) {
+      const valList = list.map((item: any) => item.value);
+      _list = Array.isArray(_list) ? _list : [];
+      _list = _list.filter((item: any) => {
+        return valList.includes(item.compare1) && valList.includes(item.compare2);
+      });
       form.resetFields();
-      console.log(list);
+      form.setFieldsValue({
+        list: _list,
+      });
       setVisible(true);
     },
     close() {},

@@ -174,7 +174,7 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                 return (
                   <div key={field.key}>
                     {/* 前置筛选 */}
-                    <Space align="baseline" style={{ height: '32px', marginBottom: '24px' }}>
+                    <Space align="baseline">
                       {/* 一级筛选 */}
                       <FormItem
                         rules={[{ required: true, message: '请选择条件' }]}
@@ -276,7 +276,16 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                             rules={[{ required: true, message: '请选择' }]}
                             dependencies={['childrenList', outIndex, 'subject']}
                           >
-                            <Select mode="multiple" style={{ width: '200px' }} placeholder="请选择">
+                            <Select
+                              mode="multiple"
+                              style={{ width: '200px' }}
+                              placeholder="请选择"
+                              showSearch
+                              optionFilterProp="children"
+                              filterOption={(input: any, option: any) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                              }
+                            >
                               {subList?.map((item: any) => (
                                 <Option key={item.value} value={item.value}>
                                   {item.name}
@@ -294,7 +303,15 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                             rules={[{ required: true, message: '请选择' }]}
                             dependencies={['childrenList', outIndex, 'subject']}
                           >
-                            <Select style={{ width: '200px' }} placeholder="请选择">
+                            <Select
+                              style={{ width: '200px' }}
+                              placeholder="请选择"
+                              showSearch
+                              optionFilterProp="children"
+                              filterOption={(input: any, option: any) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                              }
+                            >
                               {subList?.map((item: any) => (
                                 <Option key={item.value} value={item.value}>
                                   {item.name}

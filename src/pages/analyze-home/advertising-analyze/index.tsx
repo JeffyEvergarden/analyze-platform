@@ -334,7 +334,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
       message.warning('请先筛选查询数据再添加自定义指标');
       return null;
     }
-    (columnModalRef.current as any).open();
+    (columnModalRef.current as any).open(processDiyColumn);
   };
 
   const confirmDIYColumn = (val: any) => {

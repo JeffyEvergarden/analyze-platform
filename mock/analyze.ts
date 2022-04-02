@@ -3,6 +3,17 @@ import moment from 'moment';
 
 // 事件接口
 const getEventList = (req: any, res: any) => {
+  let i = 20;
+  let _list = [];
+  while (i > 0) {
+    _list.push({
+      id: '测试' + i,
+      code: '测试' + i,
+      name: '测试' + i,
+      value: '测试' + i,
+    });
+    i--;
+  }
   res.json([
     {
       id: '1',
@@ -25,20 +36,7 @@ const getEventList = (req: any, res: any) => {
           dictCode: 'select',
           createdTime: '1111-11-11',
           updateTime: '2222-22-22',
-          dictValues: [
-            {
-              id: '测试1',
-              code: '测试1',
-              name: '测试1',
-              value: '测试1',
-            },
-            {
-              id: '测试2',
-              code: '测试2',
-              name: '测试2',
-              value: '测试2',
-            },
-          ],
+          dictValues: _list,
         },
         {
           canGroupBy: '1',

@@ -175,7 +175,16 @@ const InnerForm: React.FC<any> = (props: any) => {
               rules={[{ required: true, message: '请选择' }]}
               dependencies={['childrenList', 0, 'innerList', index, 'subject']}
             >
-              <Select mode="multiple" style={{ width: '200px' }} placeholder="请选择">
+              <Select
+                mode="multiple"
+                style={{ width: '200px' }}
+                placeholder="请选择"
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input: any, option: any) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
                 {subInnerList?.map((item: any, index: number) => (
                   <Option key={index} value={item.value}>
                     {item.name}
@@ -192,7 +201,15 @@ const InnerForm: React.FC<any> = (props: any) => {
               rules={[{ required: true, message: '请选择' }]}
               dependencies={['childrenList', 0, 'innerList', index, 'subject']}
             >
-              <Select style={{ width: '200px' }} placeholder="请选择">
+              <Select
+                style={{ width: '200px' }}
+                placeholder="请选择"
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input: any, option: any) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
                 {subInnerList?.map((item: any, index: number) => (
                   <Option key={index} value={item.value}>
                     {item.name}
