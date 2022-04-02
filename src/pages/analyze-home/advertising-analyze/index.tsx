@@ -298,7 +298,9 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         if (res.resultCode === '000') {
           setModuleName(moduleName);
           message.success('保存成功');
-          (editModalRef.current as any).close();
+          setTimeout(() => {
+            window.close();
+          }, 1500);
           const info = res.datas || {};
           setModuleId(info.analysisId || '');
           setModuleId(info.analysisBoard || '');
@@ -314,9 +316,11 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         setModuleName(moduleName);
         if (res.resultCode === '000') {
           message.success('保存成功');
-          (editModalRef.current as any).close();
+          setTimeout(() => {
+            window.close();
+          }, 1500);
         } else {
-          message.error('保存成功');
+          message.error(res?.resultMsg || '未知错误');
         }
       });
     }
