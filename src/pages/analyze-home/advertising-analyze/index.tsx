@@ -290,8 +290,8 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
       titleList, // 提供给表格列名
     });
 
-    console.log('查询参数:----------');
-    console.log(analysisData);
+    // console.log('查询参数:----------');
+    // console.log(analysisData);
 
     const param: any = {
       analysisData,
@@ -303,14 +303,12 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
     if (!moduleId || (moduleId && treeSelectId !== dashboardId)) {
       saveAnalysisModule(param).then((res: any) => {
         if (res.resultCode === '000') {
-          setModuleName(moduleName);
           message.success('保存成功');
-          setTimeout(() => {
-            window.close();
-          }, 1500);
           const info = res.datas || {};
+          setModuleName(analysisName);
           setModuleId(info.analysisId || '');
-          setModuleId(info.analysisBoard || '');
+          setTreeSelectId(info.analysisBoard || '');
+          setDashboardId(info.analysisBoard || '');
         } else {
           message.error(res?.resultMsg);
         }
@@ -320,12 +318,11 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
       //更新
       param.analysisId = moduleId;
       updateModuleData(param).then((res: any) => {
-        setModuleName(moduleName);
         if (res.resultCode === '000') {
           message.success('保存成功');
-          setTimeout(() => {
-            window.close();
-          }, 1500);
+          setModuleName(analysisName);
+          setTreeSelectId(analysisBoard || '');
+          setDashboardId(analysisBoard || '');
         } else {
           message.error(res?.resultMsg || '未知错误');
         }

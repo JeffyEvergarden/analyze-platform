@@ -47,7 +47,7 @@ export async function getModuleData(id: any, type?: any) {
 }
 
 export async function updateModuleData(data: any) {
-  return request('/bd/dashboard/analysis/modify/', {
+  return request('/bd/dashboard/analysis/modify', {
     method: 'post',
     data,
   });
