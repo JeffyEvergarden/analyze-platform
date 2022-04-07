@@ -163,7 +163,6 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
       // 查询数据
       getAdvertiseList(formDataList, eventList, map, baseInfo);
     } catch (e) {
-      message.error('查询错误');
       setLoading(false);
     }
 
@@ -251,6 +250,14 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
       (GlobalSearchRef?.current as any).getForm(),
       (CompareSearchRef.current as any).getForm(),
     ]);
+    if (statisticsSearch.childrenList.length === 0) {
+      message.warning('请至少添加一个选择统计事件');
+      return null;
+    }
+    if (globalSearch.childrenList.length === 0) {
+      message.warning('请至少添加一个全局筛选事件');
+      return null;
+    }
     (editModalRef.current as any).open(moduleName, treeSelectId);
   };
 
@@ -298,7 +305,9 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         if (res.resultCode === '000') {
           setModuleName(moduleName);
           message.success('保存成功');
-          (editModalRef.current as any).close();
+          setTimeout(() => {
+            window.close();
+          }, 1500);
           const info = res.datas || {};
           setModuleId(info.analysisId || '');
           setModuleId(info.analysisBoard || '');
@@ -314,9 +323,11 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         setModuleName(moduleName);
         if (res.resultCode === '000') {
           message.success('保存成功');
-          (editModalRef.current as any).close();
+          setTimeout(() => {
+            window.close();
+          }, 1500);
         } else {
-          message.error('保存成功');
+          message.error(res?.resultMsg || '未知错误');
         }
       });
     }

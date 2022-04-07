@@ -88,7 +88,11 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
       async getForm() {
         const fieldsValue: any = await form.validateFields();
         console.log(fieldsValue);
-        return fieldsValue;
+        if (fieldsValue) {
+          return fieldsValue;
+        } else {
+          return false;
+        }
       },
       //获取当前表单选择数据
       async getFormData() {

@@ -123,7 +123,11 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       async getForm() {
         const fieldsValue: any = await form.validateFields();
         console.log(fieldsValue);
-        return fieldsValue;
+        if (fieldsValue) {
+          return fieldsValue;
+        } else {
+          return false;
+        }
       },
       //获取当前表单选择数据
       async getFormData() {
@@ -154,12 +158,14 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const delInnerForm = (innerIndex: number, outIndex: number) => {
     const curList: any = form.getFieldValue('childrenList');
     const currentFormValue: any = curList?.[outIndex] || {};
-    currentFormValue.innerList = currentFormValue.innerList || [];
-    currentFormValue.innerList = currentFormValue.innerList.filter((item: any, index: number) => {
-      return index !== innerIndex;
-    });
+    currentFormValue?.innerList?.splice(innerIndex, 1);
+    if (currentFormValue?.innerList?.length <= 1) {
+      currentFormValue.relation = 'AND';
+    }
+    console.log(currentFormValue);
+    curList[outIndex].innerList = currentFormValue?.innerList;
     form.setFieldsValue({
-      childrenList: [...curList],
+      childrenList: curList,
     });
   };
 
