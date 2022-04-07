@@ -305,10 +305,10 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         if (res.resultCode === '000') {
           message.success('保存成功');
           const info = res.datas || {};
-          setModuleName(analysisName);
           setModuleId(info.analysisId || '');
-          setTreeSelectId(info.analysisBoard || '');
-          setDashboardId(info.analysisBoard || '');
+          setModuleName(analysisName);
+          setTreeSelectId(analysisBoard || '');
+          setDashboardId(analysisBoard || '');
         } else {
           message.error(res?.resultMsg);
         }
@@ -326,6 +326,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         } else {
           message.error(res?.resultMsg || '未知错误');
         }
+        (editModalRef.current as any).close();
       });
     }
   };
