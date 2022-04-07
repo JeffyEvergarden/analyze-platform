@@ -436,7 +436,9 @@ export const useAdvertiseModel = () => {
         }
         if (
           (titleMap[name] && titleMap[name].indexOf('人均') > -1) ||
-          titleMap[name].indexOf('次均') > -1
+          titleMap[name].indexOf('次均') > -1 ||
+          titleMap[name].indexOf('平均') > -1 ||
+          titleMap[name].indexOf('率') > -1
         ) {
           summaryObj[name] = '-';
           return;
