@@ -87,6 +87,8 @@ const ResultTable: React.FC<any> = (props: TableProps) => {
   //设置列数据
   const setActivityTable = () => {
     const columns: any = [];
+    console.log(column);
+
     setColumnsData([...columns, ...column]);
   };
 

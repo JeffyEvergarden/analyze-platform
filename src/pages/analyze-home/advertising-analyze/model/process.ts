@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { processANDList } from './common';
 
 //格式化两位小数
 export function toFixed2(x: any) {
@@ -97,51 +98,8 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
       filterOptionName: '',
     });
     if (item.relation === 'AND') {
-      item.innerList.map((innerItem: any) => {
-        //介于
-        if (innerItem?.operator == 'between') {
-          if (innerItem?.params instanceof Array) {
-            obj.adhoc_filters.push({
-              expressionType: 'SIMPLE',
-              subject: innerItem.subject,
-              operator: '>=',
-              comparator: innerItem.params?.[0]?.format
-                ? innerItem.params?.[0]?.startOf('day')?.format()
-                : innerItem.params[0],
-              clause: 'WHERE',
-              fromFormData: true,
-              isExtra: false,
-              sqlExpression: null,
-              filterOptionName: '',
-            });
-            obj.adhoc_filters.push({
-              expressionType: 'SIMPLE',
-              subject: innerItem.subject,
-              operator: '<=',
-              comparator: innerItem.params?.[1]?.format
-                ? innerItem.params?.[1]?.endOf('day')?.format()
-                : innerItem.params[1],
-              clause: 'WHERE',
-              fromFormData: true,
-              isExtra: false,
-              sqlExpression: null,
-              filterOptionName: '',
-            });
-          }
-        } else {
-          obj.adhoc_filters.push({
-            expressionType: 'SIMPLE',
-            subject: innerItem.subject,
-            operator: innerItem.operator,
-            comparator: innerItem.params?.format ? innerItem.params.format() : innerItem.params,
-            clause: 'WHERE',
-            fromFormData: true,
-            isExtra: false,
-            sqlExpression: null,
-            filterOptionName: '',
-          });
-        }
-      });
+      //介于
+      processANDList(item.innerList, obj.adhoc_filters);
     } else if (item.relation === 'OR') {
       const tempFilters: any = [];
       item.innerList.map((innerItem: any) => {
@@ -151,7 +109,7 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
               let list: any[] = innerItem.params.map((item: any) => {
                 let _params = item;
                 if (_params instanceof moment) {
-                  _params = (_params as any).format?.();
+                  _params = `cast('${(_params as any).format?.()}' as TIMESTAMP)`;
                 }
                 if (typeof _params !== 'number') {
                   _params = `'${_params}'`;
@@ -165,7 +123,7 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
           } else {
             let _params = innerItem.params;
             if (_params instanceof moment) {
-              _params = (_params as any).format?.();
+              _params = `cast('${(_params as any).format?.()}' as TIMESTAMP)`;
             }
             if (typeof _params !== 'number') {
               _params = `'${_params}'`;
@@ -181,7 +139,10 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
           const tempParams: any = [];
           if (innerItem.params instanceof Array) {
             innerItem.params?.map((item: any) => {
-              tempParams.push(`'${item}'`);
+              if (typeof item !== 'number') {
+                item = `'${item}'`;
+              }
+              tempParams.push(`${item}`);
             });
           } else {
             tempParams.push(`'${innerItem.params}'`);
@@ -208,52 +169,9 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
       }
     }
     //  全局指标
-    globalData?.childrenList?.map((gl: any) => {
-      if (gl?.operator == 'between') {
-        if (gl.params instanceof Array) {
-          obj.adhoc_filters.push({
-            expressionType: 'SIMPLE',
-            subject: gl.subject,
-            operator: '>=',
-            comparator: gl?.params?.[0]?.format
-              ? gl?.params?.[0].startOf('day')?.format()
-              : gl?.params?.[0],
-            clause: 'WHERE',
-            fromFormData: true,
-            isExtra: false,
-            sqlExpression: null,
-            filterOptionName: '',
-          });
-          obj.adhoc_filters.push({
-            expressionType: 'SIMPLE',
-            subject: gl.subject,
-            operator: '<=',
-            comparator: gl?.params?.[1]?.format
-              ? gl?.params?.[1].endOf('day')?.format()
-              : gl?.params?.[1],
-            clause: 'WHERE',
-            fromFormData: true,
-            isExtra: false,
-            sqlExpression: null,
-            filterOptionName: '',
-          });
-        }
-      } else {
-        obj.adhoc_filters.push({
-          expressionType: 'SIMPLE',
-          subject: gl.subject,
-          operator: gl.operator,
-          comparator: gl.params,
-          clause: 'WHERE',
-          fromFormData: true,
-          isExtra: false,
-          sqlExpression: null,
-          filterOptionName: '',
-        });
-      }
-    });
+    processANDList(globalData?.childrenList, obj.adhoc_filters);
     //分组
-    obj.groupby = [...compareData.groupBy, 'event_occur_time'];
+    obj.groupby = [...compareData.groupBy];
     // //时间维度
     // obj.time_grain_sqla = 'P1D';
     //时间范围

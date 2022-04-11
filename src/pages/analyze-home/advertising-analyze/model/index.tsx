@@ -291,7 +291,8 @@ export const useAdvertiseModel = () => {
         const formData = resData.form_data;
         groupby = formData.groupby || [];
         // 指标名称
-        const [, metric] = formData.metrics;
+        const [, metric] = formData.metrics; //获取第二个元素
+        //将groupby部分的表头放入column
         formData?.groupby.map((item: any, i: number) => {
           if (map.indexOf(item) === -1) {
             map.push(item);
@@ -303,7 +304,6 @@ export const useAdvertiseModel = () => {
             if (i < 5) {
               extra.fixed = 'left';
             }
-
             dynamicTableColumn.push({
               ...extra,
               title: _titleList.find((i: any) => i.value === item)?.name || '',
@@ -324,7 +324,7 @@ export const useAdvertiseModel = () => {
         console.log(eventData);
         const eventItem: any = eventData.find((item: any) => item.value === eventName) || {};
 
-        let eventZHnName = eventItem?.name || ''; //以及下拉中文名
+        let eventZHnName = eventItem?.name || ''; //一级下拉中文名
         //从eventdata找到code对应的label
         //--------------------------------------------
         //找列名
@@ -365,9 +365,12 @@ export const useAdvertiseModel = () => {
               const currentMetrics: any = item.metricsList?.find(
                 (m: any) => metricsName === m.value,
               );
+              console.log(currentMetrics);
+              console.log(metricsName);
+
               metricsCode = currentMetrics?.value || metricsName;
-              metricsName = currentMetrics?.value || metricsName;
-            } else if (type === 'fields') {
+              metricsName = currentMetrics?.name || metricsName;
+            } else if (type === 'field') {
               const currentMetrics: any = item.fieldList?.find((f: any) => metricsName === f.value);
               metricsCode = currentMetrics?.value || metricsName;
               metricsName = currentMetrics?.name || metricsName;

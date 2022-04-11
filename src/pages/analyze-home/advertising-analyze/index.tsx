@@ -196,6 +196,8 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
 
           CompareSearchRef.current.setForm(_compareSearch);
           let arr = moduleData?.processDiyColumn;
+          console.log(arr);
+
           setProcessDiyColumn(Array.isArray(arr) ? arr : []);
           setModuleData(moduleData);
           setModuleName(res.datas.analysisName);

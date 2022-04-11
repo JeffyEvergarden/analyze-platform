@@ -35,7 +35,19 @@ const getList = (req: any, res: any) => {
 
     return {
       form_data: {
-        metrics: ['order_count', key],
+        metrics: [
+          'order_count',
+          key,
+          // {
+          //   column: {
+          //     column_Name: key,
+          //     filterable: true,
+          //     optionName: '_col_' + key,
+          //   },
+          //   aggregate: 'COUNT_DISTINCT',
+          //   label: key,
+          // },
+        ],
         groupby: ['activity_id', 'activity_name', time_field],
         adhoc_filters: [
           {
@@ -45,14 +57,57 @@ const getList = (req: any, res: any) => {
         ],
       },
       data: {
+        column: [],
         records: arr,
       },
     };
   });
+  console.log(datas);
 
   res.json({
     resultCode: '000',
-    datas: datas,
+    datas: [
+      {
+        form_data: {
+          metrics: [
+            'order_count',
+            {
+              column: {
+                column_Name: 'select',
+                filterable: true,
+                optionName: '_col_' + 'select',
+              },
+              aggregate: 'COUNT_DISTINCT',
+              label: 'select',
+            },
+          ],
+          groupby: ['activity_id', 'activity_name'],
+          adhoc_filters: [
+            {
+              subject: 'event_type',
+              comparator: 'fate',
+            },
+          ],
+        },
+        data: {
+          column: ['activity_id', 'activity_name', 'order_count', 'select'],
+          records: [
+            {
+              activity_id: '1',
+              activity_name: '1',
+              order_count: 22,
+              select: '123',
+            },
+            {
+              activity_id: '2',
+              activity_name: '2',
+              order_count: 22,
+              select: '333',
+            },
+          ],
+        },
+      },
+    ],
   });
 };
 
