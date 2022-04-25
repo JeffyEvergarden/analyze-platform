@@ -1,6 +1,6 @@
 import React from 'react';
 import { history, Link, useLocation } from 'umi';
-import { BookOutlined, LinkOutlined } from '@ant-design/icons';
+import { BookOutlined, LinkOutlined, StockOutlined } from '@ant-design/icons';
 import { useModel } from 'umi';
 import { ConfigProvider, Collapse, Divider, Menu } from 'antd';
 import { UsergroupDeleteOutlined } from '@ant-design/icons';
@@ -38,6 +38,9 @@ const HomePage: React.FC = (props: any) => {
             </Menu.Item>
             <Menu.Item key="/analyzehome/advertise" icon={<UsergroupDeleteOutlined />}>
               广告分析
+            </Menu.Item>
+            <Menu.Item key="/analyzehome/price" icon={<StockOutlined />}>
+              提额&调价分析
             </Menu.Item>
           </Menu>
         </div>

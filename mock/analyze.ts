@@ -661,7 +661,7 @@ const getRefreshList = (req: any, res: any) => {
 };
 
 const getbackshow = (req: any, res: any) => {
-  if (req.query.type === 'advertise') {
+  if (req.query.type === 'sub_activity_2') {
     res.json({
       resultCode: '000',
       datas: {

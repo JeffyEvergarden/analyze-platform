@@ -37,8 +37,16 @@ import moment from 'moment';
 const { Panel } = Collapse;
 const { Option } = Select;
 
-const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
-  const { type = 'create', id, dirId } = props;
+interface TemplateAnalyzePageProps {
+  type: 'create' | 'read';
+  defaultGroupBy?: any[]; // 对比查看默认分组
+  moduleType: string; //
+  id?: string; // 信息id
+  dirId?: string; // 看板id
+}
+
+const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
+  const { type = 'create', id, dirId, moduleType, defaultGroupBy } = props;
 
   const show = !(type == 'read');
   const query: any = history.location.query || {};
@@ -61,7 +69,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
     diyColumn, // 自定义指标可选项
     processDiyColumn,
     summary, // 总结数据
-    getAdvertiseList, // 获取数据
+    getDataList, // 获取数据
     // clearData, // 清除数据
     titleList,
     setProcessDiyColumn, // 已选择的自定义指标
@@ -73,8 +81,6 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   const [moduleData, setModuleData] = useState<any>({});
   const [moduleId, setModuleId] = useState<any>(id || query.moduleId || '');
   const [moduleName, setModuleName] = useState<any>('');
-
-  const moduleType = 'sub_activity_2';
 
   const [treeSelectId, setTreeSelectId] = useState<any>(dirId || query.dashboardId || '');
   //记录看板Id
@@ -161,7 +167,7 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
         baseInfo,
       );
       // 查询数据
-      getAdvertiseList(formDataList, eventList, map, baseInfo);
+      getDataList(formDataList, eventList, map, baseInfo);
     } catch (e) {
       setLoading(false);
     }
@@ -211,14 +217,14 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   };
 
   const init = async () => {
-    await getPreConfig('sub_activity_2'); // 获取两边数据
+    await getPreConfig(moduleType); // 获取两边数据
     if (moduleId) {
-      await getModuleInfo(moduleId, 'advertise');
+      await getModuleInfo(moduleId, moduleType);
     }
   };
 
   useEffect(() => {
-    getSqlBaseInfo({ theme: 'sub_activity_2' }); // 获取配置
+    getSqlBaseInfo({ theme: moduleType }); // 获取配置
     init();
   }, []);
 
@@ -383,7 +389,12 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
               </Panel>
 
               <Panel header="对比查看" key="4">
-                <CompareSearch cref={CompareSearchRef} list={unionList} setFilter={setTitle} />
+                <CompareSearch
+                  cref={CompareSearchRef}
+                  list={unionList}
+                  setFilter={setTitle}
+                  defaultGroupBy
+                />
               </Panel>
             </Collapse>
           </Condition>
@@ -468,4 +479,4 @@ const AdvertisingAnalyzePage: React.FC<any> = (props: any) => {
   );
 };
 
-export default AdvertisingAnalyzePage;
+export default TemplateAnalyzePage;

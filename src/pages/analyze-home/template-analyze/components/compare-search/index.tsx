@@ -16,6 +16,7 @@ interface CompareSearchProps {
   cref: any;
   list: any;
   setFilter: any;
+  defaultGroupBy?: any[];
 }
 
 const { Item: FormItem } = Form;
@@ -23,7 +24,7 @@ const { Option } = Select;
 
 const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   const [form] = Form.useForm();
-  const { cref, list, setFilter } = props;
+  const { cref, list, setFilter, defaultGroupBy } = props;
 
   const [selectDateType, setSelectDateVal] = useState<any>('');
 
@@ -123,8 +124,11 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   // 初始化
   useEffect(() => {
     // 数据初始化
+
+    const _defaultGroupBy = Array.isArray(defaultGroupBy) ? defaultGroupBy : [];
+
     form.setFieldsValue({
-      groupBy: ['advertchannel'],
+      groupBy: _defaultGroupBy,
     });
   }, []);
 

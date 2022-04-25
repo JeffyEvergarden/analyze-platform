@@ -36,9 +36,14 @@ export default [
         component: './analyze-home/retained-analyze',
       },
       {
-        name: '敏捷分析-广告分析',
+        name: '敏捷分析-新广告分析',
         path: '/analyzehome/advertise',
-        component: './analyze-home/advertising-analyze',
+        component: './analyze-home/advertise-analyze',
+      },
+      {
+        name: '敏捷分析-提额&调价分析',
+        path: '/analyzehome/price',
+        component: './analyze-home/price-analyze',
       },
       { redirect: '/analyzehome/retained' },
       { component: './404' },
@@ -47,9 +52,9 @@ export default [
   {
     layout: false,
     noAuth: true,
-    name: '敏捷分析-广告分析',
+    name: '敏捷分析-新广告分析',
     path: '/minimap/advertise',
-    component: './analyze-home/advertising-analyze/minimap',
+    component: './analyze-home/template-analyze/minimap',
   },
   { path: '/', redirect: '/analyzehome', noAuth: true },
   { component: './404' },

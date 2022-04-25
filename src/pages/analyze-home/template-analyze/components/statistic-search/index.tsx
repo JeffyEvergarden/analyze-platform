@@ -1,8 +1,13 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 // 通用组件
-import { Form, Select, Button, Space, Input } from 'antd';
+import { Form, Select, Button, Space, Input, Tooltip } from 'antd';
 
-import { PlusSquareOutlined, MinusCircleOutlined, HighlightOutlined } from '@ant-design/icons';
+import {
+  PlusSquareOutlined,
+  MinusCircleOutlined,
+  HighlightOutlined,
+  SisternodeOutlined,
+} from '@ant-design/icons';
 // 定制组件
 import Condition from '../common/Condition';
 import InnerFormItem from '../common/InnerFormItem';
@@ -97,6 +102,20 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const addOther = () => {
     const tempChildrenList = form.getFieldValue('childrenList') || [];
     tempChildrenList.push({
+      event: undefined,
+      attribute: undefined,
+      relation: 'AND',
+      fnName: undefined,
+      innerList: [],
+    });
+    form.setFieldsValue({
+      childrenList: [...tempChildrenList],
+    });
+  };
+
+  const downAdd = (index: number) => {
+    const tempChildrenList = form.getFieldValue('childrenList') || [];
+    tempChildrenList.splice(index + 1, 0, {
       event: undefined,
       attribute: undefined,
       relation: 'AND',
@@ -350,18 +369,19 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                         }}
                       />
 
-                      <HighlightOutlined
-                        style={{
-                          color: '#1890ff',
-                          marginLeft: '5px',
-                          marginTop: '2px',
-                          fontSize: '20px',
-                        }}
-                        onClick={() => {
-                          changeFilterAlias(field, outIndex);
-                        }}
-                      />
-
+                      <Tooltip title="编辑指标别名">
+                        <HighlightOutlined
+                          style={{
+                            color: '#1890ff',
+                            marginLeft: '5px',
+                            marginTop: '2px',
+                            fontSize: '20px',
+                          }}
+                          onClick={() => {
+                            changeFilterAlias(field, outIndex);
+                          }}
+                        />
+                      </Tooltip>
                       <Condition r-if={formListValue?.edit}>
                         <FormItem
                           name={[field.fieldKey, 'alias']}
@@ -385,6 +405,20 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                           <span className={style['static-box_alias']}>{formListValue?.alias}</span>
                         </div>
                       </Condition>
+
+                      <Tooltip title="在当前指标下插入新指标行">
+                        <SisternodeOutlined
+                          style={{
+                            color: '#FFC751',
+                            marginLeft: '40px',
+                            marginTop: '2px',
+                            fontSize: '20px',
+                          }}
+                          onClick={() => {
+                            downAdd(outIndex);
+                          }}
+                        />
+                      </Tooltip>
                     </Space>
 
                     <Form.List name={[field.fieldKey, 'innerList']}>

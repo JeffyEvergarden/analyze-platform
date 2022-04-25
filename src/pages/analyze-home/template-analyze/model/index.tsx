@@ -569,7 +569,7 @@ export const useAdvertiseModel = () => {
   // 1.主方法
   // 调用 查询信号接口
   // 发起 回调轮询
-  const getAdvertiseList = async (
+  const getDataList = async (
     formDataList: any = [],
     eventData: any = [],
     nameMap: any = {},
@@ -600,7 +600,7 @@ export const useAdvertiseModel = () => {
     diyColumn,
     summary,
     titleList,
-    getAdvertiseList,
+    getDataList,
     clearData,
     processDiyColumn, // 自定义指标
     setProcessDiyColumn,

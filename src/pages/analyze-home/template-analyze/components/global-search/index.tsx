@@ -335,7 +335,7 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                           rules={[{ required: true, message: '请选择' }]}
                           dependencies={['childrenList', outIndex, 'subject']}
                         >
-                          <Input></Input>
+                          <Input placeholder="请输入"></Input>
                         </FormItem>
                       </Condition>
 

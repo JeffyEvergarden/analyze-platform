@@ -1,4 +1,4 @@
-import { stringTypeList } from '@/pages/analyze-home/advertising-analyze/model/const';
+import { stringTypeList } from '@/pages/analyze-home/template-analyze/model/const';
 import { Request, Response } from 'express';
 
 const getSqlInfo = (req: any, res: any) => {
