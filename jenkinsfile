@@ -1,0 +1,205 @@
+#!groovy
+
+// 用到的插件：NodeJS、pipeline、checkbox、git、SCM、SSH、pipeline-steps
+
+// 给 remote 定义变量
+def GetRemoteServer(name, host, credentialsId){
+    def remote = [:]
+    remote.name = name
+    remote.host = host
+    remote.port = 22
+    remote.timeoutSec = 300000
+    remote.allowAnyHosts = true
+    //通过withCredentials调用Jenkins凭据中已保存的凭据，credentialsId需要填写，其他保持默认即可
+    withCredentials([usernamePassword(credentialsId: credentialsId, passwordVariable: 'password', usernameVariable: 'userName')]) {
+        remote.user = "${userName}"
+        remote.password = "${password}"
+    }
+    return remote
+}
+
+pipeline {
+    agent any
+    //agent {label "slave-2"}
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+        timeout(time: 25, unit:'MINUTES') // 25分钟超时
+    }
+
+    environment {
+        NODE_VERSION = 'NodeJS14'  // nodeJS版本-前端需要
+        project_env = 'default'
+    }
+
+    parameters{
+        gitParameter (branchFilter: 'origin/(.*)', defaultValue: 'release-20220411', name: 'branch', type: 'PT_BRANCH', description: '请选择前端-新敏捷分析项目打包分支',useRepository: 'http://172.168.0.14:8181/gitlab/datacenter/analyze-platform.git', sortMode: 'DESCENDING_SMART', listSize: '20')
+
+        gitParameter (branchFilter: 'origin/(.*)', defaultValue: 'release-20220411', name: 'sec_branch', type: 'PT_BRANCH', description: '请选择前端-老敏捷分析项目打包分支',useRepository: 'http://20.223.0.4:8082/gitlab/DataCenter/youcash-bgs-analyze.git', sortMode: 'DESCENDING_SMART', listSize: '20')
+
+        choice(name: 'project_env_second', choices: ['default', 'prod', 'pre'], description: '请选择老前端-老敏捷分析项目打包部署方式')
+
+        booleanParam(name: 'needInstall', defaultValue: false, description: '是否需要重新 npm install')
+
+    }
+    stages {
+      // 前端项目1-构建 ----------------------------
+      stage('front-init') {
+        steps {
+          script {
+            echo "当前新前端敏捷分析项目部署：${project_env}"
+            sh "ls"
+            // sh "rm -rf ./*"
+            // echo "构建构建项目：${projects}"
+            dir('frontend') {
+              println "${branch}"
+              println "${params.branch}"
+              println "当前目录"
+              sh "ls"
+              git credentialsId: '2f90cfac-bd3c-4e60-8770-407fe57d4310', url: "http://172.168.0.14:8181/gitlab/datacenter/analyze-platform.git", branch: "${branch}"
+            }
+          }
+        }
+      }
+      stage('front-install') {
+        tools {
+          nodejs "${NODE_VERSION}"
+        }
+        steps {
+          script {
+            sh "date"
+            dir('frontend') {
+              echo "node && npm --version"
+              sh "node --version;npm --version"
+              // sh "rm -rf ./node_modules"
+              if (!fileExists("./node_modules")) {
+                println "不存在node_modules目录,所以进行安装"
+                println "npm install"
+                sh "npm install"
+              } else if (needInstall) {
+                sh "npm install"
+              }
+            }
+          }
+        }
+      }
+      stage('front-build') {
+        tools {
+          nodejs "${NODE_VERSION}"
+        }
+        steps {
+          script {
+            dir('frontend') {
+              // 打包
+              if (project_env == 'default') {
+                println "执行构建  npm run build"
+                sh "npm run build"
+              } else {
+                println "执行构建 ${project_env}"
+                sh "npm run build:${project_env}"
+              } 
+              // 压缩打包内容
+              dir("dist/board") {
+                sh "tar -cvzf frontend-analyze.tar.gz *"
+              }
+            }
+            // 将打包文件移动出来
+            sh """
+              rm -rf frontend-analyze.tar.gz
+              mv  ./frontend/dist/board/frontend-analyze.tar.gz  ./
+            """
+          }
+        }
+      }
+      // 前端项目1-构建完成 ----------------------------
+
+      // 前端项目2-构建 ----------------------------
+      stage('sec-front-init') {
+        steps {
+          script {
+            echo "当前新前端老敏捷分析项目部署：${project_env_second}"
+            // echo "构建构建项目：${projects}"
+            dir('sec-frontend') {
+              println "${sec_branch}"
+              println "${params.sec_branch}"
+              println "当前目录"
+              sh "pwd"
+              git credentialsId: '2f90cfac-bd3c-4e60-8770-407fe57d4310', url: "http://20.223.0.4:8082/gitlab/DataCenter/youcash-bgs-analyze.git", branch: sec_branch
+            }
+          }
+        }
+      }
+      stage('sec-front-install') {
+        tools {
+          nodejs "${NODE_VERSION}"
+        }
+        steps {
+          script {
+            sh "date"
+            dir('sec-frontend') {
+              echo "node && npm --version"
+              sh "node --version;npm --version"
+              // sh "rm -rf ./node_modules"
+              if (!fileExists("./node_modules")) {
+                println "不存在node_modules目录,所以进行安装"
+                println "npm install"
+                sh "npm install"
+              } else if (needInstall) {
+                sh "npm install"
+              }
+            }
+          }
+        }
+      }
+      stage('sec-front-build') {
+        tools {
+          nodejs "${NODE_VERSION}"
+        }
+        steps {
+          script {
+            dir('sec-frontend') {
+              // 打包
+              if (project_env_second == 'default') {
+                println "执行构建  npm run build"
+                sh "npm run build"
+              } else {
+                println "执行构建 ${project_env_second}"
+                sh "npm run build:${project_env_second}"
+              } 
+              // 压缩打包内容
+              dir("dist") {
+                sh "tar -cvzf sec-frontend-analyze.tar.gz *"
+              }
+            }
+            // 将打包文件移动出来
+            sh """
+              rm -rf sec-frontend-analyze.tar.gz
+              mv  ./sec-frontend/dist/sec-frontend-analyze.tar.gz  ./
+            """
+          }
+        }
+      }
+      // 前端项目2-构建完成 ----------------------------
+
+
+      // 打包代码复制到某台服务器
+      stage('code-copy') {
+        steps {
+          script {
+            def remote = GetRemoteServer('11.113.1.50', '11.113.1.50', 'jeffy-liang-50')
+            // 创建服务器上某个目录存放代码压缩包
+            sshCommand remote: remote, command: """
+              if [ ! -d "/home/appuser/analyze-module" ];then
+                mkdir -p /home/appuser/analyze-module
+
+                rm -rf /home/appuser/analyze-module/*
+              fi
+            """
+            sshPut remote: remote, from: "./frontend-analyze.tar.gz", into: "/home/appuser/analyze-module/"
+
+            sshPut remote: remote, from: "./sec-frontend-analyze.tar.gz", into: "/home/appuser/analyze-module/"
+          }
+        }
+      }
+      // 代码复制完成 ----------------------------
+    }
+}
