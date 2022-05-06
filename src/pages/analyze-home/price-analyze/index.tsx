@@ -16,6 +16,13 @@ const modelTypeList = [
   },
 ];
 
+const extraGroupByList = [
+  {
+    value: 'event_occur_time',
+    name: '事件发生日期',
+  },
+];
+
 const { Option } = Select;
 
 const PriceAnalyze = (props: any) => {
@@ -49,7 +56,12 @@ const PriceAnalyze = (props: any) => {
         </div>
       </div>
 
-      <TemplateAnalyze moduleType={moduleType} {...props} key={moduleType} />
+      <TemplateAnalyze
+        moduleType={moduleType}
+        extraGroupByList={extraGroupByList}
+        {...props}
+        key={moduleType}
+      />
     </div>
   );
 };

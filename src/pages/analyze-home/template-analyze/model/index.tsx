@@ -125,6 +125,7 @@ export const useSearchParamsModel = () => {
 export const useFilterModel = () => {
   const [filterList, setFilterList] = useState<any[]>([]); // 交集
   const [unionList, setUnionList] = useState<any[]>([]); // 并集
+  const [extraList, setExtraList] = useState<any[]>([]);
 
   const setFilter = (formValues: any, eventDataList: any) => {
     let len = 0;
@@ -154,7 +155,11 @@ export const useFilterModel = () => {
       });
     });
     const setArr: any = Object.keys(tempMap).map((key) => tempMap[key]);
-    compareArr = [...setArr]; //取并集
+    const _extraList = extraList.filter((item: any) => {
+      // 找出多出的字段增加到
+      return !tempMap[item.key];
+    });
+    compareArr = [..._extraList, ...setArr]; //取并集 且增加扩展字段
 
     // 过滤出
     resultArr = setArr.filter((item: any) => {
@@ -165,13 +170,14 @@ export const useFilterModel = () => {
     setFilterList([...resultArr]); // 交集
     setUnionList(compareArr); // 并集
 
-    // console.log(resultArr, compareArr);
+    console.log(resultArr, compareArr);
   };
 
   return {
     filterList,
     unionList,
     setFilter,
+    setExtraList,
   };
 };
 

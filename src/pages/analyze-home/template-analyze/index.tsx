@@ -40,13 +40,14 @@ const { Option } = Select;
 interface TemplateAnalyzePageProps {
   type: 'create' | 'read';
   defaultGroupBy?: any[]; // 对比查看默认分组
+  extraGroupByList?: any[];
   moduleType: string; //
   id?: string; // 信息id
   dirId?: string; // 看板id
 }
 
 const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
-  const { type = 'create', id, dirId, moduleType, defaultGroupBy } = props;
+  const { type = 'create', id, dirId, moduleType, defaultGroupBy, extraGroupByList } = props;
 
   const show = !(type == 'read');
   const query: any = history.location.query || {};
@@ -62,7 +63,16 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
 
   const { eventList, fieldMap, getPreConfig } = useSearchParamsModel();
   const { baseInfo, getSqlBaseInfo } = useBaseModel();
-  const { filterList, unionList, setFilter } = useFilterModel();
+  const { filterList, unionList, setFilter, setExtraList } = useFilterModel();
+
+  useEffect(() => {
+    if (extraGroupByList) {
+      setExtraList(extraGroupByList);
+    } else {
+      setExtraList([]);
+    }
+  }, [extraGroupByList]);
+
   const {
     loading, // loading
     setLoading,

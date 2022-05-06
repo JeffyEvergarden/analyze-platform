@@ -83,22 +83,22 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
 
   const computedList = useMemo(() => {
     let arr = [...list];
-    let len = TitleList.length;
-    let i = len - 1;
+    // let len = TitleList.length;
+    // let i = len - 1;
     // 取完并集  和  TitleList 再取并集
-    while (i > -1) {
-      if (
-        !list.some((item: any) => {
-          return item.value === TitleList[i].key;
-        })
-      ) {
-        arr.unshift({
-          value: TitleList[i].key,
-          name: TitleList[i].label,
-        });
-      }
-      i--;
-    }
+    // while (i > -1) {
+    //   if (
+    //     !list.some((item: any) => {
+    //       return item.value === TitleList[i].key;
+    //     })
+    //   ) {
+    //     arr.unshift({
+    //       value: TitleList[i].key,
+    //       name: TitleList[i].label,
+    //     });
+    //   }
+    //   i--;
+    // }
     // 过滤掉不显示的字段
     // arr = arr.filter((item: any) => {
     //   return !['event_occur_time'].includes(item.value);
