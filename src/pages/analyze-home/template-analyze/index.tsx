@@ -33,6 +33,7 @@ import { getModuleDetail } from './model';
 import { updateModuleData } from './model/api';
 import { saveAnalysisModule } from '../retained-analyze/model/api';
 import moment from 'moment';
+import ChineseNameMap from './const';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -48,6 +49,8 @@ interface TemplateAnalyzePageProps {
 
 const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
   const { type = 'create', id, dirId, moduleType, defaultGroupBy, extraGroupByList } = props;
+
+  const chineseName = ChineseNameMap[moduleType] || '敏捷分析';
 
   const show = !(type == 'read');
   const query: any = history.location.query || {};
@@ -470,7 +473,8 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
           >
             <div className={style['table-box']} style={{ marginTop: '10px' }}>
               <Table
-                id={'advertise-table'}
+                id={'template-table'}
+                chineseName={chineseName}
                 column={hadProcessedColumn}
                 data={hadProcessedData}
                 cref={tableRef}

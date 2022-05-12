@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
-import { Form, Space, Select, Input, InputNumber, DatePicker } from 'antd';
+import {
+  Form,
+  Space,
+  Select,
+  Input,
+  InputNumber,
+  DatePicker,
+  Divider,
+  Typography,
+  message,
+} from 'antd';
 import Condition from '../Condition';
 import { numberTypeList, arrayTypeList, stringTypeList } from '../../../model/const';
-import { MinusCircleOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import style from '../style.less';
 
 const { Item: FormItem } = Form;
@@ -13,6 +23,24 @@ const { RangePicker } = DatePicker;
 const InnerForm: React.FC<any> = (props: any) => {
   const { field, form, outIndex, remove, fieldMap, fieldsList } = props;
   const { key, fieldKey: index } = field;
+
+  const [inputVal, setInputVal] = useState<any>('');
+  const onInputChange = (event: any) => {
+    setInputVal(event.target.value);
+  };
+
+  const addItem = (list: any) => {
+    let _inputVal = inputVal.trim();
+    if (!_inputVal) {
+      message.warning('请添加非空选项');
+      return;
+    }
+    list.push({
+      value: _inputVal,
+      name: _inputVal,
+    });
+    setInputVal('');
+  };
 
   const curList: any = form.getFieldValue('childrenList');
   const currentFormValue: any = curList?.[outIndex] || {};
@@ -184,6 +212,23 @@ const InnerForm: React.FC<any> = (props: any) => {
                 filterOption={(input: any, option: any) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
+                dropdownRender={(menu) => (
+                  <>
+                    {menu}
+                    <Divider style={{ margin: '8px 0' }} />
+                    <Space align="center" style={{ padding: '0 8px 4px' }}>
+                      <Input placeholder="自定义添加" value={inputVal} onChange={onInputChange} />
+                      <Typography.Link
+                        onClick={() => {
+                          addItem(subInnerList);
+                        }}
+                        style={{ whiteSpace: 'nowrap' }}
+                      >
+                        <PlusOutlined /> 添加
+                      </Typography.Link>
+                    </Space>
+                  </>
+                )}
               >
                 {subInnerList?.map((item: any, index: number) => (
                   <Option key={index} value={item.value}>
@@ -209,6 +254,23 @@ const InnerForm: React.FC<any> = (props: any) => {
                 filterOption={(input: any, option: any) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
+                dropdownRender={(menu) => (
+                  <>
+                    {menu}
+                    <Divider style={{ margin: '8px 0' }} />
+                    <Space align="center" style={{ padding: '0 8px 4px' }}>
+                      <Input placeholder="自定义添加" value={inputVal} onChange={onInputChange} />
+                      <Typography.Link
+                        onClick={() => {
+                          addItem(subInnerList);
+                        }}
+                        style={{ whiteSpace: 'nowrap' }}
+                      >
+                        <PlusOutlined /> 添加
+                      </Typography.Link>
+                    </Space>
+                  </>
+                )}
               >
                 {subInnerList?.map((item: any, index: number) => (
                   <Option key={index} value={item.value}>
@@ -225,10 +287,10 @@ const InnerForm: React.FC<any> = (props: any) => {
           <FormItem
             name={[field.name, 'params']}
             fieldKey={[field.fieldKey, 'params']}
-            rules={[{ required: true, message: '请选择' }]}
+            rules={[{ required: true, message: '请输入' }]}
             dependencies={['childrenList', 0, 'innerList', index, 'subject']}
           >
-            <Input></Input>
+            <Input placeholder="请输入"></Input>
           </FormItem>
         </Condition>
 

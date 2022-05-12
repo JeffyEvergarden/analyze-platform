@@ -27,7 +27,7 @@ const getList = (req: any, res: any) => {
     arr = arr.map((item: any, index: number) => {
       return {
         activity_id: 'fate',
-        activity_name: '命运冠位指定',
+        activity_name: '命运冠位指定' + index,
         [time_field]: '2022-01-13T10:13:00.000',
         //[key]: Number((Math.random() * 1000).toFixed(0)),
         [key]: '2022-01-13T10:13:00.000',

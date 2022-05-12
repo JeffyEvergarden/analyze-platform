@@ -11,6 +11,7 @@ interface TableProps {
   id?: string;
   operationType?: any;
   summary?: any;
+  chineseName: string;
 }
 
 //格式化
@@ -35,16 +36,22 @@ const ResultTable: React.FC<any> = (props: TableProps) => {
   const [current, setCurrent] = useState<number>(1);
   const [columnsData, setColumnsData] = useState<any[]>([]);
   const [dataSourceList, setDataSourceList] = useState<any[]>([]);
+  const [sortDataList, setSortDataList] = useState<any[]>([]);
+
   const changePage = (val: number) => {
     setCurrent(val);
   };
 
-  const { column, data, id, cref, operationType, summary } = props;
+  const { column, data, id, cref, operationType, summary, chineseName = '敏捷分析' } = props;
   const tableId = `result-table-${id}`;
 
   const exportExcel = () => {
-    const dataList: any = data;
+    let dataList: any = data;
+    if (sortDataList?.length === dataSourceList.length) {
+      dataList = sortDataList; //排序的数组
+    }
     if (dataList?.length === 0) {
+      message.warning('当前表格暂无数据');
       return;
     }
     const header: any = {};
@@ -58,11 +65,12 @@ const ResultTable: React.FC<any> = (props: TableProps) => {
         obj[item] = data[item] ? data[item] : data[item] == 0 ? 0 : '-';
       });
       outputDataList.push(obj);
+      outputDataList.push(summary);
     });
 
     const outputData = [header, ...outputDataList];
-    console.log(outputData);
-    console.log(header);
+    // console.log(outputData);
+    // console.log(header);
 
     //数据
     let ws = XLSX.utils.json_to_sheet(outputData, {
@@ -70,12 +78,17 @@ const ResultTable: React.FC<any> = (props: TableProps) => {
       // raw: true,
       skipHeader: true,
     });
-    console.log(ws);
+    // console.log(ws);
 
     //初始化
     let wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws);
-    XLSX.writeFile(wb, `广告分析二期${moment().format('YYYYMMDDHHmmss')}.xlsx`);
+    XLSX.writeFile(wb, `${chineseName}${moment().format('YYYYMMDDHHmmss')}.xlsx`);
+  };
+
+  const handleTableChange = (...args: any[]) => {
+    // 设置排好序的值
+    setSortDataList(args[3].currentDataSource || []);
   };
 
   useImperativeHandle(cref, () => ({
@@ -146,6 +159,7 @@ const ResultTable: React.FC<any> = (props: TableProps) => {
       rowKey={'index'}
       summary={summaryHtml}
       scroll={extra}
+      onChange={handleTableChange}
     ></Table>
   );
 };

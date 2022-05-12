@@ -1,6 +1,17 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 // 通用组件
-import { Form, Select, Button, Space, Input, InputNumber, DatePicker } from 'antd';
+import {
+  Form,
+  Select,
+  Button,
+  Space,
+  Input,
+  InputNumber,
+  DatePicker,
+  Divider,
+  Typography,
+  message,
+} from 'antd';
 
 import { PlusSquareOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 // 定制组件
@@ -23,6 +34,24 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
   const [form] = Form.useForm();
   const { cref, list } = props;
   const [paramsTypeList, setParamsTypeList] = useState<('String' | 'Array')[]>([]);
+
+  const [inputVal, setInputVal] = useState<any>('');
+  const onInputChange = (event: any) => {
+    setInputVal(event.target.value);
+  };
+
+  const addItem = (list: any) => {
+    let _inputVal = inputVal.trim();
+    if (!_inputVal) {
+      message.warning('请添加非空选项');
+      return;
+    }
+    list.push({
+      value: _inputVal,
+      name: _inputVal,
+    });
+    setInputVal('');
+  };
 
   // 新增全局筛选
   const addOuter = () => {
@@ -289,6 +318,27 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                               filterOption={(input: any, option: any) =>
                                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                               }
+                              dropdownRender={(menu) => (
+                                <>
+                                  {menu}
+                                  <Divider style={{ margin: '8px 0' }} />
+                                  <Space align="center" style={{ padding: '0 8px 4px' }}>
+                                    <Input
+                                      placeholder="自定义添加"
+                                      value={inputVal}
+                                      onChange={onInputChange}
+                                    />
+                                    <Typography.Link
+                                      onClick={() => {
+                                        addItem(subList);
+                                      }}
+                                      style={{ whiteSpace: 'nowrap' }}
+                                    >
+                                      <PlusOutlined /> 添加
+                                    </Typography.Link>
+                                  </Space>
+                                </>
+                              )}
                             >
                               {subList?.map((item: any) => (
                                 <Option key={item.value} value={item.value}>
@@ -315,6 +365,27 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                               filterOption={(input: any, option: any) =>
                                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                               }
+                              dropdownRender={(menu) => (
+                                <>
+                                  {menu}
+                                  <Divider style={{ margin: '8px 0' }} />
+                                  <Space align="center" style={{ padding: '0 8px 4px' }}>
+                                    <Input
+                                      placeholder="自定义添加"
+                                      value={inputVal}
+                                      onChange={onInputChange}
+                                    />
+                                    <Typography.Link
+                                      onClick={() => {
+                                        addItem(subList);
+                                      }}
+                                      style={{ whiteSpace: 'nowrap' }}
+                                    >
+                                      <PlusOutlined /> 添加
+                                    </Typography.Link>
+                                  </Space>
+                                </>
+                              )}
                             >
                               {subList?.map((item: any) => (
                                 <Option key={item.value} value={item.value}>

@@ -210,7 +210,7 @@ const MiniMap: React.FC<any> = (props: any) => {
           >
             <div className={style['table-box']} style={{ marginTop: '10px' }}>
               <Table
-                id={'advertise-table'}
+                id={'template-table'}
                 column={hadProcessedColumn}
                 data={hadProcessedData}
                 cref={tableRef}
