@@ -28,8 +28,9 @@ const getList = (req: any, res: any) => {
       return {
         activity_id: 'fate',
         activity_name: '命运冠位指定',
-        [time_field]: (20210925 + index).toString(),
-        [key]: Number((Math.random() * 1000).toFixed(0)),
+        [time_field]: '2022-01-13T10:13:00.000',
+        //[key]: Number((Math.random() * 1000).toFixed(0)),
+        [key]: '2022-01-13T10:13:00.000',
       };
     });
 
@@ -66,48 +67,7 @@ const getList = (req: any, res: any) => {
 
   res.json({
     resultCode: '000',
-    datas: [
-      {
-        form_data: {
-          metrics: [
-            'order_count',
-            {
-              column: {
-                column_Name: 'select',
-                filterable: true,
-                optionName: '_col_' + 'select',
-              },
-              aggregate: 'COUNT_DISTINCT',
-              label: 'select',
-            },
-          ],
-          groupby: ['activity_id', 'activity_name'],
-          adhoc_filters: [
-            {
-              subject: 'event_type',
-              comparator: 'fate',
-            },
-          ],
-        },
-        data: {
-          column: ['activity_id', 'activity_name', 'order_count', 'select'],
-          records: [
-            {
-              activity_id: '1',
-              activity_name: '1',
-              order_count: 22,
-              select: '123',
-            },
-            {
-              activity_id: '2',
-              activity_name: '2',
-              order_count: 22,
-              select: '333',
-            },
-          ],
-        },
-      },
-    ],
+    datas: datas,
   });
 };
 

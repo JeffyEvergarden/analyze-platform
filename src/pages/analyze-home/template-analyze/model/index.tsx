@@ -13,6 +13,8 @@ import { OperatorList, TitleList, ExtraList } from './const';
 // 加密参数
 const sha256 = require('crypto-js/sha256');
 
+const reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
+
 // 获取日期
 function getCurrentData(da: Date) {
   const date = da || new Date();
@@ -210,6 +212,12 @@ const normalRender = (text: any) => {
   // 渲染方式
   if (text instanceof Date) {
     return getCurrentData(text); // 时间
+  } else if (typeof text === 'string' && reg.test(text)) {
+    let _text: any = text;
+    try {
+      _text = new Date(text).toLocaleString();
+    } catch (e) {}
+    return _text;
   } else if (typeof text !== 'number') {
     return text;
   } else {
