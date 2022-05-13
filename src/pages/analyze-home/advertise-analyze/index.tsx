@@ -19,6 +19,7 @@ const AdvertiseAnalyze = (props: any) => {
     <TemplateAnalyze
       moduleType={moduleType}
       defaultGroupBy={['advertchannel']}
+      defaultSortColumn={'advertchannel'}
       extraGroupByList={extraGroupByList}
       {...props}
     />

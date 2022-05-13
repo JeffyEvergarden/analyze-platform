@@ -243,7 +243,7 @@ export const useAdvertiseModel = () => {
 
   const [hadProcessedData, setHadProcessedData] = useState<any[]>([]); // 已加工数据
 
-  const [defaultSortColumn, setDefaultSortColumn] = useState<any>('activity_name');
+  const [defaultSortColumn, setDefaultSortColumn] = useState<any>('');
 
   //合计list
   const [summary, setSummary] = useState<any>({});
