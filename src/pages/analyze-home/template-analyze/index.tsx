@@ -45,10 +45,19 @@ interface TemplateAnalyzePageProps {
   moduleType: string; //
   id?: string; // 信息id
   dirId?: string; // 看板id
+  defaultSortColumn?: string;
 }
 
 const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
-  const { type = 'create', id, dirId, moduleType, defaultGroupBy, extraGroupByList } = props;
+  const {
+    type = 'create',
+    id,
+    dirId,
+    moduleType,
+    defaultGroupBy,
+    extraGroupByList,
+    defaultSortColumn,
+  } = props;
 
   const chineseName = ChineseNameMap[moduleType] || '敏捷分析';
 
@@ -89,6 +98,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     setTitleList,
     hadProcessedColumn,
     hadProcessedData,
+    setDefaultSortColumn,
   } = useAdvertiseModel();
 
   const [moduleData, setModuleData] = useState<any>({});
@@ -237,6 +247,9 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
   };
 
   useEffect(() => {
+    if (defaultSortColumn) {
+      setDefaultSortColumn(defaultSortColumn); // 设置数据加工默认排序字段
+    }
     getSqlBaseInfo({ theme: moduleType }); // 获取配置
     init();
   }, []);

@@ -87,14 +87,17 @@ const ResultTable: React.FC<any> = (props: TableProps) => {
       return;
     }
     const header: any = {};
+    const headerRender: any = {};
     column?.map((item: any) => {
       header[item.dataIndex] = item?.title;
+      headerRender[item.dataIndex] = item.render;
     });
     const outputDataList: any[] = [];
     dataList?.map((data: any) => {
       let obj: any = {};
       Object.keys(header)?.map((item) => {
-        obj[item] = normalRender(data[item]); // 数据处理
+        const fn = headerRender[item];
+        obj[item] = fn && typeof fn === 'function' ? fn(data[item]) : normalRender(data[item]); // 数据处理
       });
       outputDataList.push(obj);
     });

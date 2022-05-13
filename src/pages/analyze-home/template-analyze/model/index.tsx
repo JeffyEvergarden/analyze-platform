@@ -183,29 +183,6 @@ export const useFilterModel = () => {
   };
 };
 
-// 排序方式 // 列名
-const sorter = (columnName: any) => {
-  return (a: any, b: any) => {
-    // 默认排序方式  数字大小 -> 活动名称
-    let ta = a['activity_name'];
-    let tb = b['activity_name'];
-    if (ta !== tb) {
-      return ta > tb ? 1 : -1;
-    }
-    a = a[columnName];
-    b = b[columnName];
-    let na = Number(a);
-    let nb = Number(b);
-    if (!isNaN(na) && !isNaN(nb)) {
-      return na - nb;
-    } else if (!isNaN(na) || !isNaN(nb)) {
-      return !isNaN(na) ? 1 : -1;
-    } else {
-      return a >= b ? 1 : -1;
-    }
-  };
-};
-
 // ----------------------------
 // 数值的常规渲染
 const normalRender = (text: any) => {
@@ -266,12 +243,39 @@ export const useAdvertiseModel = () => {
 
   const [hadProcessedData, setHadProcessedData] = useState<any[]>([]); // 已加工数据
 
+  const [defaultSortColumn, setDefaultSortColumn] = useState<any>('activity_name');
+
   //合计list
   const [summary, setSummary] = useState<any>({});
 
   const clearData = () => {
     setActivityData([]);
     setDynamicColumns([]);
+  };
+
+  // 排序方式 // 列名
+  const sorter = (columnName: any) => {
+    return (a: any, b: any) => {
+      if (defaultSortColumn) {
+        // 默认排序方式  数字大小 -> 活动名称
+        let ta = a[defaultSortColumn];
+        let tb = b[defaultSortColumn];
+        if (ta !== tb) {
+          return ta > tb ? 1 : -1;
+        }
+      }
+      a = a[columnName];
+      b = b[columnName];
+      let na = Number(a);
+      let nb = Number(b);
+      if (!isNaN(na) && !isNaN(nb)) {
+        return na - nb;
+      } else if (!isNaN(na) || !isNaN(nb)) {
+        return !isNaN(na) ? 1 : -1;
+      } else {
+        return a >= b ? 1 : -1;
+      }
+    };
   };
 
   // 2.发起查询信号
@@ -334,8 +338,8 @@ export const useAdvertiseModel = () => {
           (item: any) => item?.subject === 'event_type',
         )?.comparator; //获取key
         //当前项的event_type中文名称
-        console.log('eventData');
-        console.log(eventData);
+        // console.log('eventData');
+        // console.log(eventData);
         const eventItem: any = eventData.find((item: any) => item.value === eventName) || {};
 
         let eventZHnName = eventItem?.name || ''; //一级下拉中文名
@@ -445,7 +449,7 @@ export const useAdvertiseModel = () => {
       setDynamicColumns(dynamicTableColumn); //去重
       setDiyColumn(diyColumnList); // diy可选列
       let summaryObj: any = {
-        activity_name: '合计',
+        [defaultSortColumn]: '合计',
       };
       map.forEach((name: any) => {
         if (groupby.indexOf(name) > -1) {
@@ -621,6 +625,7 @@ export const useAdvertiseModel = () => {
     setTitleList, // 列名列表
     hadProcessedColumn,
     hadProcessedData,
+    setDefaultSortColumn,
   };
 };
 
