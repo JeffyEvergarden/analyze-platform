@@ -32,6 +32,38 @@ function formateNumber(val: any) {
   return val;
 }
 
+const reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
+
+// 获取日期
+function getCurrentData(da: Date) {
+  const date = da || new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+  const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+  return `${year}-${month}-${day}`;
+}
+
+const normalRender = (text: any) => {
+  // 渲染方式
+  if (text instanceof Date) {
+    return getCurrentData(text); // 时间
+  } else if (typeof text === 'string' && reg.test(text)) {
+    let _text: any = text;
+    try {
+      _text = new Date(text).toLocaleString();
+    } catch (e) {}
+    return _text;
+  } else if (typeof text !== 'number') {
+    return text || '-';
+  } else {
+    text = text || 0;
+    let str1 = Number(text.toFixed(0));
+    let str2 = Number(text.toFixed(2));
+    let str = Number(str1) === Number(str2) ? str1 : str2;
+    return str;
+  }
+};
+
 const ResultTable: React.FC<any> = (props: TableProps) => {
   const [current, setCurrent] = useState<number>(1);
   const [columnsData, setColumnsData] = useState<any[]>([]);
@@ -62,11 +94,11 @@ const ResultTable: React.FC<any> = (props: TableProps) => {
     dataList?.map((data: any) => {
       let obj: any = {};
       Object.keys(header)?.map((item) => {
-        obj[item] = data[item] ? data[item] : data[item] == 0 ? 0 : '-';
+        obj[item] = normalRender(data[item]); // 数据处理
       });
       outputDataList.push(obj);
-      outputDataList.push(summary);
     });
+    outputDataList.push(summary);
 
     const outputData = [header, ...outputDataList];
     // console.log(outputData);
