@@ -304,12 +304,12 @@ export const useAdvertiseModel = () => {
       const _titleList = titleList.concat(ExtraList);
       resList.map((resData: any, index: any) => {
         if (!resData.data) {
-          return;
+          resData.data = {};
         }
         const formData = resData.form_data;
         groupby = formData.groupby || [];
         // 指标名称
-        const [, metric] = formData.metrics; //获取第二个元素
+        const [, metric] = formData.metrics || []; //获取第二个元素
         //将groupby部分的表头放入column
         formData?.groupby.map((item: any, i: number) => {
           if (map.indexOf(item) === -1) {
