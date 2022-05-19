@@ -35,7 +35,7 @@ const changeWindowsCount = (count: any, unit: any) => {
 
 // --------------------
 // 加工参数
-const processRequestForm = ({ statisticData, globalData, compareData, rawData }: any) => {
+const processRequestForm = ({ statisticData, globalData, compareData, rawData, extra }: any) => {
   const formDataList: any[] = [];
   statisticData?.childrenList?.forEach((item: any) => {
     const obj = JSON.parse(JSON.stringify(rawData));
@@ -185,7 +185,7 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
     if (compareData.windowCount && compareData.windowUnit) {
       obj.adhoc_filters.push({
         expressionType: 'SIMPLE',
-        subject: 'dekta_time', // todo // 窗口期字段
+        subject: extra?.unitColumn || 'dekta_time', // todo // 窗口期字段
         operator: '<=',
         comparator: changeWindowsCount(compareData.windowCount, compareData.windowUnit),
         clause: 'WHERE',
@@ -203,6 +203,7 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData }:
 export const supersetRequestData = (
   { statisticData, globalData, compareData }: any,
   baseInfo: any,
+  extra?: any,
 ) => {
   const rawData: any = {
     datasource: baseInfo.dataSource,
@@ -210,7 +211,7 @@ export const supersetRequestData = (
     viz_type: 'table',
     url_params: {},
     time_range_endpoints: ['inclusive', 'inclusive'],
-    granularity_sqla: 'event_occur_time', // 时间纬度 todo
+    granularity_sqla: extra?.granularity_sqla || 'event_occur_time', // 时间纬度 todo
     time_grain_sqla: '', //事件维度
     time_range: '',
     metrics: ['order_count'],
@@ -231,6 +232,7 @@ export const supersetRequestData = (
     globalData,
     compareData,
     rawData,
+    extra,
   });
   return formDataList;
 };

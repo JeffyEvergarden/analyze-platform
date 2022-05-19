@@ -60,6 +60,8 @@ const PriceAnalyze = (props: any) => {
         moduleType={moduleType}
         extraGroupByList={extraGroupByList}
         {...props}
+        timeColumn={'event_time'} // 时间字段
+        unitColumn={'interval_second'}
         key={moduleType}
       />
     </div>

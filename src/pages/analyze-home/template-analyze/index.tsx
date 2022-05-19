@@ -46,6 +46,8 @@ interface TemplateAnalyzePageProps {
   id?: string; // 信息id
   dirId?: string; // 看板id
   defaultSortColumn?: string;
+  timeColumn?: string;
+  unitColumn?: string;
 }
 
 const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
@@ -55,6 +57,8 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     dirId,
     moduleType,
     defaultGroupBy,
+    timeColumn = 'event_occur_time', // 时间字段
+    unitColumn = 'dekta_time', //  窗口期字段
     extraGroupByList,
     defaultSortColumn,
   } = props;
@@ -188,6 +192,10 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
           compareData: compareSearch,
         },
         baseInfo,
+        {
+          granularity_sqla: timeColumn, // 时间字段
+          unitColumn: unitColumn,
+        },
       );
       // 查询数据
       getDataList(formDataList, eventList, map, baseInfo);
