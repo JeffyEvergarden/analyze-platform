@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+const reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
+
 export const processANDList = (list: any[], target: any[]) => {
   if (!Array.isArray(list)) {
     return;
@@ -7,8 +9,17 @@ export const processANDList = (list: any[], target: any[]) => {
   list?.map((gl: any) => {
     if (gl?.operator == 'between') {
       if (gl.params instanceof Array) {
-        const _val1 = gl.params?.[0]?.startOf('day');
-        const _val2 = gl.params?.[1]?.endOf('day');
+        let _val1 = gl.params?.[0];
+        let _val2 = gl.params?.[1];
+        if (typeof _val1 === 'string' && reg.test(_val1)) {
+          _val1 = moment(_val1);
+        }
+        if (typeof _val2 === 'string' && reg.test(_val2)) {
+          _val2 = moment(_val2);
+        }
+
+        _val1 = gl.params?.[0]?.startOf('day');
+        _val2 = gl.params?.[1]?.endOf('day');
         target.push({
           expressionType: 'SQL',
           subject: null,
@@ -33,6 +44,11 @@ export const processANDList = (list: any[], target: any[]) => {
         });
       }
     } else {
+      let _val = gl.params;
+      if (typeof _val === 'string' && reg.test(_val)) {
+        _val = moment(_val);
+      }
+      gl.params = _val;
       if (gl?.params instanceof moment) {
         target.push({
           expressionType: 'SQL',

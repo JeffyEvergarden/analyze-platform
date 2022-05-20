@@ -11,12 +11,36 @@ import { useSearchParamsModel, useAdvertiseModel, useBaseModel } from './model';
 
 import { supersetRequestData } from './model/process';
 import { getModuleDetail } from './model';
+import ChineseNameMap from './const';
 import moment from 'moment';
 
+const defaultSortMap: any = {
+  sub_activity_2: 'advertchannel',
+};
+
+const extraMap: any = {
+  default: {
+    timeColumn: 'event_occur_time', // 时间字段
+    unitColumn: 'dekta_time', //  窗口期字段
+  },
+  price_change: {
+    timeColumn: 'event_time', // 时间字段
+    unitColumn: 'interval_second', //  窗口期字段
+  },
+  adj_limit: {
+    timeColumn: 'event_time', // 时间字段
+    unitColumn: 'interval_second', //  窗口期字段
+  },
+};
+
 const MiniMap: React.FC<any> = (props: any) => {
-  const { id = '123', dirId } = props;
+  const { id = '123', dirId, moduleType = 'sub_activity_2' } = props;
+
+  const chineseName: any = (ChineseNameMap as any)[moduleType] || '敏捷分析';
 
   const query: any = history.location.query || {};
+
+  const extra = extraMap[moduleType] || extraMap['default'];
 
   const tableRef = useRef(null);
 
@@ -28,11 +52,12 @@ const MiniMap: React.FC<any> = (props: any) => {
     setLoading,
     processDiyColumn,
     summary, // 总结数据
-    getAdvertiseList, // 获取数据
+    getDataList, // 获取数据
     setProcessDiyColumn, // 已选择的自定义指标
     hadProcessedColumn,
     hadProcessedData,
     setTitleList,
+    setDefaultSortColumn,
   } = useAdvertiseModel();
 
   const [moduleData, setModuleData] = useState<any>({});
@@ -60,6 +85,7 @@ const MiniMap: React.FC<any> = (props: any) => {
       } else {
         //生成别名映射
         statisticsSearch.childrenList.forEach((item: any, index: any) => {
+          // 生成别名映射
           if (item.alias) {
             item.index = index;
             const name = `${item.event || ''}_${item.attribute || ''}_${item.fnName || ''}`;
@@ -81,9 +107,13 @@ const MiniMap: React.FC<any> = (props: any) => {
           compareData: compareSearch,
         },
         baseInfo,
+        {
+          granularity_sqla: extra.timeColumn, // 时间字段
+          unitColumn: extra.unitColumn,
+        },
       );
       // 查询数据
-      getAdvertiseList(formDataList, eventList, map, baseInfo);
+      getDataList(formDataList, eventList, map, baseInfo);
     } catch (e) {
       setMsg('查询异常');
       setLoading(false);
@@ -138,9 +168,9 @@ const MiniMap: React.FC<any> = (props: any) => {
   };
 
   const init = async () => {
-    await getPreConfig('sub_activity_2'); // 获取两边数据
+    await getPreConfig(moduleType); // 获取两边数据
     if (moduleId) {
-      await getModuleInfo(moduleId, 'advertise'); // 加载数据
+      await getModuleInfo(moduleId, moduleType); // 加载数据
     }
   };
 
@@ -148,7 +178,11 @@ const MiniMap: React.FC<any> = (props: any) => {
     if (!id) {
       return;
     }
-    getSqlBaseInfo({ theme: 'sub_activity_2' }); // 获取配置
+    if (defaultSortMap[moduleType]) {
+      setDefaultSortColumn(defaultSortMap[moduleType]);
+    }
+
+    getSqlBaseInfo({ theme: moduleType }); // 获取配置
     init();
   }, []);
 
@@ -211,6 +245,7 @@ const MiniMap: React.FC<any> = (props: any) => {
             <div className={style['table-box']} style={{ marginTop: '10px' }}>
               <Table
                 id={'template-table'}
+                chineseName={chineseName}
                 column={hadProcessedColumn}
                 data={hadProcessedData}
                 cref={tableRef}
