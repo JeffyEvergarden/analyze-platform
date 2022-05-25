@@ -62,6 +62,7 @@ const PriceAnalyze = (props: any) => {
         {...props}
         timeColumn={'event_time'} // 时间字段
         unitColumn={'interval_second'}
+        showTime={false}
         key={moduleType}
       />
     </div>

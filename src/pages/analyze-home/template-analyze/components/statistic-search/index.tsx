@@ -21,6 +21,7 @@ interface StatisticComponentProps {
   eventList: any;
   fieldMap: any;
   setFilter?: any;
+  showTime?: boolean;
 }
 // 通用方法
 const trim = (text: any) => {
@@ -45,7 +46,7 @@ const { Option } = Select;
 
 const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
-  const { cref, eventList, fieldMap, initData, setFilter } = props;
+  const { cref, eventList, fieldMap, initData, setFilter, showTime = true } = props;
 
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (val: any, opt: any, index: any) => {
@@ -452,6 +453,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                                     form={form}
                                     fieldMap={fieldMap}
                                     fieldsList={fieldList}
+                                    showTime={showTime}
                                     remove={() => {
                                       // remove(innerIndex);
                                       delInnerForm(innerIndex, outIndex);

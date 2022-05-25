@@ -24,6 +24,7 @@ interface GlobalComponentProps {
   fieldMap?: any;
   initData?: any;
   list?: any;
+  showTime?: boolean;
 }
 
 const { Item: FormItem } = Form;
@@ -32,7 +33,7 @@ const { RangePicker } = DatePicker;
 
 const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
   const [form] = Form.useForm();
-  const { cref, list } = props;
+  const { cref, list, showTime = true } = props;
   const [paramsTypeList, setParamsTypeList] = useState<('String' | 'Array')[]>([]);
 
   const [inputVal, setInputVal] = useState<any>('');
@@ -294,7 +295,11 @@ const GlobalComponent: React.FC<any> = (props: GlobalComponentProps) => {
                           rules={[{ required: true, message: '请选择' }]}
                           dependencies={['childrenList', outIndex, 'subject']}
                         >
-                          {_currentOp == 'between' ? <RangePicker /> : <DatePicker showTime />}
+                          {_currentOp == 'between' ? (
+                            <RangePicker />
+                          ) : (
+                            <DatePicker showTime={showTime} />
+                          )}
                         </FormItem>
                       </Condition>
 

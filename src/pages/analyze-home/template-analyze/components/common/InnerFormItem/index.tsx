@@ -21,7 +21,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const InnerForm: React.FC<any> = (props: any) => {
-  const { field, form, outIndex, remove, fieldMap, fieldsList } = props;
+  const { field, form, outIndex, remove, fieldMap, fieldsList, showTime = true } = props;
   const { key, fieldKey: index } = field;
 
   const [inputVal, setInputVal] = useState<any>('');
@@ -189,7 +189,7 @@ const InnerForm: React.FC<any> = (props: any) => {
             rules={[{ required: true, message: '请选择' }]}
             dependencies={['childrenList', 0, 'innerList', index, 'subject']}
           >
-            {currentOp == 'between' ? <RangePicker /> : <DatePicker showTime />}
+            {currentOp == 'between' ? <RangePicker /> : <DatePicker showTime={showTime} />}
           </FormItem>
         </Condition>
 

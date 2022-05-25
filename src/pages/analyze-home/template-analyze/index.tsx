@@ -48,6 +48,7 @@ interface TemplateAnalyzePageProps {
   defaultSortColumn?: string;
   timeColumn?: string;
   unitColumn?: string;
+  showTime?: boolean;
 }
 
 const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
@@ -59,6 +60,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     defaultGroupBy,
     timeColumn = 'event_occur_time', // 时间字段
     unitColumn = 'dekta_time', //  窗口期字段
+    showTime = true,
     extraGroupByList,
     defaultSortColumn,
   } = props;
@@ -195,6 +197,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
         {
           granularity_sqla: timeColumn, // 时间字段
           unitColumn: unitColumn,
+          showTime,
         },
       );
       // 查询数据
@@ -414,12 +417,18 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
                   fieldMap={fieldMap}
                   eventList={eventList}
                   setFilter={setFilter}
+                  showTime={showTime}
                 />
               </Panel>
 
               {/* 全局筛选 */}
               <Panel header="全局筛选" key="3" extra={addGlobalBt}>
-                <GlobalSearch cref={GlobalSearchRef} list={filterList} fieldMap={fieldMap} />
+                <GlobalSearch
+                  cref={GlobalSearchRef}
+                  list={filterList}
+                  fieldMap={fieldMap}
+                  showTime={showTime}
+                />
               </Panel>
 
               <Panel header="对比查看" key="4">

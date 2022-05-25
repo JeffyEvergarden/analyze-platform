@@ -2,7 +2,7 @@ import moment from 'moment';
 
 const reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
 
-export const processANDList = (list: any[], target: any[]) => {
+export const processANDList = (list: any[], target: any[], showTime?: boolean) => {
   if (!Array.isArray(list)) {
     return;
   }
@@ -50,6 +50,13 @@ export const processANDList = (list: any[], target: any[]) => {
       }
       gl.params = _val;
       if (gl?.params instanceof moment) {
+        let __val = gl.params;
+        if (!showTime) {
+          __val = __val?.startOf('day')?.format?.();
+        } else {
+          __val = __val?.format?.();
+        }
+
         target.push({
           expressionType: 'SQL',
           subject: null,
@@ -60,7 +67,7 @@ export const processANDList = (list: any[], target: any[]) => {
           isExtra: false,
           sqlExpression: `${gl.subject} ${
             gl.operator == '==' ? '=' : gl.operator
-          } cast('${gl.params?.format?.()}' as TIMESTAMP)`,
+          } cast('${__val}' as TIMESTAMP)`,
           filterOptionName: '',
         });
       } else {

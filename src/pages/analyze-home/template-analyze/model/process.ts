@@ -99,17 +99,23 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData, e
     });
     if (item.relation === 'AND') {
       //介于
-      processANDList(item.innerList, obj.adhoc_filters);
+      processANDList(item.innerList, obj.adhoc_filters, extra.showTime);
     } else if (item.relation === 'OR') {
       const tempFilters: any = [];
       item.innerList.map((innerItem: any) => {
         if (innerItem.operator !== 'in' && innerItem.operator !== 'not in') {
           if (innerItem?.operator == 'between') {
             if (innerItem?.params instanceof Array) {
-              let list: any[] = innerItem.params.map((item: any) => {
+              let list: any[] = innerItem.params.map((item: any, i: number) => {
                 let _params = item;
                 if (_params instanceof moment) {
-                  _params = `cast('${(_params as any).format?.()}' as TIMESTAMP)`;
+                  if (i === 1) {
+                    _params = `cast('${(_params as any)?.endOf('day')?.format?.()}' as TIMESTAMP)`;
+                  } else {
+                    _params = `cast('${(_params as any)
+                      ?.startOf('day')
+                      ?.format?.()}' as TIMESTAMP)`;
+                  }
                 }
                 if (typeof _params !== 'number') {
                   _params = `'${_params}'`;
@@ -169,7 +175,7 @@ const processRequestForm = ({ statisticData, globalData, compareData, rawData, e
       }
     }
     //  全局指标
-    processANDList(globalData?.childrenList, obj.adhoc_filters);
+    processANDList(globalData?.childrenList, obj.adhoc_filters, extra.showTime);
     //分组
     obj.groupby = [...compareData.groupBy];
     // //时间维度
