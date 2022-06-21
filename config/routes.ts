@@ -45,6 +45,11 @@ export default [
         path: '/analyzehome/price',
         component: './analyze-home/price-analyze',
       },
+      {
+        name: '敏捷分析-新留存分析',
+        path: '/analyzehome/remain',
+        component: './analyze-home/remain-analyze',
+      },
       { redirect: '/analyzehome/retained' },
       { component: './404' },
     ],

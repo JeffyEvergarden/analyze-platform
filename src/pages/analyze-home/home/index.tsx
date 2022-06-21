@@ -42,6 +42,10 @@ const HomePage: React.FC = (props: any) => {
             <Menu.Item key="/analyzehome/price" icon={<StockOutlined />}>
               提额&调价分析
             </Menu.Item>
+
+            <Menu.Item key="/analyzehome/remain" icon={<StockOutlined />}>
+              新留存分析
+            </Menu.Item>
           </Menu>
         </div>
 
