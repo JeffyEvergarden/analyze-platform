@@ -1,8 +1,8 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 // 通用组件
-import { Form, Select, Button, Space, Input } from 'antd';
+import { Form, Select, Button, Space, Input, Tooltip } from 'antd';
 
-import { PlusSquareOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusSquareOutlined, HighlightOutlined } from '@ant-design/icons';
 // 定制组件
 import Condition from '../common/Condition';
 import InnerFormItem from '../common/InnerFormItem';
@@ -22,7 +22,6 @@ interface StatisticComponentProps {
 interface StatisticItemProps {
   event?: string | undefined; // 事件类型
   attribute?: string | undefined; // 属性/指标
-  associatedField?: any;
   operator?: string | undefined; // 统计方式
   type?: string | undefined; //  fields/metric 属性/指标
   dataType?: string | undefined; // number/input/select/dateTime
@@ -53,7 +52,6 @@ const { Option } = Select;
 const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
   const { list, cref, map, getBehavior, change } = props;
-  const [selectUserType, setSelectUserType] = useState<string>('01');
 
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
@@ -63,7 +61,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     }
     const curList = form.getFieldValue('childrenList');
     const currentFormValue: any = curList?.[index] || {};
-    console.log(currentFormValue);
+    // console.log(currentFormValue);
     //清除子
     currentFormValue?.innerList?.forEach((item: any) => {
       item.attr = undefined;
@@ -76,11 +74,9 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     // 清除当前对象其他值
     currentFormValue.attribute = undefined; // 第二属性 指标
     currentFormValue.operator = undefined; // 第三属性 统计方式  // 求和、去重之类的
-    currentFormValue.associatedField = undefined; // 关联主体
     currentFormValue.relation = 'AND';
     // console.log(opt);
     //关联主体
-    currentFormValue.associatedFieldsList = opt.opt.associatedFieldsList || [];
     form.setFieldsValue({
       childrenList: [...curList],
     });
@@ -135,15 +131,13 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       //获取接口所需数据
       async getForm() {
         const fieldsValue: any = await form.validateFields();
-        console.log(fieldsValue);
+        // console.log(fieldsValue);
 
         if (fieldsValue) {
           const formData = form.getFieldValue('childrenList');
           return {
             initEvent: formData[0]?.event,
             initMetric: formData[0]?.attribute,
-            // initMetric: formData[0]?.operator,
-            associatedField: formData[0]?.associatedField,
             relation: formData[0]?.relation,
             conditions: formData[0]?.innerList?.map((item: any) => {
               return {
@@ -195,11 +189,21 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
           attribute: undefined,
           operator: undefined,
           relation: 'AND',
-          associatedField: undefined,
         },
       ],
     });
   }, []);
+
+  // 修改别名
+  const changeFilterAlias = (field: any, outIndex: any) => {
+    const formValueList = form.getFieldValue('childrenList');
+    const selectItem = formValueList[outIndex];
+    selectItem.edit = !selectItem.edit;
+    selectItem.alias = trim(selectItem.alias);
+    form.setFieldsValue({
+      childrenList: [...formValueList],
+    });
+  };
 
   // 删除里层的form
   const delInnerForm = (innerIndex: number, outIndex: number) => {
@@ -254,18 +258,18 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                 const _curItemObj: any = list.find((item: any) => {
                   return item.value === _event;
                 });
+                // 找出下拉列表
                 const metricsList: any = _curItemObj?.metricsList || [];
                 const fieldList = _curItemObj?.fieldList || [];
-
-                const associatedFieldsList = curItem?.associatedFieldsList || [];
 
                 const type: string = curItem?.type || ''; // 判断是 指标 还是 属性
                 const dataType: string = curItem?.dataType || ''; // 判断数据类型
                 let subList: any[] = []; // 三级下拉列表
                 if (type === 'fields' && dataType === 'number') {
+                  // 下表列表
                   subList = statisticNumbericList;
                 } else if (type === 'fields') {
-                  subList = statisticDefaultList;
+                  subList = statisticDefaultList; // 指标列表
                 }
 
                 //
@@ -321,18 +325,6 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                               </Option>
                             );
                           })}
-                          {/* 属性列表 */}
-                          {/* {fieldList.length > 0 && (
-                            <Select.OptGroup label="----">
-                              {fieldList.map((item: any, index: any) => {
-                                return (
-                                  <Option key={`field_${index}`} value={item.value} opt={item}>
-                                    {item.name}
-                                  </Option>
-                                );
-                              })}
-                            </Select.OptGroup>
-                          )} */}
                         </Select>
                       </FormItem>
                       {/* {type} */}
@@ -374,29 +366,43 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                           addInnerForm(outIndex);
                         }}
                       />
-                      <span className="label" style={{ marginLeft: '32px' }}>
-                        关联主体：
-                      </span>
-                      <FormItem
-                        name={[field.fieldKey, 'associatedField']}
-                        fieldKey={[field.fieldKey, 'associatedField']}
-                        className={style['zy-row']}
-                        // style={{ marginLeft: '15px' }}
-                      >
-                        <Select
-                          // value={selectUserType}
-                          style={{ width: '250px' }}
-                          placeholder="请选择关联主体"
+
+                      <Tooltip title="编辑指标别名">
+                        <HighlightOutlined
+                          style={{
+                            color: '#1890ff',
+                            marginLeft: '24px',
+                            marginTop: '2px',
+                            fontSize: '20px',
+                          }}
+                          onClick={() => {
+                            changeFilterAlias(field, outIndex);
+                          }}
+                        />
+                      </Tooltip>
+                      <Condition r-if={curItem?.edit}>
+                        <FormItem
+                          name={[field.fieldKey, 'alias']}
+                          key={field.fieldKey + 'alias'}
+                          fieldKey={[field.fieldKey, 'alias']}
                         >
-                          {associatedFieldsList.map((item: any) => {
-                            return (
-                              <Option value={item.value} key={item.value}>
-                                {item.name}
-                              </Option>
-                            );
-                          })}
-                        </Select>
-                      </FormItem>
+                          <Input
+                            style={{ width: '150px' }}
+                            placeholder="请输入别名"
+                            onPressEnter={() => {
+                              changeFilterAlias(field, outIndex);
+                            }}
+                            maxLength={20}
+                          ></Input>
+                        </FormItem>
+                      </Condition>
+
+                      <Condition r-if={!curItem?.edit && curItem?.alias}>
+                        <div style={{ marginLeft: '15px' }}>
+                          别名：
+                          <span className={style['static-box_alias']}>{curItem?.alias}</span>
+                        </div>
+                      </Condition>
                     </Space>
 
                     <Form.List name={[field.fieldKey, 'innerList']}>

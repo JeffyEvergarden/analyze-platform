@@ -240,7 +240,8 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
           message.error(res?.resultMsg || '获取模板详情失败');
         }
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
         message.error('获取模板详情失败');
       });
   };

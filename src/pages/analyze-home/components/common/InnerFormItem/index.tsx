@@ -44,7 +44,7 @@ const InnerForm: React.FC<any> = (props: any) => {
 
   // 修改属性
   const changeAttribute = (val: any, options: any, index: number) => {
-    console.log(options);
+    // console.log(options);
     // console.log(currentFormValue);
     // console.log(currentInnerValue);
     currentInnerValue.dataType = options.opt.dataType || '';
@@ -61,6 +61,7 @@ const InnerForm: React.FC<any> = (props: any) => {
     // ----------------
     currentFormValue.innerList[index] = currentInnerValue;
     currentFormValue.innerList = [...currentFormValue.innerList];
+    console.log(currentInnerValue);
     form.setFieldsValue({
       childrenList: [...curList],
     });
@@ -72,19 +73,14 @@ const InnerForm: React.FC<any> = (props: any) => {
 
     currentInnerValue.op = val;
     // 多选
-    // if (val === 'in' || val === 'not in') {
     if (val === 'contain' || val === 'not contain') {
       currentInnerValue.selectType = 'multi';
-      // if (!Array.isArray(currentInnerValue.value)) {
-      //   currentInnerValue.value = undefined;
-      // }
     } else if (val) {
       currentInnerValue.selectType = 'single';
-      // if (Array.isArray(currentInnerValue.value)) {
-      //   currentInnerValue.value = undefined;
-      // }
     }
     currentInnerValue.value = undefined;
+
+    console.log(currentInnerValue);
 
     form.setFieldsValue({
       childrenList: [...curList],

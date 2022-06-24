@@ -10,9 +10,9 @@ interface LineChartProps {
 
 const LineChart: React.FC<any> = (props: LineChartProps) => {
   const { selectData } = props;
-  useEffect(() => {
-    console.log(selectData);
-  }, [selectData]);
+  // useEffect(() => {
+  //   console.log(selectData);
+  // }, [selectData]);
 
   return (
     <Chart

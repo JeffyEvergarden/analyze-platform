@@ -1,12 +1,11 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 // 通用组件
-import { Form, Select, Button, Space, Input } from 'antd';
+import { Form, Select, Button, Space, Input, Tooltip } from 'antd';
 
-import { PlusSquareOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusSquareOutlined, HighlightOutlined, PlusOutlined } from '@ant-design/icons';
 // 定制组件
 import Condition from '../../../components/common/Condition';
 import InnerFormItem from '../../../components/common/InnerFormItem';
-import SingleFormItem from '../../../components/common/SingleFormItem';
 import { statisticNumbericList, statisticDefaultList } from '../../../components/model/const';
 import style from './style.less';
 import { propcessInitForm } from '../../../model/util';
@@ -52,7 +51,6 @@ const { Option } = Select;
 const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
   const { list, cref, map, change, setBehaviorList } = props;
-  const [selectUserType, setSelectUserType] = useState<string>('01');
 
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
@@ -75,12 +73,6 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     currentFormValue.relation = 'AND';
 
     // console.log(opt);
-    // 指标列表
-    // currentFormValue.metricsList = opt.opt.metricsList || [];
-    // // 属性列表
-    // currentFormValue.fieldList = opt.opt.fieldList || [];
-    // //一级筛选
-    // currentFormValue.EventList = list;
     form.setFieldsValue({
       childrenList: [...curList],
     });
@@ -119,8 +111,6 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       op: undefined,
       value: undefined,
       dataType: 'input',
-      operatorList: [],
-      subList: [],
     });
     // console.log(curList);
 
@@ -146,18 +136,20 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
           });
 
           return {
-            nextEvent: formData?.event,
-            nextMetric: formData?.attribute,
-            nextCondition: {
-              field: formData?.innerList[0]?.attr || undefined,
-              function: formData?.innerList[0]?.op || undefined,
-              params: Array.isArray(formData?.innerList[0]?.value)
-                ? formData?.innerList[0]?.value.join()
-                : formData?.innerList[0]?.value.format
-                ? formData?.innerList[0]?.value.format('YYYY-MM-DD')
-                : formData?.innerList[0]?.value,
-              dataType: formData?.innerList[0]?.dataType,
-            },
+            nextEvent: formData?.event, // 事件
+            nextMetric: formData?.attribute, // 指标
+            nextCondition: formData[0]?.innerList?.map((item: any) => {
+              return {
+                field: item.attr,
+                function: item.op,
+                params: Array.isArray(item.value)
+                  ? item.value.join()
+                  : item.value.format
+                  ? item.value.format('YYYY-MM-DD')
+                  : item.value,
+                dataType: item.dataType,
+              };
+            }),
             otherName: formData?.alias,
             defOtherName: `${init_event_num?.name || '-'}的${init_Metric?.name || '-'}`,
           };
@@ -190,12 +182,36 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       //数据回显
       async setForm(obj: any) {
         obj = propcessInitForm(obj);
-        obj.innerList[0].alias = obj?.alias;
+        // obj.innerList[0].alias = obj?.alias;
         form.setFieldsValue({ childrenList: [obj] });
         setBehaviorList(list);
       },
     };
   });
+
+  // 修改别名
+  const changeFilterAlias = (field: any, outIndex: any) => {
+    const formValueList = form.getFieldValue('childrenList');
+    const selectItem = formValueList[outIndex];
+    selectItem.edit = !selectItem.edit;
+    selectItem.alias = trim(selectItem.alias);
+    form.setFieldsValue({
+      childrenList: [...formValueList],
+    });
+  };
+
+  // 删除里层的form
+  const delInnerForm = (innerIndex: number, outIndex: number) => {
+    const curList: any = form.getFieldValue('childrenList');
+    const currentFormValue: any = curList?.[outIndex] || {};
+    currentFormValue.innerList = currentFormValue.innerList || [];
+    currentFormValue.innerList = currentFormValue.innerList.filter((item: any, index: number) => {
+      return index !== innerIndex;
+    });
+    form.setFieldsValue({
+      childrenList: [...curList],
+    });
+  };
 
   // 初始化
   useEffect(() => {
@@ -210,7 +226,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
         },
       ],
     });
-    addInnerForm(0);
+    // addInnerForm(0);
   }, [change]);
 
   const fieldChangeFunc = (changedFields: any, allFields: any) => {
@@ -330,6 +346,55 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                           </Select>
                         </FormItem>
                       </Condition>
+
+                      <PlusSquareOutlined
+                        style={{
+                          color: '#1890ff',
+                          marginLeft: '5px',
+                          marginTop: '2px',
+                          fontSize: '20px',
+                        }}
+                        onClick={() => {
+                          addInnerForm(outIndex);
+                        }}
+                      />
+
+                      <Tooltip title="编辑指标别名">
+                        <HighlightOutlined
+                          style={{
+                            color: '#1890ff',
+                            marginLeft: '24px',
+                            marginTop: '2px',
+                            fontSize: '20px',
+                          }}
+                          onClick={() => {
+                            changeFilterAlias(field, outIndex);
+                          }}
+                        />
+                      </Tooltip>
+                      <Condition r-if={curItem?.edit}>
+                        <FormItem
+                          name={[field.fieldKey, 'alias']}
+                          key={field.fieldKey + 'alias'}
+                          fieldKey={[field.fieldKey, 'alias']}
+                        >
+                          <Input
+                            style={{ width: '150px' }}
+                            placeholder="请输入别名"
+                            onPressEnter={() => {
+                              changeFilterAlias(field, outIndex);
+                            }}
+                            maxLength={20}
+                          ></Input>
+                        </FormItem>
+                      </Condition>
+
+                      <Condition r-if={!curItem?.edit && curItem?.alias}>
+                        <div style={{ marginLeft: '15px' }}>
+                          别名：
+                          <span className={style['static-box_alias']}>{curItem?.alias}</span>
+                        </div>
+                      </Condition>
                     </Space>
 
                     <Form.List name={[field.fieldKey, 'innerList']}>
@@ -356,13 +421,17 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                               {innerFields.map((innerField, innerIndex) => {
                                 // console.log('innerFields:', innerField);
                                 return (
-                                  <SingleFormItem
+                                  <InnerFormItem
                                     key={innerField.key} // 数组key值
                                     field={innerField} // 包含name、 fieldKey
+                                    outIndex={outIndex}
                                     form={form}
-                                    formName={'childrenList'}
                                     list={fieldList}
                                     map={map}
+                                    remove={() => {
+                                      // remove(innerIndex);
+                                      delInnerForm(innerIndex, outIndex);
+                                    }}
                                   />
                                 );
                               })}

@@ -25,7 +25,7 @@ import LineChart from './components/line-chart';
 import Table from './components/result-table';
 // 共有数据源
 import { useSearchModel, useBehaviorModel, useListModel } from './model';
-import { modelTypeList, userTypeList } from './model/const';
+import { userTypeList } from './model/const';
 import { groupByList } from './model/const';
 // 定制
 // import { useTableModel } from './model';
@@ -51,10 +51,6 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   // 是否默认展开 key
   const CollapseKey = expand ? ['1', '2', '3', '4'] : [];
 
-  // 搜索条件---选择分析模型
-  const [selectModelType, setSelectModelType] = useState<string>(modelType || '01');
-  // 搜索条件---选择用户
-  const [selectUserType, setSelectUserType] = useState<string>('01');
   // 搜索条件---筛选框的数据源
   const { eventList, getPreConfig } = useSearchModel();
   //后续行为
@@ -63,7 +59,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   const { loading, chartList, tableList, tableDataList, getTable } = useListModel();
 
   //检测初始变没
-  const [test, setTest] = useState<any>('');
+  const [indexField, setIndexField] = useState<any>('');
 
   //TEST-miniMap
   const [saveData, setSaveData] = useState<any>({});
@@ -103,7 +99,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     let all = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
     console.log(all);
     if (statisticsSearch && followUpSearch && compareSearch) {
-      console.log(eventList);
+      // console.log(eventList);
       if (eventList.length) {
         getTable(all, eventList);
       } else {
@@ -245,35 +241,13 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
         {/* 查询条件 */}
         <div className={style['search-box']}>
           <Collapse defaultActiveKey={CollapseKey} ghost>
-            {/* 选择分析模型 */}
-            <Panel header="选择分析模型" key="1">
-              <Space>
-                <div className={style['zy-row']}>
-                  <span className="label">选择分析模型：</span>
-                  <Select
-                    value={selectModelType}
-                    style={{ width: '250px' }}
-                    placeholder="请选择分析模型"
-                  >
-                    {modelTypeList.map((item: any) => {
-                      return (
-                        <Option value={item.value} key={item.value} disabled={item.disabled}>
-                          {item.name}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </div>
-              </Space>
-            </Panel>
-
             {/* 初始行为 */}
             <Panel header="初始行为" key="2">
               <StatisticsSearch
                 cref={firstSearchRef}
                 list={eventList}
                 getBehavior={getBehaviorConfig}
-                change={setTest}
+                change={setIndexField}
               />
             </Panel>
 
@@ -283,7 +257,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
                 cref={normalSearchRef}
                 list={behaviorList}
                 setBehaviorList={setBehaviorList}
-                change={test}
+                change={indexField}
               />
             </Panel>
 

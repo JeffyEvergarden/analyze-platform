@@ -1,22 +1,3 @@
-// 待选模型列表
-// 筛选框 - 选择分析模型 - 下拉列表
-export const modelTypeList: any[] = [
-  {
-    name: 'BGS策略分析',
-    value: '01',
-  },
-  {
-    name: '活动转化分析',
-    value: '02',
-    disabled: true,
-  },
-  {
-    name: '普通事件分析',
-    value: '03',
-    disabled: true,
-  },
-];
-
 // 筛选框 - 关联主体 - 下拉列表
 export const userTypeList: any[] = [
   {

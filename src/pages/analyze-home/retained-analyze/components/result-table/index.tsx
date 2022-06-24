@@ -70,7 +70,7 @@ const LineChart: React.FC<any> = (props: TableProps) => {
       val.length = 5;
       message.info('最多只能勾选5个');
     } else {
-      console.log('selectedRowKeys changed: ', val);
+      // console.log('selectedRowKeys changed: ', val);
       setSelectedRowKeys(item);
       setSelectedRows(val);
     }
@@ -101,8 +101,8 @@ const LineChart: React.FC<any> = (props: TableProps) => {
     });
 
     const outputData = [header, ...outputDataList];
-    console.log(outputData);
-    console.log(header);
+    // console.log(outputData);
+    // console.log(header);
 
     // const tableDOM: HTMLElement | null = document.getElementById(`${tableId}`);
     // const cpTableNode: any = tableDOM?.cloneNode(true);
@@ -118,7 +118,7 @@ const LineChart: React.FC<any> = (props: TableProps) => {
       // raw: true,
       skipHeader: true,
     });
-    console.log(ws);
+    // console.log(ws);
 
     //初始化
     let wb = XLSX.utils.book_new();

@@ -9,7 +9,7 @@ export const useSearchModel = () => {
 
   // 数据加工
   const processEvent = (originList: any) => {
-    console.log(originList);
+    // console.log(originList);
 
     const list: any[] = originList.map((item: any, index: number) => {
       // 指标列表
@@ -74,7 +74,7 @@ export const useSearchModel = () => {
         associatedFieldsList,
       };
     });
-    console.log(list);
+    // console.log(list);
 
     setEventList(list);
   };
@@ -93,7 +93,6 @@ export const useSearchModel = () => {
     if (list.length > 0) {
       processEvent(list);
     }
-    // console.log(map);
   };
 
   return {
@@ -195,15 +194,9 @@ export const useListModel = () => {
     'next_event_num4',
   ];
   const processEvent = (res: any, obj: any, eventList: any) => {
-    console.log(res);
-
-    console.log(obj);
-    console.log(eventList);
-
     let step: any = [];
     //步长
     res.nextEventTitles.forEach((item: any, index: any) => {
-      console.log(item);
       if (index < res.nextEventTitleNum) {
         step.push({
           value: tableIndex[index],
@@ -227,14 +220,13 @@ export const useListModel = () => {
     let a = groupByList?.filter((item: any) => {
       return obj?.groupFields?.indexOf(item.value) != -1;
     });
-    console.log(a);
+
     let init_event_num = eventList?.find((item: any) => {
       return item.value == obj.initEvent;
     });
     let init_Metric = init_event_num?.metricsList?.find((item: any) => {
       return item.value == obj.initMetric;
     });
-    console.log(init_event_num);
 
     setTableList([
       { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex' },
@@ -260,10 +252,8 @@ export const useListModel = () => {
     ]);
 
     setChartList(step);
-    console.log(res);
 
     res.groupData.map((item: any, index: any) => {
-      // console.log(item);
       Object.keys(item).forEach((res) => {
         if (typeof item[res] === 'number') {
           let str1 = item[res].toFixed(0);
@@ -281,8 +271,7 @@ export const useListModel = () => {
   const getTable = async (obj: any, eventList: any) => {
     setLoading(true);
     let res: any = await getRefreshList(obj);
-    // console.log(res);
-    console.log(eventList);
+
     if (res.status == 'finished') {
       setLoading(false);
       processEvent(res.data, obj, eventList);
