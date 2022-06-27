@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useModel, useLocation } from 'umi';
 import {
   Space,
@@ -24,8 +24,7 @@ import CompareSearch from './components/compare-search';
 import LineChart from './components/line-chart';
 import Table from './components/result-table';
 // 共有数据源
-import { useSearchModel, useBehaviorModel, useListModel } from './model';
-import { userTypeList } from './model/const';
+import { useSearchModel, useBehaviorModel, useListModel, useFilterModel } from './model';
 import { groupByList } from './model/const';
 // 定制
 // import { useTableModel } from './model';
@@ -60,6 +59,17 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
 
   //检测初始变没
   const [indexField, setIndexField] = useState<any>('');
+
+  //
+
+  const { unionList, setFilter, setExtraList } = useFilterModel();
+
+  const [fieldList, setFieldList] = useState<any[]>([]);
+  const [fieldList2, setFieldList2] = useState<any[]>([]);
+
+  useEffect(() => {
+    setFilter(fieldList, fieldList2);
+  }, [fieldList, fieldList2]);
 
   //TEST-miniMap
   const [saveData, setSaveData] = useState<any>({});
@@ -211,6 +221,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   // mounted初始化
   useEffect(() => {
     getPreConfig('RETAIN_STRATEGY');
+    setExtraList(groupByList);
   }, []);
 
   useEffect(() => {
@@ -248,6 +259,9 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
                 list={eventList}
                 getBehavior={getBehaviorConfig}
                 change={setIndexField}
+                setFilter={(list: any[]) => {
+                  setFieldList(list);
+                }}
               />
             </Panel>
 
@@ -258,11 +272,14 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
                 list={behaviorList}
                 setBehaviorList={setBehaviorList}
                 change={indexField}
+                setFilter={(list: any[]) => {
+                  setFieldList2(list);
+                }}
               />
             </Panel>
 
             <Panel header="对比查看" key="4">
-              <CompareSearch cref={lastSearchRef} />
+              <CompareSearch cref={lastSearchRef} groupByList={unionList} />
             </Panel>
           </Collapse>
         </div>

@@ -16,6 +16,7 @@ interface StatisticComponentProps {
   map?: Map<string, any> | undefined;
   change: any;
   setBehaviorList: any;
+  setFilter?: (...args: any) => void;
 }
 
 interface StatisticItemProps {
@@ -50,7 +51,7 @@ const { Option } = Select;
 
 const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
-  const { list, cref, map, change, setBehaviorList } = props;
+  const { list, cref, map, change, setBehaviorList, setFilter } = props;
 
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
@@ -71,6 +72,9 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     currentFormValue.attribute = undefined; // 第二属性 指标
     currentFormValue.operator = undefined; // 第三属性 统计方式  // 求和、去重之类的
     currentFormValue.relation = 'AND';
+
+    let list = opt.opt.fieldList || [];
+    setFilter?.(list || []);
 
     // console.log(opt);
     form.setFieldsValue({
@@ -385,6 +389,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                               changeFilterAlias(field, outIndex);
                             }}
                             maxLength={20}
+                            autoComplete="off"
                           ></Input>
                         </FormItem>
                       </Condition>

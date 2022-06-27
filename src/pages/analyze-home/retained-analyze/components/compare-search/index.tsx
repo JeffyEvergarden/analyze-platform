@@ -12,13 +12,14 @@ import {
   message,
 } from 'antd';
 import { PlusSquareOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { groupByList, timeUnitList, timeUnit2List } from '../../model/const';
+import { timeUnitList } from '../../model/const';
 import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 
 interface CompareSearchProps {
   cref: any;
+  groupByList: any[];
 }
 
 // 通用方法
@@ -44,7 +45,7 @@ const { Option } = Select;
 
 const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   const [form] = Form.useForm();
-  const { cref } = props;
+  const { cref, groupByList } = props;
 
   const setDefaultStep = () => {
     form.setFieldsValue({
@@ -117,7 +118,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   useEffect(() => {
     // 数据初始化
     form.setFieldsValue({
-      groupBy: ['strategy_name'],
+      // groupBy: ['strategy_name'],
     });
   }, []);
 
@@ -146,7 +147,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
         </FormItem>
 
         <span style={{ marginLeft: '16px' }}>按</span>
-        <FormItem name="timeUnit">
+        <FormItem name="unit">
           <Select style={{ width: '120px' }} placeholder="统计单位">
             {timeUnitList.map((item: any, index: number) => {
               return (
@@ -166,7 +167,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
         </FormItem>
         <FormItem name="unit">
           <Select style={{ width: '120px' }} placeholder="统计单位">
-            {timeUnit2List.map((item: any, index: number) => {
+            {timeUnitList.map((item: any, index: number) => {
               return (
                 <Option key={index} value={item.value}>
                   {item.name}

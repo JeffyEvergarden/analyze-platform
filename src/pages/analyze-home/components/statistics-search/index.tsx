@@ -13,6 +13,7 @@ interface StatisticComponentProps {
   cref: any;
   list: [];
   map?: Map<string, any> | undefined;
+  setFilter?: (...args: any[]) => void;
 }
 
 interface StatisticItemProps {
@@ -47,7 +48,7 @@ const { Option } = Select;
 
 const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
-  const { list, cref, map } = props;
+  const { list, cref, map, setFilter } = props;
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
     if (index < 0 || typeof index !== 'number') {
@@ -66,6 +67,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     currentFormValue.fieldList = opt.opt.fieldList || [];
     //关联主体
     // currentFormValue.associatedFieldsList = opt.opt.fieldList || [];
+    setFilter?.(currentFormValue.fieldList || []);
     form.setFieldsValue({
       childrenList: [...curList],
     });

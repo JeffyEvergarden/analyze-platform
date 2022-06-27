@@ -295,3 +295,58 @@ export const useListModel = () => {
     getTable,
   };
 };
+
+// 取交集和并集
+export const useFilterModel = () => {
+  const [filterList, setFilterList] = useState<any[]>([]); // 交集
+  const [unionList, setUnionList] = useState<any[]>([]); // 并集
+  const [extraList, setExtraList] = useState<any[]>([]);
+
+  const setFilter = (...args: any[]) => {
+    let len = args.length;
+    let tempObj: any = {}; //用于统计不同指标次数
+    let tempMap: any = {};
+    let tempArr: Set<any> = new Set(); //存放去重的数组
+    let resultArr: any = []; //结果数组
+    let compareArr: any = []; //对比并集
+
+    const argslist = args;
+
+    argslist?.map((item: any) => {
+      // 获取指标
+      const list: any[] = item;
+      // ----------
+      // ----------
+      list.forEach((ele: any) => {
+        tempObj[ele.value] = tempObj[ele.value] ? tempObj[ele.value] + 1 : 1;
+        if (!tempMap[ele.value]) {
+          tempMap[ele.value] = ele;
+        }
+      });
+    });
+    const setArr: any = Object.keys(tempMap).map((key) => tempMap[key]);
+    const _extraList = extraList.filter((item: any) => {
+      // 找出多出的字段增加到
+      return !tempMap[item.value];
+    });
+    compareArr = [..._extraList, ...setArr]; //取并集 且增加扩展字段
+
+    // 过滤出
+    resultArr = setArr.filter((item: any) => {
+      return tempObj[item.value] === len;
+    });
+    // 输出个数
+    // console.log(setArr, tempObj, len);
+    setFilterList([...resultArr]); // 交集
+    setUnionList(compareArr); // 并集
+
+    // console.log(resultArr, compareArr);
+  };
+
+  return {
+    filterList,
+    unionList,
+    setFilter,
+    setExtraList,
+  };
+};

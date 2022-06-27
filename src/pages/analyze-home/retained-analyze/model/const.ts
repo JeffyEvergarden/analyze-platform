@@ -1,19 +1,3 @@
-// 筛选框 - 关联主体 - 下拉列表
-export const userTypeList: any[] = [
-  {
-    name: '用户',
-    value: '01',
-  },
-  {
-    name: '借据',
-    value: '02',
-  },
-  {
-    name: 'BO号',
-    value: '03',
-  },
-];
-
 // 对比查看 - 分组
 export const groupByList: any[] = [
   {
@@ -78,28 +62,12 @@ export const timeUnitList: any[] = [
     name: '日',
     value: 'day',
   },
-  // {
-  //   name: '月',
-  //   value: 'month',
-  // },
-  // {
-  //   name: '年',
-  //   value: 'year',
-  // },
-];
-
-// 对比查看 - 统计方式
-export const timeUnit2List: any[] = [
   {
-    name: '天',
-    value: 'day',
+    name: '周',
+    value: 'week',
   },
-  // {
-  //   name: '月',
-  //   value: 'month',
-  // },
-  // {
-  //   name: '年',
-  //   value: 'year',
-  // },
+  {
+    name: '月',
+    value: 'month',
+  },
 ];
