@@ -6,26 +6,18 @@ import { groupByList } from './const';
 export const useListModel = () => {
   const [tableList, setTableList] = useState<any>([]);
   const [chartList, setChartList] = useState<any>([]);
+  const [summary, setSummary] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [tableDataList, setTableDataList] = useState<any>();
-  let tableIndex = [
-    'next_event_num0',
-    'next_event_num1',
-    'next_event_num2',
-    'next_event_num3',
-    'next_event_num4',
-  ];
+
   const processEvent = (res: any, obj: any, eventList: any) => {
-    console.log(res);
-
-    console.log(obj);
-    console.log(eventList);
-
+    console.log(res, obj, eventList);
+    let tableIndex = res?.nextEventTitles?.map((item: any, index: any) => `next_event_num${index}`);
     let step: any = [];
     //步长
     res.nextEventTitles.forEach((item: any, index: any) => {
-      // console.log(item);
       if (index < res.nextEventTitleNum) {
+        // summaryObj[tableIndex[index]] = 0;
         step.push({
           value: tableIndex[index],
           title: item,
@@ -34,8 +26,10 @@ export const useListModel = () => {
             if (typeof text === 'number') {
               let str1 = text.toFixed(0);
               let str2 = text.toFixed(2);
+              // let str2 = toFixed2(text);
               let str: any = Number(str1) === Number(str2) ? str1 : str2;
               str = Number(str);
+              // summaryObj[tableIndex[index]] += typeof str === 'number' ? str : 0;
               return str;
             }
             return text;
@@ -47,59 +41,94 @@ export const useListModel = () => {
     let a = groupByList?.filter((item: any) => {
       return obj?.groupFields?.indexOf(item.value) != -1;
     });
-    console.log(a);
+
     let init_event_num = eventList?.find((item: any) => {
       return item.value == obj.initEvent;
     });
-    let init_Metric = init_event_num?.metricsList?.find((item: any) => {
-      return item.value == obj.initMetric;
-    });
-    // console.log(init_event_num);
 
-    setTableList([
-      { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex' },
-      ...a,
-      {
-        title: `${init_event_num?.name}的${init_Metric?.name}`,
-        value: 'init_event_num',
-        dataIndex: 'init_event_num',
+    //原-初始单指标
+    // let init_Metric = init_event_num?.metricsList?.find((item: any) => {
+    //   return item.value == obj.initMetric;
+    // });
+
+    //初始行为多指标
+    let init_Metric = obj?.initMetric?.map((item: any, index: any) => {
+      let mName: any = init_event_num?.metricsList?.find((m: any) => {
+        return m.value == item;
+      }).name;
+      let mAlias: any = obj?.firstOtherName?.[index] || '';
+      return {
+        title: mAlias || `${init_event_num?.name}的${mName}`,
+        value: `init_event_num${index}`,
+        dataIndex: `init_event_num${index}`,
         render: (text: any, record: any) => {
           if (typeof text === 'number') {
             let str1 = text.toFixed(0);
             let str2 = text.toFixed(2);
+
+            // let str2 = toFixed2(text);
             let str: any = Number(str1) === Number(str2) ? str1 : str2;
             str = Number(str);
             return str;
           }
           return text;
         },
-      },
+      };
+    });
+
+    setTableList([
+      { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex' },
+      ...a,
+      ...init_Metric,
+      // {
+      //   title: obj?.firstOtherName || `${init_event_num?.name}的${init_Metric?.name}`,
+      //   value: 'init_event_num',
+      //   dataIndex: 'init_event_num',
+      //   render: (text: any, record: any) => {
+      //     if (typeof text === 'number') {
+      //       let str1 = text.toFixed(0);
+      //       let str2 = text.toFixed(2);
+
+      //       // let str2 = toFixed2(text);
+      //       let str: any = Number(str1) === Number(str2) ? str1 : str2;
+      //       str = Number(str);
+      //       return str;
+      //     }
+      //     return text;
+      //   },
+      // },
       ...step,
     ]);
 
     setChartList(step);
-    console.log(res);
 
     res.groupData.map((item: any, index: any) => {
-      // console.log(item);
       Object.keys(item).forEach((res) => {
         if (typeof item[res] === 'number') {
           let str1 = item[res].toFixed(0);
           let str2 = item[res].toFixed(2);
+          // let str2 = toFixed2(item[res]);
           let str = Number(str1) === Number(str2) ? str1 : str2;
-          item[res] = Number(str);
+          str = Number(str);
+          item[res] = str;
         }
       });
       item.tableIndex = String(index + 1);
     });
     setTableDataList(res.groupData);
+    console.log(obj);
+
+    setSummary({
+      total: res?.total?.[0],
+      proportion: res?.proportion?.[0],
+      mergeNum: (obj?.groupFields?.length || 0) + 1,
+    });
   };
 
   const getTable = async (obj: any, eventList: any) => {
     setLoading(true);
     let res: any = await getRefreshList(obj);
-    // console.log(res);
-    console.log(eventList);
+
     if (res.status == 'finished') {
       setLoading(false);
       processEvent(res.data, obj, eventList);
@@ -119,6 +148,7 @@ export const useListModel = () => {
     loading,
     chartList,
     tableList,
+    summary,
     tableDataList,
     getTable,
   };

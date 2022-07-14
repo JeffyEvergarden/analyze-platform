@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle } from 'react';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 // 通用组件
 import {
   Form,
@@ -40,18 +40,34 @@ const formateRelation = (text: any) => {
   return '-';
 };
 
+const dateType: any = {
+  day: 180,
+  week: 26,
+  month: 6,
+};
+
 const { Item: FormItem } = Form;
 const { Option } = Select;
 
 const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   const [form] = Form.useForm();
   const { cref, groupByList } = props;
+  const [winType, setWinType] = useState<any>('');
 
   const setDefaultStep = () => {
     form.setFieldsValue({
       step: undefined,
+      // windowPeriod: undefined,
+      // windowPeriodType: undefined,
       unit: undefined,
     });
+  };
+
+  const changeWinType = (val: any) => {
+    form.setFieldsValue({
+      windowPeriod: undefined,
+    });
+    setWinType(val);
   };
 
   useImperativeHandle(cref, () => {
@@ -60,20 +76,22 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
         try {
           const fieldsValue: any = await form.validateFields();
           // console.log(fieldsValue);
-          let strategy_name = form.getFieldValue('groupBy').find((item: any) => {
+          let strategy_name = form?.getFieldValue('groupBy')?.find((item: any) => {
             return item == 'strategy_name';
           });
           // console.log(strategy_name);
 
           if (fieldsValue) {
             if (!strategy_name) {
-              message.info('分组策略名称必选');
+              message.info('对比查看分组策略名称必选');
               return false;
             }
             let formData = form.getFieldsValue();
             // console.log(formData);
 
             return {
+              windowPeriod: formData?.windowPeriod,
+              windowPeriodType: formData?.windowPeriodType,
               groupFields: formData?.groupBy,
               startDate: formData.dateRange && formData?.dateRange[0]?.format('YYYY-MM-DD'),
               endDate: formData.dateRange && formData?.dateRange[1]?.format('YYYY-MM-DD'),
@@ -87,8 +105,14 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
       async getFormData() {
         const fieldsValue: any = await form.validateFields();
         // console.log(fieldsValue);
-
+        let strategy_name = form?.getFieldValue('groupBy')?.find((item: any) => {
+          return item == 'strategy_name';
+        });
         if (fieldsValue) {
+          if (!strategy_name) {
+            message.info('对比查看分组策略名称必选');
+            return false;
+          }
           const formData = form.getFieldsValue();
           console.log(formData);
 
@@ -146,9 +170,29 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
           ></RangePicker>
         </FormItem>
 
+        <span>窗口期</span>
+        <FormItem name="windowPeriod">
+          <InputNumber
+            style={{ width: '120px' }}
+            placeholder="请输入"
+            max={dateType?.[winType] || 180}
+          ></InputNumber>
+        </FormItem>
+        <FormItem name="windowPeriodType">
+          <Select style={{ width: '120px' }} placeholder="统计单位" onChange={changeWinType}>
+            {timeUnitList.map((item: any, index: number) => {
+              return (
+                <Option key={index} value={item.value}>
+                  {item.name}
+                </Option>
+              );
+            })}
+          </Select>
+        </FormItem>
+
         <span style={{ marginLeft: '16px' }}>按</span>
-        <FormItem name="unit">
-          <Select style={{ width: '120px' }} placeholder="统计单位">
+        <FormItem name="windowPeriodType">
+          <Select style={{ width: '120px' }} placeholder="统计单位" onChange={changeWinType}>
             {timeUnitList.map((item: any, index: number) => {
               return (
                 <Option key={index} value={item.value}>
@@ -165,8 +209,8 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
         <FormItem name="step" label="观测步长">
           <InputNumber style={{ width: '120px' }} placeholder="请输入步长"></InputNumber>
         </FormItem>
-        <FormItem name="unit">
-          <Select style={{ width: '120px' }} placeholder="统计单位">
+        <FormItem name="windowPeriodType">
+          <Select style={{ width: '120px' }} placeholder="统计单位" onChange={changeWinType}>
             {timeUnitList.map((item: any, index: number) => {
               return (
                 <Option key={index} value={item.value}>

@@ -16,7 +16,7 @@ const HomePage: React.FC = (props: any) => {
 
   const location = useLocation();
 
-  const [current, setCurrent] = useState<any>();
+  const [current, setCurrent] = useState<any>('/analyzehome/retained');
 
   useEffect(() => {
     setCurrent(location.pathname);

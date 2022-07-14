@@ -19,6 +19,24 @@ interface MiniMapProps {
   dataJson: any;
 }
 
+//格式化
+const ONE_YI = 100000000;
+function formateNumber(val: any) {
+  if (typeof val === 'number') {
+    if (val >= ONE_YI * 10) {
+      let str1 = (val / ONE_YI).toFixed(0);
+      let str2 = (val / ONE_YI).toFixed(2);
+      let str = Number(str1) === Number(str2) ? str1 : str2;
+      return str + '亿';
+    }
+    let str1 = val.toFixed(0);
+    let str2 = val.toFixed(2);
+    let str = Number(str1) === Number(str2) ? str1 : str2;
+    return str;
+  }
+  return val;
+}
+
 const MiniMap: React.FC<any> = (props: MiniMapProps) => {
   const [current, setCurrent] = useState<number>(1);
   //表格选择的数据
@@ -34,7 +52,7 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
   const { dataJson } = props;
 
   // 表格数据
-  const { loading, chartList, tableList, tableDataList, getTable } = useListModel();
+  const { loading, chartList, tableList, summary, tableDataList, getTable } = useListModel();
 
   //table数据加工
   useEffect(() => {
@@ -44,42 +62,34 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
     }
   }, [dataJson]);
 
-  // 默认勾选5条数据
-  useEffect(() => {
-    // console.log(column);
-    // console.log(data);
-    let init = [];
-    let init2 = [];
-    if (tableDataList && tableDataList?.length < 5) {
-      for (let i = 0; i < tableDataList?.length; i++) {
-        init.push(tableDataList?.[i]?.tableIndex);
-        init2.push(tableDataList?.[i]);
-      }
-    } else {
-      for (let i = 0; i < 5; i++) {
-        init.push(tableDataList?.[i]?.tableIndex);
-        init2.push(tableDataList?.[i]);
-      }
-    }
-
-    setSelectedRowKeys(init);
-    setSelectedRows(init2);
-  }, [tableDataList]);
-
   // 加工成图表数据
   useEffect(() => {
+    let data = [summary['total'], summary['proportion']];
     let data2: any = [];
-    selectedRows?.forEach((res: any) => {
-      chartList.forEach((item: any) => {
-        data2.push({
-          date: item.title,
-          type: String(res?.tableIndex),
-          value: res?.[item?.value],
-        });
+    console.log(data);
+
+    // data?.forEach((res: any, index: any) => {
+    //   // console.log(res);
+    //   // console.log(chartList);
+    //   chartList.forEach((item: any) => {
+    //     data2.push({
+    //       date: item.title,
+    //       type: index == 0 ? '总体' : '总体转化',
+    //       value: res?.[item?.value],
+    //     });
+    //   });
+    // });
+
+    chartList.forEach((item: any) => {
+      data2.push({
+        date: item.title,
+        value: data?.[0]?.[item?.value], //总体
+        rate: data?.[1]?.[item?.value], //总体转化
       });
     });
+
     setSelectData(data2);
-  }, [selectedRows]);
+  }, [summary]);
 
   const onSelectChange = (item: any, val: any) => {
     if (item?.length > 5) {
@@ -95,6 +105,14 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
 
   const exportExcel = () => {
     const dataList: any = tableDataList;
+    //总结下载单独追加
+    let population: any = [summary['total'], summary['proportion']].map(
+      (item: any, index: number) => {
+        item.tableIndex = index == 0 ? '总体' : '总体转化';
+        return item;
+      },
+    );
+
     if (dataList?.length === 0) {
       return;
     }
@@ -111,9 +129,9 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
       outputDataList.push(obj);
     });
 
-    const outputData = [header, ...outputDataList];
+    const outputData = [header, ...outputDataList, ...population];
     console.log(outputData);
-    console.log(header);
+    // console.log(header);
 
     // const tableDOM: HTMLElement | null = document.getElementById(`${tableId}`);
     // const cpTableNode: any = tableDOM?.cloneNode(true);
@@ -129,7 +147,7 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
       // raw: true,
       skipHeader: true,
     });
-    console.log(ws);
+    // console.log(ws);
 
     //初始化
     let wb = XLSX.utils.book_new();
@@ -144,6 +162,51 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
     onChange: onSelectChange,
   };
 
+  const summaryHtml = () => {
+    if (tableDataList?.length === 0) {
+      return null;
+    }
+    return (
+      <Table.Summary fixed>
+        <Table.Summary.Row style={{ background: 'rgb(250,250,250' }}>
+          {/* <Table.Summary.Cell key={0} index={0}></Table.Summary.Cell> */}
+          <Table.Summary.Cell index={1} colSpan={summary?.['mergeNum'] || 1}>
+            总体
+          </Table.Summary.Cell>
+          {tableList?.map((item: any, index: any) => {
+            const key = item.dataIndex;
+            if (index >= summary?.['mergeNum']) {
+              return (
+                <Table.Summary.Cell key={index} index={index}>
+                  {formateNumber(summary['total'][key])}
+                </Table.Summary.Cell>
+              );
+            }
+          })}
+        </Table.Summary.Row>
+        <Table.Summary.Row style={{ background: 'rgb(250,250,250' }}>
+          {/* <Table.Summary.Cell key={0} index={0}></Table.Summary.Cell> */}
+          <Table.Summary.Cell index={1} colSpan={summary?.['mergeNum'] || 1}>
+            总转化率
+          </Table.Summary.Cell>
+          {tableList?.map((item: any, index: any) => {
+            const key = item.dataIndex;
+            if (index >= summary?.['mergeNum']) {
+              return (
+                <Table.Summary.Cell key={index} index={index}>
+                  {formateNumber(summary['proportion'][key])}
+                </Table.Summary.Cell>
+              );
+            }
+          })}
+        </Table.Summary.Row>
+      </Table.Summary>
+    );
+  };
+
+  let chartIns: any = null;
+  const colors = ['#6394f9', '#62daaa'];
+
   return (
     <Card
       title={
@@ -156,14 +219,14 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
                 exportExcel();
               }}
             ></DownloadOutlined>
-            <Tooltips placement="top" title={'刷新并重置勾选'}>
+            {/* <Tooltips placement="top" title={'刷新并重置勾选'}>
               <RetweetOutlined
                 onClick={() => {
                   getTable(dataJson.reqData, 'RETAIN_STRATEGY');
                 }}
                 style={{ marginLeft: '16px' }}
               />
-            </Tooltips>
+            </Tooltips> */}
           </div>
           <div>{dataJson?.formData?.last?.alias || dataJson?.formData?.last?.defOtherName}</div>
         </div>
@@ -176,10 +239,54 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
         autoFit
         onAxisLabelClick={console.log}
         padding="auto"
-        appendPadding={[10, 0, 0, 0]}
+        appendPadding={[10, 10, 10, 10]}
         forceUpdate="true"
+        onGetG2Instance={(chart: any) => {
+          chartIns = chart;
+        }}
       >
-        <Legend position="right" />
+        {/* <Legend position="bottom" /> */}
+        <Legend
+          custom={true}
+          allowAllCanceled={true}
+          items={[
+            {
+              value: 'value',
+              name: '总体',
+              marker: {
+                symbol: 'circle',
+                style: { fill: colors[0], r: 5 },
+              },
+            },
+            {
+              value: 'rate',
+              name: '总体转化',
+              marker: {
+                symbol: 'circle',
+                style: { fill: colors[1], r: 5 },
+              },
+            },
+          ]}
+          onChange={(ev: any) => {
+            console.log('ev', ev);
+            const item = ev.item;
+            const value = item.value;
+            const checked = !item.unchecked;
+            const geoms = chartIns.geometries;
+
+            for (let i = 0; i < geoms.length; i++) {
+              const geom = geoms[i];
+
+              if (geom.getYScale().field === value) {
+                if (checked) {
+                  geom.show();
+                } else {
+                  geom.hide();
+                }
+              }
+            }
+          }}
+        />
         <Tooltip shared={true} showCrosshairs />
         {/* <Tooltip /> */}
         <Axis name="date" />
@@ -189,29 +296,82 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
             formatter: (val) => `${val} `,
           }}
         />
-        <Geom
-          type="point"
-          position="date*value"
-          size={4}
-          shape={'circle'}
-          color={'type'}
-          // style={{
-          //   stroke: '#fff',
-          //   lineWidth: 1,
-          // }}
+        <Axis
+          name="rate"
+          label={{
+            formatter: (val) => `${val}%`,
+          }}
         />
-        <Geom type="line" position="date*value" size={2} color={'type'} shape={'circle'} />
+
+        {/* <Geom
+        type="point"
+        position="date*value"
+        size={4}
+        shape={'circle'}
+        color={'type'}
+        // style={{
+        //   stroke: '#fff',
+        //   lineWidth: 1,
+        // }}
+      /> */}
+        {/* <Geom
+        type="point"
+        position="date*rate"
+        size={4}
+        shape={'circle'}
+        color={'type'}
+        // style={{
+        //   stroke: '#fff',
+        //   lineWidth: 1,
+        // }}
+      /> */}
+        {/* <Geom type="line" position="date*value" size={2} color={'type'} shape={'circle'} /> */}
+        {/* <Geom type="line" position="date*rate" size={2} color={'type'} shape={'circle'} /> */}
+        <Line
+          position="date*value"
+          color={colors[0]}
+          size={2}
+          tooltip={[
+            'date*value',
+            (date, value) => {
+              return {
+                name: '总体',
+                value: `${value}`,
+                title: date,
+              };
+            },
+          ]}
+        />
+        <Line
+          position="date*rate"
+          color={colors[1]}
+          size={2}
+          tooltip={[
+            'date*rate',
+            (date, rate) => {
+              return {
+                name: '总体转化',
+                value: `${rate} %`,
+                title: date,
+              };
+            },
+          ]}
+        />
+        <Point position="date*value" color={colors[0]} size={3} shape="circle" tooltip={false} />
+        <Point position="date*rate" color={colors[1]} size={3} shape="circle" tooltip={false} />
       </Chart>
+
       <Table
         id={'result-table'}
         dataSource={tableDataList}
         columns={tableList}
-        rowSelection={rowSelection}
+        // rowSelection={rowSelection}
         pagination={{ current, onChange: changePage }}
         rowKey={(record) => {
           return `${record.tableIndex}`;
           // return record;
         }}
+        summary={summaryHtml}
       ></Table>
     </Card>
   );

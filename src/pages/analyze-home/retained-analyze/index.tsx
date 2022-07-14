@@ -34,6 +34,10 @@ import XLSX from 'xlsx';
 
 import EditModal from '../SaveModel/modal';
 
+// Test-minimap
+// import MiniMap from './components/MiniMap';
+// import { obj } from './test';
+
 const { Panel } = Collapse;
 const { Option } = Select;
 
@@ -55,7 +59,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   //后续行为
   const { behaviorList, setBehaviorList, getBehaviorConfig } = useBehaviorModel();
   // 表格数据
-  const { loading, chartList, tableList, tableDataList, getTable } = useListModel();
+  const { loading, chartList, tableList, summary, tableDataList, getTable } = useListModel();
 
   //检测初始变没
   const [indexField, setIndexField] = useState<any>('');
@@ -72,7 +76,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   }, [fieldList, fieldList2]);
 
   //TEST-miniMap
-  const [saveData, setSaveData] = useState<any>({});
+  // const [saveData, setSaveData] = useState<any>({});
 
   //别名
   const [otherName, setOtherName] = useState<any>('');
@@ -121,17 +125,20 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   };
   //  保存
   const save = async () => {
-    let all = await Promise.all([
-      (firstSearchRef.current as any).getForm(),
-      (normalSearchRef?.current as any).getForm(),
-      (lastSearchRef.current as any).getForm(),
-    ]);
+    // let all = await Promise.all([
+    //   (firstSearchRef.current as any).getForm(),
+    //   (normalSearchRef?.current as any).getForm(),
+    //   (lastSearchRef.current as any).getForm(),
+    // ]);
     let allData = await Promise.all([
       (firstSearchRef.current as any).getFormData(),
       (normalSearchRef?.current as any).getFormData(),
       (lastSearchRef.current as any).getFormData(),
     ]);
     // console.log(JSON.stringify(allData));
+    if (!allData.every((item) => item)) {
+      return;
+    }
 
     console.log(allData);
 
@@ -246,6 +253,10 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     tableRef.current?.exportExcel();
   }, []);
 
+  useEffect(() => {
+    console.log(summary);
+  }, [summary]);
+
   return (
     <ConfigProvider locale={zhCN}>
       <div className={style['anaylze-page']}>
@@ -294,7 +305,12 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
               保存到看板
             </Button>
 
-            {/* <Button onClick={backData} style={{ marginLeft: '10px' }}>
+            {/* <Button
+              onClick={() => {
+                backData(obj);
+              }}
+              style={{ marginLeft: '10px' }}
+            >
               回显
             </Button> */}
           </div>
@@ -306,9 +322,9 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
                   <span>结果</span>
                   <Divider type="vertical"></Divider>
                   <DownloadOutlined onClick={handleExport}></DownloadOutlined>
-                  <Tooltip placement="top" title={'刷新并重置勾选'}>
+                  {/* <Tooltip placement="top" title={'刷新并重置勾选'}>
                     <RetweetOutlined onClick={refreshList} style={{ marginLeft: '16px' }} />
-                  </Tooltip>
+                  </Tooltip> */}
                 </div>
                 <div>{otherName}</div>
               </div>
@@ -329,12 +345,13 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
                 data={tableDataList}
                 getData={setSelectedRowDatas}
                 chartList={chartList}
+                summary={summary}
                 cref={tableRef}
               />
             </div>
           </Card>
 
-          {/* <MiniMap dataJson={saveData}></MiniMap> */}
+          {/* <MiniMap dataJson={obj}></MiniMap> */}
         </Spin>
       </div>
       <EditModal cref={editModalRef} onSave={saveSubmit}></EditModal>

@@ -1,7 +1,9 @@
 export const obj = {
   reqData: {
+    defOtherName: '命运指定提现成功人数',
+    otherName: '后续别名',
     initEvent: 'LQHTXCG',
-    initMetric: '用户数',
+    initMetric: ['用户数'],
     relation: 'AND',
     nextEvent: 'LQHTXCG',
     nextMetric: '用户数',
@@ -110,10 +112,18 @@ export const obj = {
         },
       ],
       type: 'metrics',
+      otherAttr: [
+        { attribute: '用户数' },
+        { attribute: '户均提现成功金额' },
+        { attribute: '进件笔数' },
+        { attribute: '提现成功笔数' },
+      ],
     },
     last: {
       event: 'LQHTXCG',
       attribute: '用户数',
+      defOtherName: '命运指定提现成功人数',
+      alias: '后续别名',
       relation: 'AND',
       innerList: [
         {

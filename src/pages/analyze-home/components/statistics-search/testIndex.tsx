@@ -2,7 +2,12 @@ import React, { useEffect, useImperativeHandle, useState } from 'react';
 // 通用组件
 import { Form, Select, Button, Space, Input, Tooltip } from 'antd';
 
-import { PlusSquareOutlined, HighlightOutlined } from '@ant-design/icons';
+import {
+  PlusSquareOutlined,
+  HighlightOutlined,
+  FunnelPlotOutlined,
+  MinusCircleOutlined,
+} from '@ant-design/icons';
 // 定制组件
 import Condition from '../common/Condition';
 import InnerFormItem from '../common/InnerFormItem';
@@ -54,6 +59,8 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
   const { list, cref, map, getBehavior, change, setFilter } = props;
 
+  const [chooseAttribute, setChooseAttribute] = useState<any>([]);
+
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
     getBehavior('RETAIN_STRATEGY_NEXT', opt.value);
@@ -86,14 +93,9 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   };
 
   // 修改指标
-  const changeAttribute = (val: any, options: any, outIndex: number) => {
+  const changeAttribute = () => {
     const curList = form.getFieldValue('childrenList');
-    curList[outIndex].operator = undefined;
-    curList[outIndex].type = options.opt.type; // 指标/属性
-    curList[outIndex].dataType = options.opt.dataType; // input / select / number
-    form.setFieldsValue({
-      childrenList: [...curList],
-    });
+    setChooseAttribute(curList?.[0]?.otherAttr);
   };
 
   // 修改关系
@@ -129,6 +131,39 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     });
   };
 
+  //添加指标
+  const addAttr = (outIndex: number) => {
+    const tempChildrenList: any = form.getFieldValue('childrenList') || [];
+
+    const tempOtherList: any = tempChildrenList[outIndex]
+      ? tempChildrenList[outIndex].otherAttr
+      : [];
+
+    tempOtherList.push({
+      attribute: undefined,
+    });
+
+    tempChildrenList[outIndex].otherAttr = tempOtherList;
+
+    form.setFieldsValue({
+      childrenList: tempChildrenList,
+    });
+    // console.log(outIndex, tempChildrenList);
+  };
+
+  const removeAttr = (attrIndex: any, outIndex: number) => {
+    const curList: any = form.getFieldValue('childrenList');
+    const currentFormValue: any = curList?.[outIndex] || {};
+    currentFormValue.otherAttr = currentFormValue.otherAttr || [];
+    currentFormValue.otherAttr = currentFormValue.otherAttr.filter((item: any, index: number) => {
+      return index !== attrIndex;
+    });
+    form.setFieldsValue({
+      childrenList: [...curList],
+    });
+    changeAttribute();
+  };
+
   useImperativeHandle(cref, () => {
     return {
       //获取接口所需数据
@@ -140,7 +175,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
           const formData = form.getFieldValue('childrenList');
           return {
             initEvent: formData[0]?.event,
-            initMetric: formData[0]?.attribute,
+            initMetric: formData[0]?.otherAttr.map((item: any) => item?.attribute),
             relation: formData[0]?.relation,
             conditions: formData[0]?.innerList?.map((item: any) => {
               return {
@@ -154,6 +189,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                 dataType: item.dataType,
               };
             }),
+            firstOtherName: formData[0]?.otherAttr.map((item: any) => item?.alias),
           };
         } else {
           return false;
@@ -191,6 +227,13 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
           event: undefined,
           attribute: undefined,
           operator: undefined,
+          otherAttr: [
+            {
+              attribute: undefined,
+              alias: '',
+              edit: false,
+            },
+          ],
           relation: 'AND',
         },
       ],
@@ -198,9 +241,11 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   }, []);
 
   // 修改别名
-  const changeFilterAlias = (field: any, outIndex: any) => {
+  const changeFilterAlias = (attrIndex: any, outIndex: any) => {
+    // console.log(attrIndex);
+
     const formValueList = form.getFieldValue('childrenList');
-    const selectItem = formValueList[outIndex];
+    const selectItem = formValueList[outIndex].otherAttr[attrIndex];
     selectItem.edit = !selectItem.edit;
     selectItem.alias = trim(selectItem.alias);
     form.setFieldsValue({
@@ -234,7 +279,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
   const fieldChangeFunc = (changedFields: any, allFields: any) => {
     // console.log('fieldChangeFunc', changedFields);
-    if (changedFields[0]?.name?.length === 5) {
+    if (changedFields[0]?.name?.[2] === 'innerList') {
       let newVal = [...changedFields[0]?.name];
       const curList: any = form.getFieldValue(newVal[0]);
       const currentFormValue: any = curList?.[newVal[1]] || {};
@@ -275,13 +320,15 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                   subList = statisticDefaultList; // 指标列表
                 }
 
+                const attrItem = curItem?.otherAttr;
+
                 //
                 const relation = curItem?.relation;
 
                 return (
                   <div key={field.fieldKey}>
                     {/* 前置筛选 */}
-                    <Space align="baseline" style={{ height: '32px', marginBottom: '24px' }}>
+                    <Space align="baseline" style={{ marginBottom: '24px' }}>
                       {/* 一级筛选 */}
                       <FormItem
                         rules={[{ required: true, message: '请选择事件' }]}
@@ -308,105 +355,168 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                       <span>的</span>
 
                       {/* 二级筛选 */}
-                      <FormItem
-                        rules={[{ required: true, message: '请选择查询指标/属性' }]}
-                        name={[field.fieldKey, 'attribute']}
-                        fieldKey={[field.fieldKey, 'attribute']}
-                        style={{ width: '180px' }}
-                      >
-                        <Select
-                          placeholder="请选择查询指标/属性"
-                          onChange={(val: any, opt: any) => {
-                            changeAttribute(val, opt, outIndex);
-                          }}
-                        >
-                          {/* 指标列表 */}
-                          {metricsList.map((item: any, index: any) => {
-                            return (
-                              <Option key={index} value={item.value} opt={item}>
-                                {item.name}
-                              </Option>
-                            );
-                          })}
-                        </Select>
-                      </FormItem>
-                      {/* {type} */}
-                      {/* 三级筛选 */}
-                      <Condition r-if={type === 'fields'}>
-                        <FormItem
-                          rules={[{ required: true, message: '请选择统计方式' }]}
-                          name={[field.fieldKey, 'operator']}
-                          fieldKey={[field.fieldKey, 'operator']}
-                          style={{ width: '150px' }}
-                        >
-                          <Select placeholder="请选择统计方式">
-                            {/* 指标列表 */}
-                            {subList.map((item: any, index: any) => {
-                              return (
-                                <Option key={index} value={item.value} opt={item}>
-                                  {item.name}
-                                </Option>
-                              );
-                            })}
-                          </Select>
-                        </FormItem>
-                      </Condition>
+                      <Form.List name={[outIndex, 'otherAttr']}>
+                        {(AttrFields, { add, remove }) => {
+                          return (
+                            <div key={AttrFields.fieldKey}>
+                              <div className={style['layout_right']}>
+                                {AttrFields.map((AttrField, AttrIndex) => {
+                                  // console.log('innerFields:', innerField);
+                                  return (
+                                    <div key={AttrIndex}>
+                                      <Space align="baseline">
+                                        <FormItem
+                                          rules={[
+                                            { required: true, message: '请选择查询指标/属性' },
+                                          ]}
+                                          name={[AttrField.fieldKey, 'attribute']}
+                                          fieldKey={[AttrField.fieldKey, 'attribute']}
+                                          style={{ width: '180px' }}
+                                        >
+                                          <Select
+                                            placeholder="请选择查询指标/属性"
+                                            onChange={changeAttribute}
+                                          >
+                                            {/* 指标列表 */}
+                                            {metricsList.map((item: any, index: any) => {
+                                              return (
+                                                <Option
+                                                  disabled={
+                                                    chooseAttribute?.find((a: any) => {
+                                                      return a?.attribute == item?.value;
+                                                    })?.attribute
+                                                      ? true
+                                                      : false
+                                                  }
+                                                  key={index}
+                                                  value={item.value}
+                                                  opt={item}
+                                                >
+                                                  {item.name}
+                                                </Option>
+                                              );
+                                            })}
+                                          </Select>
+                                        </FormItem>
 
-                      {/* <MinusCircleOutlined
-                        onClick={() => {
-                          removeOut(outIndex);
-                        }}
-                        style={{ marginLeft: '10px', fontSize: '20px', color: '#A0A0A0' }}
-                      /> */}
-                      <PlusSquareOutlined
-                        style={{
-                          color: '#1890ff',
-                          marginLeft: '5px',
-                          marginTop: '2px',
-                          fontSize: '20px',
-                        }}
-                        onClick={() => {
-                          addInnerForm(outIndex);
-                        }}
-                      />
+                                        {/* 三级筛选 */}
+                                        {/* <Condition r-if={type === 'fields'}>
+                                          <FormItem
+                                            rules={[{ required: true, message: '请选择统计方式' }]}
+                                            name={[field.fieldKey, 'operator']}
+                                            fieldKey={[field.fieldKey, 'operator']}
+                                            style={{ width: '150px' }}
+                                          >
+                                            <Select placeholder="请选择统计方式">
+                                             
+                                              {subList.map((item: any, index: any) => {
+                                                return (
+                                                  <Option key={index} value={item.value} opt={item}>
+                                                    {item.name}
+                                                  </Option>
+                                                );
+                                              })}
+                                            </Select>
+                                          </FormItem>
+                                        </Condition> */}
 
-                      <Tooltip title="编辑指标别名">
-                        <HighlightOutlined
-                          style={{
-                            color: '#1890ff',
-                            marginLeft: '24px',
-                            marginTop: '2px',
-                            fontSize: '20px',
-                          }}
-                          onClick={() => {
-                            changeFilterAlias(field, outIndex);
-                          }}
-                        />
-                      </Tooltip>
-                      <Condition r-if={curItem?.edit}>
-                        <FormItem
-                          name={[field.fieldKey, 'alias']}
-                          key={field.fieldKey + 'alias'}
-                          fieldKey={[field.fieldKey, 'alias']}
-                        >
-                          <Input
-                            style={{ width: '150px' }}
-                            placeholder="请输入别名"
-                            onPressEnter={() => {
-                              changeFilterAlias(field, outIndex);
-                            }}
-                            maxLength={20}
-                            autoComplete="off"
-                          ></Input>
-                        </FormItem>
-                      </Condition>
+                                        <Condition r-if={AttrIndex != 0}>
+                                          <MinusCircleOutlined
+                                            onClick={() => {
+                                              removeAttr(AttrIndex, outIndex);
+                                            }}
+                                            style={{
+                                              marginLeft: '10px',
+                                              fontSize: '20px',
+                                              color: '#A0A0A0',
+                                            }}
+                                          />
+                                        </Condition>
+                                        <Condition r-if={AttrIndex == 0}>
+                                          <PlusSquareOutlined
+                                            style={{
+                                              color: '#1890ff',
+                                              marginLeft: '5px',
+                                              marginTop: '2px',
+                                              fontSize: '20px',
+                                            }}
+                                            onClick={() => {
+                                              addInnerForm(outIndex);
+                                            }}
+                                          />
+                                        </Condition>
+                                        <Condition r-if={AttrIndex == 0}>
+                                          <Button
+                                            style={{
+                                              color: '#1890ff',
+                                              marginLeft: '5px',
+                                              marginTop: '2px',
+                                              // fontSize: '20px',
+                                              padding: 0,
+                                            }}
+                                            type="link"
+                                            icon={<FunnelPlotOutlined />}
+                                            onClick={() => {
+                                              addAttr(outIndex);
+                                            }}
+                                          >
+                                            添加指标
+                                          </Button>
+                                        </Condition>
 
-                      <Condition r-if={!curItem?.edit && curItem?.alias}>
-                        <div style={{ marginLeft: '15px' }}>
-                          别名：
-                          <span className={style['static-box_alias']}>{curItem?.alias}</span>
-                        </div>
-                      </Condition>
+                                        <Tooltip title="编辑指标别名">
+                                          <HighlightOutlined
+                                            style={{
+                                              color: '#1890ff',
+                                              marginLeft: '24px',
+                                              marginTop: '2px',
+                                              fontSize: '20px',
+                                            }}
+                                            onClick={() => {
+                                              changeFilterAlias(AttrIndex, outIndex);
+                                            }}
+                                          />
+                                        </Tooltip>
+                                        <Condition r-if={attrItem?.[AttrIndex]?.edit}>
+                                          <FormItem
+                                            name={[AttrField.fieldKey, 'alias']}
+                                            key={AttrField.fieldKey + 'alias'}
+                                            fieldKey={[AttrField.fieldKey, 'alias']}
+                                          >
+                                            <Input
+                                              style={{ width: '150px' }}
+                                              placeholder="请输入别名"
+                                              onPressEnter={() => {
+                                                changeFilterAlias(field, outIndex);
+                                              }}
+                                              maxLength={20}
+                                              autoComplete="off"
+                                            ></Input>
+                                          </FormItem>
+                                        </Condition>
+
+                                        <Condition
+                                          r-if={
+                                            !attrItem?.[AttrIndex]?.edit &&
+                                            attrItem?.[AttrIndex]?.alias
+                                          }
+                                        >
+                                          <div style={{ marginLeft: '15px' }}>
+                                            别名：
+                                            <span className={style['static-box_alias']}>
+                                              {attrItem?.[AttrIndex]?.alias}
+                                            </span>
+                                          </div>
+                                        </Condition>
+                                      </Space>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        }}
+                      </Form.List>
                     </Space>
 
                     <Form.List name={[field.fieldKey, 'innerList']}>

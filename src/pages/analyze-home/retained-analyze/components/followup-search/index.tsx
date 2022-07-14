@@ -130,7 +130,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
         const fieldsValue: any = await form.validateFields();
         if (fieldsValue) {
           let formData = form.getFieldValue('childrenList')[0];
-          console.log(formData);
+          console.log('后续form', formData);
           // formData.forEach((item: any) => {});
           let init_event_num: any = list?.find((item: any) => {
             return item.value == formData?.event;
