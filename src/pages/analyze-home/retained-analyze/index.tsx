@@ -280,7 +280,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
             <Panel header="后续行为" key="3">
               <FollowUpSearch
                 cref={normalSearchRef}
-                list={behaviorList}
+                list={eventList}
                 setBehaviorList={setBehaviorList}
                 change={indexField}
                 setFilter={(list: any[]) => {

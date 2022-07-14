@@ -63,7 +63,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (index: number, val: any, opt: any) => {
-    getBehavior('RETAIN_STRATEGY_NEXT', opt.value);
+    // getBehavior('RETAIN_STRATEGY_NEXT', opt.value);
     if (index < 0 || typeof index !== 'number') {
       return;
     }
@@ -77,7 +77,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       item.value = undefined;
     });
 
-    change(currentFormValue.event);
+    // change(currentFormValue.event);
 
     // 清除当前对象其他值
     currentFormValue.attribute = undefined; // 第二属性 指标
@@ -210,9 +210,9 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
       //数据回显
       async setForm(obj: any) {
         obj = propcessInitForm(obj);
-        if (obj.event) {
-          getBehavior('RETAIN_STRATEGY_NEXT', obj.event);
-        }
+        // if (obj.event) {
+        //   getBehavior('RETAIN_STRATEGY_NEXT', obj.event);
+        // }
         form.setFieldsValue({ childrenList: [obj] });
       },
     };
