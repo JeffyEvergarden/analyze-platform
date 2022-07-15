@@ -92,7 +92,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
             return {
               windowPeriod: formData?.windowPeriod,
               windowPeriodType: formData?.windowPeriodType,
-              groupFields: formData?.groupBy,
+              groupFields: formData?.groupBy || [],
               startDate: formData.dateRange && formData?.dateRange[0]?.format('YYYY-MM-DD'),
               endDate: formData.dateRange && formData?.dateRange[1]?.format('YYYY-MM-DD'),
               timeStep: formData?.step || -1,

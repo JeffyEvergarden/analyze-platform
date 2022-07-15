@@ -23,7 +23,7 @@ const LineChart: React.FC<any> = (props: TableProps) => {
     setCurrent(val);
   };
 
-  const { column, data, id, getData, summary, chartList, cref } = props;
+  const { column = [], data, id, getData, summary, chartList, cref } = props;
   const tableId = `result-table-${id}`;
 
   //格式化
@@ -235,6 +235,7 @@ const LineChart: React.FC<any> = (props: TableProps) => {
         return `${record.tableIndex}`;
         // return record;
       }}
+      scroll={{ x: 210 }}
       summary={summaryHtml}
     ></Table>
   );

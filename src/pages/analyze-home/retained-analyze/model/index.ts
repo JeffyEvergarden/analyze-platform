@@ -224,9 +224,10 @@ export const useListModel = () => {
       }
     });
     //将选择的分组过滤出来给表格
-    let a = groupByList?.filter((item: any) => {
-      return obj?.groupFields?.indexOf(item.value) != -1;
-    });
+    let a =
+      groupByList?.filter((item: any) => {
+        return obj?.groupFields?.indexOf(item.value) != -1;
+      }) || [];
 
     let init_event_num = eventList?.find((item: any) => {
       return item.value == obj.initEvent;
