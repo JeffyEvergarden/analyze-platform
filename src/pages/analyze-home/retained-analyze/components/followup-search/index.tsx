@@ -142,7 +142,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
           return {
             nextEvent: formData?.event, // 事件
             nextMetric: formData?.attribute, // 指标
-            nextCondition: formData[0]?.innerList?.map((item: any) => {
+            nextCondition: formData?.innerList?.map((item: any) => {
               return {
                 field: item.attr,
                 function: item.op,

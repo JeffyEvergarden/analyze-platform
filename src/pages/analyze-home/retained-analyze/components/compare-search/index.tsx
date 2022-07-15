@@ -82,10 +82,10 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
           // console.log(strategy_name);
 
           if (fieldsValue) {
-            if (!strategy_name) {
-              message.info('对比查看分组策略名称必选');
-              return false;
-            }
+            // if (!strategy_name) {
+            //   message.info('对比查看分组策略名称必选');
+            //   return false;
+            // }
             let formData = form.getFieldsValue();
             // console.log(formData);
 
@@ -109,10 +109,10 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
           return item == 'strategy_name';
         });
         if (fieldsValue) {
-          if (!strategy_name) {
-            message.info('对比查看分组策略名称必选');
-            return false;
-          }
+          // if (!strategy_name) {
+          //   message.info('对比查看分组策略名称必选');
+          //   return false;
+          // }
           const formData = form.getFieldsValue();
           console.log(formData);
 
