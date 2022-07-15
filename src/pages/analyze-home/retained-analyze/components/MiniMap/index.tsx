@@ -371,6 +371,7 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
           return `${record.tableIndex}`;
           // return record;
         }}
+        scroll={{ x: 200 * (tableList.length + 2) }}
         summary={summaryHtml}
       ></Table>
     </Card>

@@ -235,7 +235,7 @@ const LineChart: React.FC<any> = (props: TableProps) => {
         return `${record.tableIndex}`;
         // return record;
       }}
-      scroll={{ x: 210 }}
+      scroll={{ x: 200 * (column.length + 2) }}
       summary={summaryHtml}
     ></Table>
   );

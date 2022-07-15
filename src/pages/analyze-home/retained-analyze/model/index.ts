@@ -220,6 +220,7 @@ export const useListModel = () => {
             }
             return text;
           },
+          width: 80,
         });
       }
     });
@@ -260,11 +261,12 @@ export const useListModel = () => {
           }
           return text;
         },
+        width: 100,
       };
     });
 
     setTableList([
-      { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex' },
+      { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex', width: 50 },
       ...a,
       ...init_Metric,
       // {
