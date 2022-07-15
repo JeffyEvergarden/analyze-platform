@@ -156,6 +156,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
             }),
             otherName: formData?.alias,
             defOtherName: `${init_event_num?.name || '-'}的${init_Metric?.name || '-'}`,
+            nextRelation: formData?.relation,
           };
         } else {
           return false;
