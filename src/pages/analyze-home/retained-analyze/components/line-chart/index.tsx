@@ -28,6 +28,18 @@ const LineChart: React.FC<any> = (props: LineChartProps) => {
       onGetG2Instance={(chart: any) => {
         chartIns = chart;
       }}
+      scale={{
+        rate: {
+          // tickCount: 5,
+          // min: 0,
+          type: 'linear-strict',
+        },
+        value: {
+          // tickCount: 5,
+          // min: 0,
+          type: 'linear-strict',
+        },
+      }}
     >
       {/* <Legend position="bottom" /> */}
       <Legend
@@ -135,7 +147,7 @@ const LineChart: React.FC<any> = (props: LineChartProps) => {
           (date, rate) => {
             return {
               name: '总体转化',
-              value: `${rate} %`,
+              value: `${parseFloat(rate)} %`,
               title: date,
             };
           },

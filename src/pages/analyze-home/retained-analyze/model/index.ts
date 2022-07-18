@@ -291,8 +291,8 @@ export const useListModel = () => {
 
     setChartList(step);
 
-    res.groupData.map((item: any, index: any) => {
-      Object.keys(item).forEach((res) => {
+    res?.groupData?.map((item: any, index: any) => {
+      Object?.keys(item)?.forEach((res) => {
         if (typeof item[res] === 'number') {
           let str1 = item[res].toFixed(0);
           let str2 = item[res].toFixed(2);

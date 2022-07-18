@@ -244,6 +244,18 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
         onGetG2Instance={(chart: any) => {
           chartIns = chart;
         }}
+        scale={{
+          rate: {
+            // tickCount: 5,
+            // min: 0,
+            type: 'linear-strict',
+          },
+          value: {
+            // tickCount: 5,
+            // min: 0,
+            type: 'linear-strict',
+          },
+        }}
       >
         {/* <Legend position="bottom" /> */}
         <Legend

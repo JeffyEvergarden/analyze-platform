@@ -96,7 +96,7 @@ const LineChart: React.FC<any> = (props: TableProps) => {
       data2.push({
         date: item.title,
         value: data?.[0]?.[item?.value],
-        rate: data?.[1]?.[item?.value],
+        rate: parseFloat(data?.[1]?.[item?.value]),
       });
     });
     console.log(data2);
