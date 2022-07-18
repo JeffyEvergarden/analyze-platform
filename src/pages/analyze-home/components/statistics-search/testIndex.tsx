@@ -81,6 +81,14 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
 
     // 清除当前对象其他值
     currentFormValue.attribute = undefined; // 第二属性 指标
+    currentFormValue.otherAttr = [
+      {
+        attribute: undefined,
+        alias: '',
+        edit: false,
+      },
+    ]; // 第二属性 多指标
+    setChooseAttribute([]); // 第二属性 多指标
     currentFormValue.operator = undefined; // 第三属性 统计方式  // 求和、去重之类的
     currentFormValue.relation = 'AND';
     // console.log(opt);
