@@ -83,8 +83,8 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
     chartList.forEach((item: any) => {
       data2.push({
         date: item.title,
-        value: data?.[0]?.[item?.value], //总体
-        rate: data?.[1]?.[item?.value], //总体转化
+        value: data?.[0]?.[item?.value],
+        rate: parseFloat(data?.[1]?.[item?.value]),
       });
     });
 
