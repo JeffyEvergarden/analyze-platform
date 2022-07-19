@@ -58,7 +58,7 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
   useEffect(() => {
     const list: any[] = dataJson.reqData?._eventList || dataJson?.formData?.first?.EventList || [];
     if (dataJson.reqData && dataJson.formData) {
-      getTable(dataJson?.reqData, list);
+      getTable(dataJson?.reqData, list, dataJson.tableColumn);
     }
   }, [dataJson]);
 

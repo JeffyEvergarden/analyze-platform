@@ -35,8 +35,8 @@ import XLSX from 'xlsx';
 import EditModal from '../SaveModel/modal';
 
 // Test-minimap
-// import MiniMap from './components/MiniMap';
-// import { obj } from './test';
+import MiniMap from './components/MiniMap';
+import { obj } from './test';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -115,9 +115,9 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     if (statisticsSearch && followUpSearch && compareSearch) {
       // console.log(eventList);
       if (eventList.length) {
-        getTable(all, eventList);
+        getTable(all, eventList, unionList);
       } else {
-        getTable(all, formEventList);
+        getTable(all, formEventList, unionList);
       }
     }
     //别名
@@ -170,7 +170,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     });
     // allData = Object.assign({}, ...allData);
     let allData = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
-    let save = { reqData: all, formData: allData };
+    let save = { reqData: all, formData: allData, tableColumn: tableList };
     console.log(save);
 
     if (boardId != analysisBoard) {
@@ -351,7 +351,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
             </div>
           </Card>
 
-          {/* <MiniMap dataJson={obj}></MiniMap> */}
+          <MiniMap dataJson={obj}></MiniMap>
         </Spin>
       </div>
       <EditModal cref={editModalRef} onSave={saveSubmit}></EditModal>

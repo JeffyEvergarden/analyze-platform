@@ -238,4 +238,55 @@ export const obj = {
     },
     compare: { groupBy: ['strategy_name'], dateRange: ['2021-12-08', '2021-12-10'] },
   },
+  tableColumn: [
+    {
+      title: '序号',
+      value: 'tableIndex',
+      dataIndex: 'tableIndex',
+      width: 50,
+    },
+    {
+      value: 'select2',
+      dataIndex: 'select2',
+      title: '下拉框2',
+      name: '下拉框2',
+      width: 100,
+    },
+    {
+      title: '命运冠位指定的用户数',
+      value: 'init_event_num0',
+      dataIndex: 'init_event_num0',
+      width: 100,
+    },
+    {
+      value: 'next_event_num0',
+      title: '当天',
+      dataIndex: 'next_event_num0',
+      width: 80,
+    },
+    {
+      value: 'next_event_num1',
+      title: '3天',
+      dataIndex: 'next_event_num1',
+      width: 80,
+    },
+    {
+      value: 'next_event_num2',
+      title: '7天',
+      dataIndex: 'next_event_num2',
+      width: 80,
+    },
+    {
+      value: 'next_event_num3',
+      title: '15天',
+      dataIndex: 'next_event_num3',
+      width: 80,
+    },
+    {
+      value: 'next_event_num4',
+      title: '30天',
+      dataIndex: 'next_event_num4',
+      width: 80,
+    },
+  ],
 };

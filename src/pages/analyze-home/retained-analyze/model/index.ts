@@ -195,7 +195,7 @@ export const useListModel = () => {
   //   'next_event_num4',
   // ];
 
-  const processEvent = (res: any, obj: any, eventList: any) => {
+  const processEvent = (res: any, obj: any, eventList: any, compareList: any) => {
     console.log(res, obj, eventList);
     let tableIndex = res.nextEventTitles.map((item: any, index: any) => `next_event_num${index}`);
     let step: any = [];
@@ -225,14 +225,26 @@ export const useListModel = () => {
       }
     });
     //将选择的分组过滤出来给表格
-    let a =
-      groupByList?.filter((item: any) => {
+    //groupByList
+    let a = compareList
+      ?.filter((item: any) => {
         return obj?.groupFields?.indexOf(item.value) != -1;
-      }) || [];
+      })
+      .map((item: any) => {
+        return {
+          value: item.value,
+          dataIndex: item.value,
+          title: item.name,
+          name: item.name,
+          width: 100,
+        };
+      });
 
     let init_event_num = eventList?.find((item: any) => {
       return item.value == obj.initEvent;
     });
+
+    console.log(a);
 
     //原-初始单指标
     // let init_Metric = init_event_num?.metricsList?.find((item: any) => {
@@ -314,19 +326,19 @@ export const useListModel = () => {
     });
   };
 
-  const getTable = async (obj: any, eventList: any) => {
+  const getTable = async (obj: any, eventList: any, compareList?: any) => {
     setLoading(true);
     let res: any = await getRefreshList(obj);
 
     if (res.status == 'finished') {
       setLoading(false);
-      processEvent(res.data, obj, eventList);
+      processEvent(res.data, obj, eventList, compareList);
     } else if (res.status == 'failed') {
       setLoading(false);
       message.error('查询失败');
     } else if (res.status == 'running') {
       setTimeout(async () => {
-        getTable(obj, eventList);
+        getTable(obj, eventList, compareList);
       }, 2000);
     }
 
