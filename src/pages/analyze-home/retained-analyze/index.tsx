@@ -130,11 +130,16 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     //   (normalSearchRef?.current as any).getForm(),
     //   (lastSearchRef.current as any).getForm(),
     // ]);
+
     let allData = await Promise.all([
       (firstSearchRef.current as any).getFormData(),
       (normalSearchRef?.current as any).getFormData(),
       (lastSearchRef.current as any).getFormData(),
     ]);
+    if (!tableList?.length) {
+      message.warning('请先查询');
+      return;
+    }
     // console.log(JSON.stringify(allData));
     if (!allData.every((item) => item)) {
       return;
