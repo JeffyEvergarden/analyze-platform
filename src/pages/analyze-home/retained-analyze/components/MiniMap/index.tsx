@@ -58,7 +58,7 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
   useEffect(() => {
     const list: any[] = dataJson.reqData?._eventList || dataJson?.formData?.first?.EventList || [];
     if (dataJson.reqData && dataJson.formData) {
-      getTable(dataJson?.reqData, list, dataJson?.tableColumn);
+      getTable(dataJson?.reqData, list, dataJson?.tableColumn || []);
     }
   }, [dataJson]);
 
@@ -163,7 +163,7 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
   };
 
   const summaryHtml = () => {
-    if (tableDataList?.length === 0) {
+    if (!tableDataList || tableDataList?.length === 0) {
       return null;
     }
     return (
@@ -383,7 +383,7 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
           return `${record.tableIndex}`;
           // return record;
         }}
-        scroll={{ x: 200 * (tableList.length + 2) }}
+        scroll={{ x: 200 * ((tableList?.length || 0) + 2) }}
         summary={summaryHtml}
       ></Table>
     </Card>

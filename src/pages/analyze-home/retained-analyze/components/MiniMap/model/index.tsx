@@ -10,7 +10,7 @@ export const useListModel = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [tableDataList, setTableDataList] = useState<any>();
 
-  const processEvent = (res: any, obj: any, eventList: any, tableColumn) => {
+  const processEvent = (res: any, obj: any, eventList: any, tableColumn: any) => {
     console.log(res, obj, eventList);
     let tableIndex = res?.nextEventTitles?.map((item: any, index: any) => `next_event_num${index}`);
     let step: any = [];
@@ -77,32 +77,32 @@ export const useListModel = () => {
         width: 100,
       };
     });
-
-    // setTableList([
-    //   { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex', width: 50 },
-    //   ...a,
-    //   ...init_Metric,
-    //   // {
-    //   //   title: obj?.firstOtherName || `${init_event_num?.name}的${init_Metric?.name}`,
-    //   //   value: 'init_event_num',
-    //   //   dataIndex: 'init_event_num',
-    //   //   render: (text: any, record: any) => {
-    //   //     if (typeof text === 'number') {
-    //   //       let str1 = text.toFixed(0);
-    //   //       let str2 = text.toFixed(2);
-
-    //   //       // let str2 = toFixed2(text);
-    //   //       let str: any = Number(str1) === Number(str2) ? str1 : str2;
-    //   //       str = Number(str);
-    //   //       return str;
-    //   //     }
-    //   //     return text;
-    //   //   },
-    //   // },
-    //   ...step,
-    // ]);
-
     setTableList(tableColumn);
+    if (!tableColumn?.length) {
+      setTableList([
+        { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex', width: 50 },
+        ...a,
+        ...init_Metric,
+        // {
+        //   title: obj?.firstOtherName || `${init_event_num?.name}的${init_Metric?.name}`,
+        //   value: 'init_event_num',
+        //   dataIndex: 'init_event_num',
+        //   render: (text: any, record: any) => {
+        //     if (typeof text === 'number') {
+        //       let str1 = text.toFixed(0);
+        //       let str2 = text.toFixed(2);
+
+        //       // let str2 = toFixed2(text);
+        //       let str: any = Number(str1) === Number(str2) ? str1 : str2;
+        //       str = Number(str);
+        //       return str;
+        //     }
+        //     return text;
+        //   },
+        // },
+        ...step,
+      ]);
+    }
     setChartList(step);
 
     res.groupData.map((item: any, index: any) => {
