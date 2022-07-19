@@ -35,8 +35,8 @@ import XLSX from 'xlsx';
 import EditModal from '../SaveModel/modal';
 
 // Test-minimap
-import MiniMap from './components/MiniMap';
-import { obj } from './test';
+// import MiniMap from './components/MiniMap';
+// import { obj } from './test';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -356,7 +356,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
             </div>
           </Card>
 
-          <MiniMap dataJson={obj}></MiniMap>
+          {/* <MiniMap dataJson={obj}></MiniMap> */}
         </Spin>
       </div>
       <EditModal cref={editModalRef} onSave={saveSubmit}></EditModal>
