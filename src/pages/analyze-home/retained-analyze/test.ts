@@ -16,102 +16,102 @@ export const obj = {
   formData: {
     first: {
       event: 'LQHTXCG',
-      attribute: '用户数',
+      // attribute: '用户数',
       relation: 'AND',
-      metricsList: [
-        { name: '用户数', value: '用户数', type: 'metrics' },
-        { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
-        { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
-      ],
-      fieldList: [
-        {
-          name: '下拉框',
-          value: 'select',
-          type: 'fields',
-          dataType: 'select',
-          list: [
-            { name: '测试1', value: '测试1' },
-            { name: '测试2', value: '测试2' },
-          ],
-        },
-        {
-          name: '下拉框2',
-          value: 'select2',
-          type: 'fields',
-          dataType: 'select',
-          list: [
-            { name: '测试1', value: '测试1' },
-            { name: '测试2', value: '测试2' },
-          ],
-        },
-        { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
-        { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
-        { name: '数字框', value: 'numbr', type: 'fields', dataType: 'number', list: [] },
-      ],
-      associatedFieldsList: [{ code: 'xx', name: 'xx', value: 'xx' }],
-      EventList: [
-        {
-          name: '命运冠位指定',
-          value: 'LQHTXCG',
-          metricsList: [
-            { name: '用户数', value: '用户数', type: 'metrics' },
-            { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
-            { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
-          ],
-          fieldList: [
-            {
-              name: '下拉框',
-              value: 'select',
-              type: 'fields',
-              dataType: 'select',
-              list: [
-                { name: '测试1', value: '测试1' },
-                { name: '测试2', value: '测试2' },
-              ],
-            },
-            {
-              name: '下拉框2',
-              value: 'select2',
-              type: 'fields',
-              dataType: 'select',
-              list: [
-                { name: '测试1', value: '测试1' },
-                { name: '测试2', value: '测试2' },
-              ],
-            },
-            { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
-            { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
-            { name: '数字框', value: 'numbr', type: 'fields', dataType: 'number', list: [] },
-          ],
-          associatedFieldsList: [{ code: 'xx', name: 'xx', value: 'xx' }],
-        },
-        {
-          name: '原神',
-          value: 'LBQ',
-          metricsList: [
-            { name: '用户数', value: '用户数', type: 'metrics' },
-            { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
-            { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
-          ],
-          fieldList: [
-            {
-              name: '下拉框',
-              value: 'select',
-              type: 'fields',
-              dataType: 'select',
-              list: [
-                { name: '测试1', value: '测试1' },
-                { name: '测试2', value: '测试2' },
-              ],
-            },
-            { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
-            { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
-            { name: '数字框', value: 'number', type: 'fields', dataType: 'number', list: [] },
-          ],
-          associatedFieldsList: [{ code: 'xx', name: 'xx', value: 'xx' }],
-        },
-      ],
-      type: 'metrics',
+      // metricsList: [
+      //   { name: '用户数', value: '用户数', type: 'metrics' },
+      //   { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
+      //   { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
+      // ],
+      // fieldList: [
+      //   {
+      //     name: '下拉框',
+      //     value: 'select',
+      //     type: 'fields',
+      //     dataType: 'select',
+      //     list: [
+      //       { name: '测试1', value: '测试1' },
+      //       { name: '测试2', value: '测试2' },
+      //     ],
+      //   },
+      //   {
+      //     name: '下拉框2',
+      //     value: 'select2',
+      //     type: 'fields',
+      //     dataType: 'select',
+      //     list: [
+      //       { name: '测试1', value: '测试1' },
+      //       { name: '测试2', value: '测试2' },
+      //     ],
+      //   },
+      //   { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
+      //   { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
+      //   { name: '数字框', value: 'numbr', type: 'fields', dataType: 'number', list: [] },
+      // ],
+      // associatedFieldsList: [{ code: 'xx', name: 'xx', value: 'xx' }],
+      // EventList: [
+      //   {
+      //     name: '命运冠位指定',
+      //     value: 'LQHTXCG',
+      //     metricsList: [
+      //       { name: '用户数', value: '用户数', type: 'metrics' },
+      //       { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
+      //       { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
+      //     ],
+      //     fieldList: [
+      //       {
+      //         name: '下拉框',
+      //         value: 'select',
+      //         type: 'fields',
+      //         dataType: 'select',
+      //         list: [
+      //           { name: '测试1', value: '测试1' },
+      //           { name: '测试2', value: '测试2' },
+      //         ],
+      //       },
+      //       {
+      //         name: '下拉框2',
+      //         value: 'select2',
+      //         type: 'fields',
+      //         dataType: 'select',
+      //         list: [
+      //           { name: '测试1', value: '测试1' },
+      //           { name: '测试2', value: '测试2' },
+      //         ],
+      //       },
+      //       { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
+      //       { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
+      //       { name: '数字框', value: 'numbr', type: 'fields', dataType: 'number', list: [] },
+      //     ],
+      //     associatedFieldsList: [{ code: 'xx', name: 'xx', value: 'xx' }],
+      //   },
+      //   {
+      //     name: '原神',
+      //     value: 'LBQ',
+      //     metricsList: [
+      //       { name: '用户数', value: '用户数', type: 'metrics' },
+      //       { name: '提现成功人数', value: '户均提现成功金额', type: 'metrics' },
+      //       { name: '提现成功笔数', value: '提现成功笔数', type: 'metrics' },
+      //     ],
+      //     fieldList: [
+      //       {
+      //         name: '下拉框',
+      //         value: 'select',
+      //         type: 'fields',
+      //         dataType: 'select',
+      //         list: [
+      //           { name: '测试1', value: '测试1' },
+      //           { name: '测试2', value: '测试2' },
+      //         ],
+      //       },
+      //       { name: '输入框', value: 'input', type: 'fields', dataType: 'input' },
+      //       { name: '时间选择器', value: 'dateTime', type: 'fields', dataType: 'dateTime' },
+      //       { name: '数字框', value: 'number', type: 'fields', dataType: 'number', list: [] },
+      //     ],
+      //     associatedFieldsList: [{ code: 'xx', name: 'xx', value: 'xx' }],
+      //   },
+      // ],
+      // type: 'metrics',
       otherAttr: [
         { attribute: '用户数' },
         { attribute: '户均提现成功金额' },

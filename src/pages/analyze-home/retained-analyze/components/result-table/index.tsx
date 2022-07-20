@@ -183,9 +183,9 @@ const LineChart: React.FC<any> = (props: TableProps) => {
   const summaryHtml = () => {
     console.log(data);
 
-    if (!data || data?.length === 0) {
-      return null;
-    }
+    // if (!data || data?.length === 0) {
+    //   return null;
+    // }
     return (
       <Table.Summary fixed>
         <Table.Summary.Row style={{ background: 'rgb(250,250,250' }}>

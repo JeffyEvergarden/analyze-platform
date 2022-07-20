@@ -93,6 +93,8 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     currentFormValue.relation = 'AND';
     // console.log(opt);
     let list = opt.opt.fieldList || [];
+    console.log('list', list);
+
     setFilter?.(list || []);
     //关联主体
     form.setFieldsValue({
@@ -221,9 +223,16 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
         // if (obj.event) {
         //   getBehavior('RETAIN_STRATEGY_NEXT', obj.event);
         // }
-        console.log(obj);
-        setFilter?.(obj?.fieldList || []);
+        const _curItemObj: any = list.find((item: any) => {
+          return item.value === obj?.event;
+        });
+        // 找出下拉列表
+        const fieldList = _curItemObj?.fieldList || [];
+        console.log('回显分组', fieldList);
+        console.log('eventlist', list);
+        console.log('obj', obj);
         form.setFieldsValue({ childrenList: [obj] });
+        setFilter?.(fieldList || []);
       },
     };
   });

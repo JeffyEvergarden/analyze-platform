@@ -163,9 +163,9 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
   };
 
   const summaryHtml = () => {
-    if (!tableDataList || tableDataList?.length === 0) {
-      return null;
-    }
+    // if (!tableDataList || tableDataList?.length === 0) {
+    //   return null;
+    // }
     return (
       <Table.Summary fixed>
         <Table.Summary.Row style={{ background: 'rgb(250,250,250' }}>
