@@ -221,6 +221,8 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
         // if (obj.event) {
         //   getBehavior('RETAIN_STRATEGY_NEXT', obj.event);
         // }
+        console.log(obj);
+        setFilter?.(obj?.fieldList || []);
         form.setFieldsValue({ childrenList: [obj] });
       },
     };
