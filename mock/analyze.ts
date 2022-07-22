@@ -539,17 +539,18 @@ const getTableList = (req: any, res: any) => {
 const getRefreshList = (req: any, res: any) => {
   let list = new Array(13).fill(1).map((item: any, index: number) => {
     return {
-      init_event_num0: 3.333,
-      init_event_num1: 3.333,
-      init_event_num2: 3.333,
-      init_event_num3: 3.333,
-      next_event_num1: 2.222,
-      next_event_num2: 2.888,
-      next_event_num3: 2.777,
-      next_event_num4: 2,
-      next_event_num0: 2,
+      init_event_num0: Math.floor(Math.random() * 100000000),
+      init_event_num1: Math.floor(Math.random() * 100000000),
+      init_event_num2: Math.floor(Math.random() * 100000000),
+      init_event_num3: Math.floor(Math.random() * 100000000),
+      next_event_num1: Math.floor(Math.random() * 100000000),
+      next_event_num2: Math.floor(Math.random() * 100000000),
+      next_event_num3: Math.floor(Math.random() * 100000000),
+      next_event_num4: Math.floor(Math.random() * 100000000),
+      next_event_num0: Math.floor(Math.random() * 100000000),
       strategy_id: `id${index}`,
       strategy_name: `name${index}`,
+      dateTime: `2022-07-${Math.floor(Math.random() * 20) + 10}`,
     };
   });
 

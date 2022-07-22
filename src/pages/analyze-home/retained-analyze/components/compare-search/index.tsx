@@ -149,7 +149,14 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   return (
     <Form form={form}>
       <FormItem name="groupBy" label="分组">
-        <Select style={{ width: '40%' }} mode="multiple" placeholder="请选择分组">
+        <Select
+          style={{ width: '40%' }}
+          mode="multiple"
+          placeholder="请选择分组"
+          filterOption={(input: any, option: any) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+        >
           {groupByList.map((item: any, index: number) => {
             return (
               <Option key={index} value={item.value}>

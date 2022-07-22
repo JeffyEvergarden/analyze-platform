@@ -187,13 +187,23 @@ export const useListModel = () => {
   const [summary, setSummary] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [tableDataList, setTableDataList] = useState<any>();
-  // let tableIndex = [
-  //   'next_event_num0',
-  //   'next_event_num1',
-  //   'next_event_num2',
-  //   'next_event_num3',
-  //   'next_event_num4',
-  // ];
+
+  // 排序方式 // 列名
+  const sorter = (columnName: any) => {
+    return (a: any, b: any) => {
+      a = a[columnName];
+      b = b[columnName];
+      let na = Number(a);
+      let nb = Number(b);
+      if (!isNaN(na) && !isNaN(nb)) {
+        return na - nb;
+      } else if (!isNaN(na) || !isNaN(nb)) {
+        return !isNaN(na) ? 1 : -1;
+      } else {
+        return a >= b ? 1 : -1;
+      }
+    };
+  };
 
   const processEvent = (res: any, obj: any, eventList: any, compareList: any) => {
     console.log(res, obj, eventList);
@@ -208,6 +218,8 @@ export const useListModel = () => {
           value: tableIndex[index],
           title: item,
           dataIndex: tableIndex[index],
+          sortDirection: ['descend', 'ascend'],
+          sorter: sorter(item.value),
           render: (text: any, record: any) => {
             if (typeof text === 'number') {
               let str1 = text.toFixed(0);
@@ -235,6 +247,8 @@ export const useListModel = () => {
           value: item.value,
           dataIndex: item.value,
           title: item.name,
+          sortDirection: ['descend', 'ascend'],
+          sorter: sorter(item.value),
           name: item.name,
           width: 100,
         };
@@ -261,6 +275,8 @@ export const useListModel = () => {
         title: mAlias || `${init_event_num?.name}的${mName}`,
         value: `init_event_num${index}`,
         dataIndex: `init_event_num${index}`,
+        sortDirection: ['descend', 'ascend'],
+        sorter: sorter(`init_event_num${index}`),
         render: (text: any, record: any) => {
           if (typeof text === 'number') {
             let str1 = text.toFixed(0);

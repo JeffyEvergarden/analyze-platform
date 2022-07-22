@@ -256,6 +256,8 @@ export const useAdvertiseModel = () => {
   // 排序方式 // 列名
   const sorter = (columnName: any) => {
     return (a: any, b: any) => {
+      console.log(defaultSortColumn);
+
       if (defaultSortColumn) {
         // 默认排序方式  数字大小 -> 活动名称
         let ta = a[defaultSortColumn];
