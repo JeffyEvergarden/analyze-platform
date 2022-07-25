@@ -219,7 +219,7 @@ export const useListModel = () => {
           title: item,
           dataIndex: tableIndex[index],
           sortDirection: ['descend', 'ascend'],
-          sorter: sorter(item.value),
+          sorter: sorter(tableIndex[index]),
           render: (text: any, record: any) => {
             if (typeof text === 'number') {
               let str1 = text.toFixed(0);

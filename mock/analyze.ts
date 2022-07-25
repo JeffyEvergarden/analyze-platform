@@ -547,7 +547,10 @@ const getRefreshList = (req: any, res: any) => {
       next_event_num2: Math.floor(Math.random() * 100000000),
       next_event_num3: Math.floor(Math.random() * 100000000),
       next_event_num4: Math.floor(Math.random() * 100000000),
-      next_event_num0: Math.floor(Math.random() * 100000000),
+      next_event_num0:
+        Math.floor(Math.random() * 100000000) % 2 == 0
+          ? Math.floor(Math.random() * 100000000)
+          : null,
       strategy_id: `id${index}`,
       strategy_name: `name${index}`,
       dateTime: `2022-07-${Math.floor(Math.random() * 20) + 10}`,

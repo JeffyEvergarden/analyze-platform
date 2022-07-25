@@ -53,6 +53,9 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   const [form] = Form.useForm();
   const { cref, groupByList } = props;
   const [winType, setWinType] = useState<any>('');
+  const [dates, setDates] = useState<any>(null);
+  const [value, setValue] = useState<any>(null);
+  const [hackValue, setHackValue] = useState<any>(null);
 
   const setDefaultStep = () => {
     form.setFieldsValue({
@@ -146,6 +149,24 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
     });
   }, []);
 
+  const disabledDate = (current: any) => {
+    if (!dates) {
+      return false;
+    }
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 180;
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 180;
+    return !!tooEarly || !!tooLate;
+  };
+
+  const onOpenChange = (open: boolean) => {
+    if (open) {
+      setHackValue([null, null]);
+      setDates([null, null]);
+    } else {
+      setHackValue(null);
+    }
+  };
+
   return (
     <Form form={form}>
       <FormItem name="groupBy" label="分组">
@@ -170,6 +191,11 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
       <Space align="baseline" style={{ marginRight: '32px' }}>
         <FormItem name="dateRange" label="初始事件日期">
           <RangePicker
+            disabledDate={disabledDate}
+            onCalendarChange={(val) => setDates(val)}
+            onOpenChange={onOpenChange}
+            value={hackValue || value}
+            onChange={(val) => setValue(val)}
             format="YYYY-MM-DD"
             style={{ width: '300px' }}
             placeholder={['初始日期的开始', '初始日期的结束']}

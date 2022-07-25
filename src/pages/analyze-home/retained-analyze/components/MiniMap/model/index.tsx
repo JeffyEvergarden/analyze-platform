@@ -10,6 +10,23 @@ export const useListModel = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [tableDataList, setTableDataList] = useState<any>();
 
+  // 排序方式 // 列名
+  const sorter = (columnName: any) => {
+    return (a: any, b: any) => {
+      a = a[columnName];
+      b = b[columnName];
+      let na = Number(a);
+      let nb = Number(b);
+      if (!isNaN(na) && !isNaN(nb)) {
+        return na - nb;
+      } else if (!isNaN(na) || !isNaN(nb)) {
+        return !isNaN(na) ? 1 : -1;
+      } else {
+        return a >= b ? 1 : -1;
+      }
+    };
+  };
+
   const processEvent = (res: any, obj: any, eventList: any, tableColumn: any) => {
     console.log(res, obj, eventList);
     let tableIndex = res?.nextEventTitles?.map((item: any, index: any) => `next_event_num${index}`);
@@ -22,6 +39,8 @@ export const useListModel = () => {
           value: tableIndex[index],
           title: item,
           dataIndex: tableIndex[index],
+          sortDirection: ['descend', 'ascend'],
+          sorter: sorter(tableIndex[index]),
           render: (text: any, record: any) => {
             if (typeof text === 'number') {
               let str1 = text.toFixed(0);
@@ -39,9 +58,15 @@ export const useListModel = () => {
       }
     });
     //将选择的分组过滤出来给表格
-    let a = groupByList?.filter((item: any) => {
-      return obj?.groupFields?.indexOf(item.value) != -1;
-    });
+    let a = groupByList
+      ?.filter((item: any) => {
+        return obj?.groupFields?.indexOf(item.value) != -1;
+      })
+      .map((item) => {
+        item.sortDirection = ['descend', 'ascend'];
+        item.sorter = sorter(item.value);
+        return item;
+      });
 
     let init_event_num = eventList?.find((item: any) => {
       return item.value == obj.initEvent;
@@ -62,6 +87,8 @@ export const useListModel = () => {
         title: mAlias || `${init_event_num?.name}的${mName}`,
         value: `init_event_num${index}`,
         dataIndex: `init_event_num${index}`,
+        sortDirection: ['descend', 'ascend'],
+        sorter: sorter(`init_event_num${index}`),
         render: (text: any, record: any) => {
           if (typeof text === 'number') {
             let str1 = text.toFixed(0);
