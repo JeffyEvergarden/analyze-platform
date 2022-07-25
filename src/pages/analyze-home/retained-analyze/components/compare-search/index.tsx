@@ -90,14 +90,20 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
             //   return false;
             // }
             let formData = form.getFieldsValue();
+            let startDate = formData.dateRange && formData?.dateRange[0]?.format('YYYY-MM-DD');
+            let endDate = formData.dateRange && formData?.dateRange[1]?.format('YYYY-MM-DD');
             // console.log(formData);
-
+            // console.log(formData?.dateRange[1] - formData?.dateRange[0]);
+            if (formData?.dateRange[1] - formData?.dateRange[0] > 180 * 1000 * 60 * 60 * 24) {
+              message.warning('对比查看初始事件日期间隔请小于180天');
+              return;
+            }
             return {
               windowPeriod: formData?.windowPeriod,
               windowPeriodType: formData?.windowPeriodType,
               groupFields: formData?.groupBy || [],
-              startDate: formData.dateRange && formData?.dateRange[0]?.format('YYYY-MM-DD'),
-              endDate: formData.dateRange && formData?.dateRange[1]?.format('YYYY-MM-DD'),
+              startDate: startDate,
+              endDate: endDate,
               timeStep: formData?.step || -1,
             };
           } else {
@@ -118,6 +124,10 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
           // }
           const formData = form.getFieldsValue();
           console.log(formData);
+          if (formData?.dateRange[1] - formData?.dateRange[0] > 180 * 1000 * 60 * 60 * 24) {
+            message.warning('对比查看初始事件日期间隔请小于180天');
+            return;
+          }
 
           // if (formData?.dateRange?.length) {
           //   formData.dateRange[0] = formData?.dateRange[0]?.format?.('YYYY-MM-DD');
