@@ -14,6 +14,7 @@ import {
 import { PlusSquareOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { timeUnitList } from '../../model/const';
 import moment from 'moment';
+import style from './style.less';
 
 const { RangePicker } = DatePicker;
 
@@ -200,17 +201,20 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
 
       <Space align="baseline" style={{ marginRight: '32px' }}>
         <FormItem name="dateRange" label="初始事件日期">
-          <RangePicker
-            disabledDate={disabledDate}
-            onCalendarChange={(val) => setDates(val)}
-            onOpenChange={onOpenChange}
-            value={hackValue || value}
-            onChange={(val) => setValue(val)}
-            format="YYYY-MM-DD"
-            style={{ width: '300px' }}
-            placeholder={['初始日期的开始', '初始日期的结束']}
-            showTime={false}
-          ></RangePicker>
+          <div className={style['datePick']}>
+            <RangePicker
+              disabledDate={disabledDate}
+              onCalendarChange={(val) => setDates(val)}
+              onOpenChange={onOpenChange}
+              value={hackValue || value}
+              onChange={(val) => setValue(val)}
+              format="YYYY-MM-DD"
+              style={{ width: '300px' }}
+              placeholder={['初始日期的开始', '初始日期的结束']}
+              showTime={false}
+              getPopupContainer={(trigger: any) => trigger.parentElement}
+            ></RangePicker>
+          </div>
         </FormItem>
 
         <span>窗口期</span>
