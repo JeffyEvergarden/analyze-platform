@@ -60,7 +60,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
 
   const setDefaultStep = () => {
     form.setFieldsValue({
-      step: undefined,
+      step: 1,
       // windowPeriod: undefined,
       // windowPeriodType: undefined,
       unit: undefined,
@@ -91,11 +91,11 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
             //   return false;
             // }
             let formData = form.getFieldsValue();
-            let startDate = formData.dateRange && formData?.dateRange[0]?.format('YYYY-MM-DD');
-            let endDate = formData.dateRange && formData?.dateRange[1]?.format('YYYY-MM-DD');
+            let startDate = formData.dateRange && formData?.dateRange?.[0]?.format('YYYY-MM-DD');
+            let endDate = formData.dateRange && formData?.dateRange?.[1]?.format('YYYY-MM-DD');
             // console.log(formData);
             // console.log(formData?.dateRange[1] - formData?.dateRange[0]);
-            if (formData?.dateRange[1] - formData?.dateRange[0] > 180 * 1000 * 60 * 60 * 24) {
+            if (formData?.dateRange?.[1] - formData?.dateRange?.[0] > 180 * 1000 * 60 * 60 * 24) {
               message.warning('对比查看初始事件日期间隔请小于180天');
               return;
             }
@@ -125,7 +125,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
           // }
           const formData = form.getFieldsValue();
           console.log(formData);
-          if (formData?.dateRange[1] - formData?.dateRange[0] > 180 * 1000 * 60 * 60 * 24) {
+          if (formData?.dateRange?.[1] - formData?.dateRange?.[0] > 180 * 1000 * 60 * 60 * 24) {
             message.warning('对比查看初始事件日期间隔请小于180天');
             return;
           }
@@ -268,9 +268,9 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
           </Select>
         </FormItem>
         <span>OR</span>
-        <Tooltip title={'默认步长为 当天、3天、7天、15天、30天'}>
-          <Button onClick={setDefaultStep}>恢复默认步长</Button>
-        </Tooltip>
+        {/* <Tooltip title={'默认步长为 当天、3天、7天、15天、30天'}> */}
+        <Button onClick={setDefaultStep}>恢复默认步长</Button>
+        {/* </Tooltip> */}
       </Space>
     </Form>
   );
