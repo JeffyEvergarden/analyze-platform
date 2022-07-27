@@ -68,9 +68,12 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   };
 
   const changeWinType = (val: any) => {
-    form.setFieldsValue({
-      windowPeriod: undefined,
-    });
+    let windowPeriod = form.getFieldValue('windowPeriod');
+    if (windowPeriod > dateType[val]) {
+      form.setFieldsValue({
+        windowPeriod: dateType[val],
+      });
+    }
     setWinType(val);
   };
 
@@ -229,6 +232,7 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
             style={{ width: '120px' }}
             placeholder="请输入"
             max={dateType?.[winType] || 180}
+            min={1}
           ></InputNumber>
         </FormItem>
         <FormItem name="windowPeriodType">
