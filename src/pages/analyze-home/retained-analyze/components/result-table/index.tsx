@@ -181,7 +181,7 @@ const LineChart: React.FC<any> = (props: TableProps) => {
   }));
 
   const summaryHtml = () => {
-    console.log(data);
+    // console.log(data);
 
     // if (!data || data?.length === 0) {
     //   return null;

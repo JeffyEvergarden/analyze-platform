@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { getEventList, getFieldList, getBehaviorList, getRefreshList } from './api';
 import { groupByList } from './const';
 import { toFixed2 } from '@/utils/utils';
@@ -183,7 +183,9 @@ export const useBehaviorModel = () => {
 
 export const useListModel = () => {
   const [tableList, setTableList] = useState<any>([]);
-  const [groupList, setGroupList] = useState<any>([]);
+
+  const fake = useRef<any>({});
+
   const [chartList, setChartList] = useState<any>([]);
   const [summary, setSummary] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -206,8 +208,10 @@ export const useListModel = () => {
     };
   };
 
-  const processEvent = (res: any, obj: any, eventList: any, compareList: any) => {
-    console.log(res, obj, eventList, compareList);
+  const processEvent = (res: any, obj: any, eventList: any) => {
+    const _unionList = fake.current.unionList || [];
+    const compareList: any[] = [..._unionList];
+    // console.log(res, obj, eventList);
     let tableIndex = res.nextEventTitles.map((item: any, index: any) => `next_event_num${index}`);
     let step: any = [];
     let summaryObj: any = {};
@@ -259,8 +263,6 @@ export const useListModel = () => {
       return item.value == obj.initEvent;
     });
 
-    console.log(a);
-
     //原-初始单指标
     // let init_Metric = init_event_num?.metricsList?.find((item: any) => {
     //   return item.value == obj.initMetric;
@@ -282,7 +284,6 @@ export const useListModel = () => {
           if (typeof text === 'number') {
             let str1 = text.toFixed(0);
             let str2 = text.toFixed(2);
-
             // let str2 = toFixed2(text);
             let str: any = Number(str1) === Number(str2) ? str1 : str2;
             str = Number(str);
@@ -298,23 +299,6 @@ export const useListModel = () => {
       { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex', width: 50 },
       ...a,
       ...init_Metric,
-      // {
-      //   title: obj?.firstOtherName || `${init_event_num?.name}的${init_Metric?.name}`,
-      //   value: 'init_event_num',
-      //   dataIndex: 'init_event_num',
-      //   render: (text: any, record: any) => {
-      //     if (typeof text === 'number') {
-      //       let str1 = text.toFixed(0);
-      //       let str2 = text.toFixed(2);
-
-      //       // let str2 = toFixed2(text);
-      //       let str: any = Number(str1) === Number(str2) ? str1 : str2;
-      //       str = Number(str);
-      //       return str;
-      //     }
-      //     return text;
-      //   },
-      // },
       ...step,
     ]);
 
@@ -343,18 +327,18 @@ export const useListModel = () => {
     });
   };
 
-  const getTable = async (obj: any, eventList: any, compareList?: any) => {
+  const getTable = async (obj: any, eventList: any) => {
     setLoading(true);
     let res: any = await getRefreshList(obj);
     if (res.status == 'finished') {
       setLoading(false);
-      processEvent(res.data, obj, eventList, compareList);
+      processEvent(res.data, obj, eventList);
     } else if (res.status == 'failed') {
       setLoading(false);
       message.error('查询失败');
     } else if (res.status == 'running') {
       setTimeout(async () => {
-        getTable(obj, eventList, compareList);
+        getTable(obj, eventList);
       }, 2000);
     }
 
@@ -367,8 +351,8 @@ export const useListModel = () => {
     tableList,
     summary,
     tableDataList,
-    setGroupList,
     getTable,
+    fake,
   };
 };
 
@@ -416,7 +400,7 @@ export const useFilterModel = () => {
     setFilterList([...resultArr]); // 交集
     setUnionList(compareArr); // 并集
 
-    console.log(resultArr, compareArr);
+    // console.log(resultArr, compareArr);
   };
 
   return {

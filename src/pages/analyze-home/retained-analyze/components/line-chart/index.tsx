@@ -24,7 +24,7 @@ const LineChart: React.FC<any> = (props: LineChartProps) => {
       onAxisLabelClick={console.log}
       padding="auto"
       appendPadding={[10, 10, 10, 10]}
-      forceUpdate="true"
+      // forceUpdate="true"
       onGetG2Instance={(chart: any) => {
         chartIns = chart;
       }}
