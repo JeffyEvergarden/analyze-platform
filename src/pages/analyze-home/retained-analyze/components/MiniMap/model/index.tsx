@@ -104,7 +104,14 @@ export const useListModel = () => {
         width: 100,
       };
     });
-    setTableList(tableColumn);
+
+    if (tableColumn?.length) {
+      tableColumn?.map((item: any) => {
+        item.sorter = sorter(item?.tableIndex || item?.value);
+      });
+      setTableList(tableColumn);
+    }
+
     if (!tableColumn?.length) {
       setTableList([
         { title: '序号', value: 'tableIndex', dataIndex: 'tableIndex', width: 50 },

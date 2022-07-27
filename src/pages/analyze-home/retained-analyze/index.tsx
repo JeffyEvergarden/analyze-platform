@@ -36,7 +36,7 @@ import EditModal from '../SaveModel/modal';
 
 // Test-minimap
 // import MiniMap from './components/MiniMap';
-// import { obj } from './test';
+import { obj } from './test';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -59,7 +59,8 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   //后续行为
   const { behaviorList, setBehaviorList, getBehaviorConfig } = useBehaviorModel();
   // 表格数据
-  const { loading, chartList, tableList, summary, tableDataList, getTable } = useListModel();
+  const { loading, chartList, tableList, summary, tableDataList, getTable, setGroupList } =
+    useListModel();
 
   //检测初始变没
   const [indexField, setIndexField] = useState<any>('');
@@ -111,7 +112,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     // console.log(followUpSearch);
     // console.log(compareSearch);
     let all = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
-    console.log(all);
+    // console.log(all);
     if (statisticsSearch && followUpSearch && compareSearch) {
       // console.log(eventList);
       if (eventList.length) {
@@ -230,6 +231,10 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     refreshList(eventList || []);
   };
 
+  useEffect(() => {
+    setGroupList(unionList);
+  }, [unionList]);
+
   // mounted初始化
   useEffect(() => {
     getPreConfig('RETAIN_STRATEGY');
@@ -247,7 +252,6 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
         let data = JSON.parse(res?.datas?.analysisData);
         console.log(data);
         backData(data);
-
         setModuleName(res?.datas?.analysisName);
         setModuleType(res?.datas?.analysisType);
       });
@@ -257,10 +261,6 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   const handleExport = useCallback(() => {
     tableRef.current?.exportExcel();
   }, []);
-
-  useEffect(() => {
-    console.log(summary);
-  }, [summary]);
 
   return (
     <ConfigProvider locale={zhCN}>
@@ -310,14 +310,14 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
               保存到看板
             </Button>
 
-            {/* <Button
+            <Button
               onClick={() => {
                 backData(obj);
               }}
               style={{ marginLeft: '10px' }}
             >
               回显
-            </Button> */}
+            </Button>
           </div>
 
           <Card

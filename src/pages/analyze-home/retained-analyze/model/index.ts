@@ -183,6 +183,7 @@ export const useBehaviorModel = () => {
 
 export const useListModel = () => {
   const [tableList, setTableList] = useState<any>([]);
+  const [groupList, setGroupList] = useState<any>([]);
   const [chartList, setChartList] = useState<any>([]);
   const [summary, setSummary] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -206,7 +207,7 @@ export const useListModel = () => {
   };
 
   const processEvent = (res: any, obj: any, eventList: any, compareList: any) => {
-    console.log(res, obj, eventList);
+    console.log(res, obj, eventList, compareList);
     let tableIndex = res.nextEventTitles.map((item: any, index: any) => `next_event_num${index}`);
     let step: any = [];
     let summaryObj: any = {};
@@ -345,7 +346,6 @@ export const useListModel = () => {
   const getTable = async (obj: any, eventList: any, compareList?: any) => {
     setLoading(true);
     let res: any = await getRefreshList(obj);
-
     if (res.status == 'finished') {
       setLoading(false);
       processEvent(res.data, obj, eventList, compareList);
@@ -367,6 +367,7 @@ export const useListModel = () => {
     tableList,
     summary,
     tableDataList,
+    setGroupList,
     getTable,
   };
 };
@@ -415,7 +416,7 @@ export const useFilterModel = () => {
     setFilterList([...resultArr]); // 交集
     setUnionList(compareArr); // 并集
 
-    // console.log(resultArr, compareArr);
+    console.log(resultArr, compareArr);
   };
 
   return {
