@@ -36,7 +36,7 @@ import EditModal from '../SaveModel/modal';
 
 // Test-minimap
 // import MiniMap from './components/MiniMap';
-import { obj } from './test';
+// import { obj } from './test';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -310,14 +310,14 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
               保存到看板
             </Button>
 
-            <Button
+            {/* <Button
               onClick={() => {
                 backData(obj);
               }}
               style={{ marginLeft: '10px' }}
             >
               回显
-            </Button>
+            </Button> */}
           </div>
 
           <Card
