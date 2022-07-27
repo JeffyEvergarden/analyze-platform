@@ -36,7 +36,7 @@ import EditModal from '../SaveModel/modal';
 
 // Test-minimap
 // import MiniMap from './components/MiniMap';
-// import { obj } from './test';
+import { obj } from './test';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -59,7 +59,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   //后续行为
   const { behaviorList, setBehaviorList, getBehaviorConfig } = useBehaviorModel();
   // 表格数据
-  const { loading, chartList, tableList, summary, tableDataList, getTable } = useListModel();
+  const { loading, chartList, tableList, summary, tableDataList, getTable, fake } = useListModel();
 
   //检测初始变没
   const [indexField, setIndexField] = useState<any>('');
@@ -74,6 +74,10 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   useEffect(() => {
     setFilter(fieldList, fieldList2);
   }, [fieldList, fieldList2]);
+
+  useEffect(() => {
+    fake.current.unionList = unionList || [];
+  }, [unionList]);
 
   //TEST-miniMap
   // const [saveData, setSaveData] = useState<any>({});
@@ -111,14 +115,15 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
     // console.log(followUpSearch);
     // console.log(compareSearch);
     let all = Object.assign({}, statisticsSearch, followUpSearch, compareSearch); //合并
-    console.log(all);
     if (statisticsSearch && followUpSearch && compareSearch) {
       // console.log(eventList);
-      if (eventList.length) {
-        getTable(all, eventList, unionList);
-      } else {
-        getTable(all, formEventList, unionList);
-      }
+      setTimeout(() => {
+        if (eventList.length) {
+          getTable(all, eventList);
+        } else {
+          getTable(all, formEventList);
+        }
+      }, 200);
     }
     //别名
     setOtherName(all.otherName || all.defOtherName);
@@ -310,14 +315,14 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
               保存到看板
             </Button>
 
-            {/* <Button
+            <Button
               onClick={() => {
                 backData(obj);
               }}
               style={{ marginLeft: '10px' }}
             >
               回显
-            </Button> */}
+            </Button>
           </div>
 
           <Card

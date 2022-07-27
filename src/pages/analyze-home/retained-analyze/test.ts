@@ -2,10 +2,10 @@ export const obj = {
   reqData: {
     defOtherName: '命运指定提现成功人数',
     otherName: '后续别名',
-    initEvent: 'LQHTXCG',
+    initEvent: 'fate',
     initMetric: ['用户数'],
     relation: 'AND',
-    nextEvent: 'LQHTXCG',
+    nextEvent: 'fate',
     nextMetric: '用户数',
     nextCondition: { field: 'select', function: 'equal', params: '测试1', dataType: 'select' },
     groupFields: ['strategy_name'],
@@ -15,7 +15,7 @@ export const obj = {
   },
   formData: {
     first: {
-      event: 'LQHTXCG',
+      event: 'fate',
       // attribute: '用户数',
       relation: 'AND',
       // metricsList: [
@@ -120,7 +120,7 @@ export const obj = {
       ],
     },
     last: {
-      event: 'LQHTXCG',
+      event: 'LBQ',
       attribute: '用户数',
       defOtherName: '命运指定提现成功人数',
       alias: '后续别名',
@@ -236,7 +236,7 @@ export const obj = {
       ],
       type: 'metrics',
     },
-    compare: { groupBy: ['strategy_name'], dateRange: ['2021-12-08', '2021-12-10'] },
+    compare: { groupBy: ['select2'], dateRange: ['2021-12-08', '2021-12-10'] },
   },
   tableColumn: [
     {
