@@ -185,6 +185,7 @@ export const useListModel = () => {
   const [tableList, setTableList] = useState<any>([]);
 
   const fake = useRef<any>({});
+  const timeOut = useRef<any>(null);
 
   const [chartList, setChartList] = useState<any>([]);
   const [summary, setSummary] = useState<any>({});
@@ -337,9 +338,9 @@ export const useListModel = () => {
       setLoading(false);
       message.error('查询失败');
     } else if (res.status == 'running') {
-      setTimeout(async () => {
+      timeOut.current = setTimeout(async () => {
         getTable(obj, eventList);
-      }, 2000);
+      }, 5000);
     }
 
     //groupFields
@@ -353,6 +354,7 @@ export const useListModel = () => {
     tableDataList,
     getTable,
     fake,
+    timeOut,
   };
 };
 

@@ -59,12 +59,11 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   //后续行为
   const { behaviorList, setBehaviorList, getBehaviorConfig } = useBehaviorModel();
   // 表格数据
-  const { loading, chartList, tableList, summary, tableDataList, getTable, fake } = useListModel();
+  const { loading, chartList, tableList, summary, tableDataList, getTable, fake, timeOut } =
+    useListModel();
 
   //检测初始变没
   const [indexField, setIndexField] = useState<any>('');
-
-  //
 
   const { unionList, setFilter, setExtraList } = useFilterModel();
 
@@ -108,6 +107,7 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
 
   // 查询
   const refreshList = async (formEventList: any) => {
+    clearTimeout(timeOut.current);
     let statisticsSearch = await (firstSearchRef.current as any).getForm(); //初始行为数据处理为接口需要参数
     let followUpSearch = await (normalSearchRef?.current as any).getForm(); //后续行为数据处理为接口需要参数
     let compareSearch = await (lastSearchRef.current as any).getForm(); //对比查看数据处理为接口需要参数
@@ -239,6 +239,9 @@ const RetainedAnalyzePage: React.FC<any> = (props: AnalyzePageProps) => {
   useEffect(() => {
     getPreConfig('RETAIN_STRATEGY');
     setExtraList(groupByList);
+    return () => {
+      clearTimeout(timeOut.current);
+    };
   }, []);
 
   useEffect(() => {
