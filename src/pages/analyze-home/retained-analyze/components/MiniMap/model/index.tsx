@@ -32,7 +32,7 @@ export const useListModel = () => {
     let tableIndex = res?.nextEventTitles?.map((item: any, index: any) => `next_event_num${index}`);
     let step: any = [];
     //步长
-    res.nextEventTitles.forEach((item: any, index: any) => {
+    res?.nextEventTitles?.forEach((item: any, index: any) => {
       if (index < res.nextEventTitleNum) {
         // summaryObj[tableIndex[index]] = 0;
         step.push({
