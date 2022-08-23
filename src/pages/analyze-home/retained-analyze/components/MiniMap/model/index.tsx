@@ -139,7 +139,7 @@ export const useListModel = () => {
     }
     setChartList(step);
 
-    res.groupData.map((item: any, index: any) => {
+    res?.groupData?.map((item: any, index: any) => {
       Object.keys(item).forEach((res) => {
         if (typeof item[res] === 'number') {
           let str1 = item[res].toFixed(0);
@@ -156,8 +156,8 @@ export const useListModel = () => {
     console.log(obj);
 
     setSummary({
-      total: res?.total?.[0],
-      proportion: res?.proportion?.[0],
+      total: res?.total?.[0] || {},
+      proportion: res?.proportion?.[0] || {},
       mergeNum: (obj?.groupFields?.length || 0) + 1,
     });
   };

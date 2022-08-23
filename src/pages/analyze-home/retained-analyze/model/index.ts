@@ -195,8 +195,8 @@ export const useListModel = () => {
   // 排序方式 // 列名
   const sorter = (columnName: any) => {
     return (a: any, b: any) => {
-      a = a[columnName];
-      b = b[columnName];
+      a = a?.[columnName];
+      b = b?.[columnName];
       let na = Number(a);
       let nb = Number(b);
       if (!isNaN(na) && !isNaN(nb)) {
@@ -213,15 +213,15 @@ export const useListModel = () => {
     const _unionList = fake.current.unionList || [];
     const compareList: any[] = [..._unionList];
     // console.log(res, obj, eventList);
-    let tableIndex = res.nextEventTitles.map((item: any, index: any) => `next_event_num${index}`);
+    let tableIndex = res?.nextEventTitles?.map((item: any, index: any) => `next_event_num${index}`);
     let step: any = [];
     let summaryObj: any = {};
     //步长
-    res.nextEventTitles.forEach((item: any, index: any) => {
-      if (index < res.nextEventTitleNum) {
+    res?.nextEventTitles?.forEach((item: any, index: any) => {
+      if (index < res?.nextEventTitleNum) {
         // summaryObj[tableIndex[index]] = 0;
         step.push({
-          value: tableIndex[index],
+          value: tableIndex?.[index],
           title: item,
           dataIndex: tableIndex[index],
           sortDirection: ['descend', 'ascend'],
@@ -322,8 +322,8 @@ export const useListModel = () => {
     console.log(obj);
 
     setSummary({
-      total: res?.total?.[0],
-      proportion: res?.proportion?.[0],
+      total: res?.total?.[0] || {},
+      proportion: res?.proportion?.[0] || {},
       mergeNum: (obj?.groupFields?.length || 0) + 1,
     });
   };

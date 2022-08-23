@@ -179,7 +179,7 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
             if (index >= summary?.['mergeNum']) {
               return (
                 <Table.Summary.Cell key={index} index={index}>
-                  {formateNumber(summary['total'][key])}
+                  {formateNumber(summary?.['total']?.[key]) || '-'}
                 </Table.Summary.Cell>
               );
             }
@@ -195,7 +195,7 @@ const MiniMap: React.FC<any> = (props: MiniMapProps) => {
             if (index >= summary?.['mergeNum']) {
               return (
                 <Table.Summary.Cell key={index} index={index}>
-                  {formateNumber(summary['proportion'][key])}
+                  {formateNumber(summary?.['proportion']?.[key]) || '-'}
                 </Table.Summary.Cell>
               );
             }
