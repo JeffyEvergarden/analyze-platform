@@ -17,7 +17,7 @@ const request = extend({
     // console.log(Object.keys(error));
     // console.log(Object.keys(error).map((it: any) => error[it]));
     // 权限无验证 跳转 统一认证页面
-    if (error?.response.status === 401) {
+    if (error?.response?.status === 401) {
       window.location.href = `/bd/login`;
     }
     if (error?.type === 'Timeout') {
