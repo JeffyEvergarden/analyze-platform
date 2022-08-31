@@ -3,7 +3,7 @@ import { extend } from 'umi-request';
 import { message } from 'antd';
 
 const request = extend({
-  timeout: 120000,
+  timeout: 300000,
   // headers: {
   //   'Content-Type': 'multipart/form-data',
   // },
