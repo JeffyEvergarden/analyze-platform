@@ -49,6 +49,7 @@ interface TemplateAnalyzePageProps {
   timeColumn?: string;
   unitColumn?: string;
   showTime?: boolean;
+  compareTimeFlag?: boolean;
 }
 
 const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
@@ -63,6 +64,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     showTime = true,
     extraGroupByList,
     defaultSortColumn,
+    compareTimeFlag,
   } = props;
 
   const chineseName = ChineseNameMap[moduleType] || '敏捷分析';
@@ -436,6 +438,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
                   cref={CompareSearchRef}
                   list={unionList}
                   setFilter={setTitle}
+                  compareTimeFlag={compareTimeFlag}
                   defaultGroupBy
                 />
               </Panel>

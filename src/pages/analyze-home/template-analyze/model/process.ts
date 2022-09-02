@@ -217,7 +217,7 @@ export const supersetRequestData = (
     viz_type: 'table',
     url_params: {},
     time_range_endpoints: ['inclusive', 'inclusive'],
-    granularity_sqla: extra?.granularity_sqla || 'event_occur_time', // 时间纬度 todo
+    granularity_sqla: extra?.granularity_sqla || '', // 时间纬度 todo
     time_grain_sqla: '', //事件维度
     time_range: '',
     metrics: ['order_count'],

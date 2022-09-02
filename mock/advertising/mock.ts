@@ -1,6 +1,14 @@
 import { stringTypeList } from '@/pages/analyze-home/template-analyze/model/const';
 import { Request, Response } from 'express';
 
+const timeFn = async (s: number) => {
+  return new Promise((reslove, reject) => {
+    setTimeout(() => {
+      reslove(s);
+    }, s * 1000);
+  });
+};
+
 const getSqlInfo = (req: any, res: any) => {
   return res.json({
     code: '200000',
@@ -18,8 +26,10 @@ const sendMsg = (req: any, res: any) => {
   });
 };
 
-const getList = (req: any, res: any) => {
+const getList = async (req: any, res: any) => {
   const mertics = ['用户数', '进件笔数', 'A', '人均', '次均', 'D', 'E', 'V', 'H', 'I', 'J'];
+
+  await timeFn(10);
 
   const datas = mertics.map((key: string) => {
     let arr = new Array(10).fill(0);
@@ -63,7 +73,7 @@ const getList = (req: any, res: any) => {
       },
     };
   });
-  console.log(datas);
+  // console.log(datas);
 
   res.json({
     resultCode: '000',

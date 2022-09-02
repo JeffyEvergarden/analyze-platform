@@ -4,6 +4,7 @@ import { Form, Select, Space, DatePicker, InputNumber } from 'antd';
 import { timeUnitList } from '../../model/const';
 import moment from 'moment';
 import { TitleList } from '../../model/const';
+import Condition from '../common/Condition';
 
 const { RangePicker } = DatePicker;
 
@@ -17,6 +18,7 @@ interface CompareSearchProps {
   list: any;
   setFilter: any;
   defaultGroupBy?: any[];
+  compareTimeFlag?: boolean; //是否开启 事件日期、窗口期选择
 }
 
 const { Item: FormItem } = Form;
@@ -24,7 +26,7 @@ const { Option } = Select;
 
 const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   const [form] = Form.useForm();
-  const { cref, list, setFilter, defaultGroupBy } = props;
+  const { cref, list, setFilter, defaultGroupBy, compareTimeFlag = true } = props;
 
   const [selectDateType, setSelectDateVal] = useState<any>('');
 
@@ -150,32 +152,34 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
         </Select>
       </FormItem>
 
-      <Space align="baseline" style={{ marginRight: '32px' }}>
-        <span>事件发生日期</span>
+      <Condition r-if={compareTimeFlag}>
+        <Space align="baseline" style={{ marginRight: '32px' }}>
+          <span>事件发生日期</span>
 
-        <FormItem name="daterange">
-          <RangePicker
-          // format="YYYY-MM-DD"
-          // style={{ width: '300px' }}
-          // placeholder={['开始日期', '结束日期']}
-          // showTime={false}
-          ></RangePicker>
-        </FormItem>
+          <FormItem name="daterange">
+            <RangePicker
+            // format="YYYY-MM-DD"
+            // style={{ width: '300px' }}
+            // placeholder={['开始日期', '结束日期']}
+            // showTime={false}
+            ></RangePicker>
+          </FormItem>
 
-        <span style={{ marginLeft: '16px' }}>窗口期</span>
-        <FormItem name="windowCount">
-          <InputNumber placeholder="请输入" style={{ width: '150px' }} min={0} precision={0} />
-        </FormItem>
-        <FormItem name="windowUnit">
-          <Select style={{ width: '150px' }} placeholder="请选择">
-            {timeUnitList.map((item) => (
-              <Option key={item.value} value={item.value}>
-                {item.name}
-              </Option>
-            ))}
-          </Select>
-        </FormItem>
-      </Space>
+          <span style={{ marginLeft: '16px' }}>窗口期</span>
+          <FormItem name="windowCount">
+            <InputNumber placeholder="请输入" style={{ width: '150px' }} min={0} precision={0} />
+          </FormItem>
+          <FormItem name="windowUnit">
+            <Select style={{ width: '150px' }} placeholder="请选择">
+              {timeUnitList.map((item) => (
+                <Option key={item.value} value={item.value}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+          </FormItem>
+        </Space>
+      </Condition>
     </Form>
   );
 };
