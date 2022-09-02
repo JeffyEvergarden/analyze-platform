@@ -31,6 +31,10 @@ const extraMap: any = {
     timeColumn: 'event_time', // 时间字段
     unitColumn: 'interval_second', //  窗口期字段
   },
+  operation_index: {
+    timeColumn: '', // 时间字段
+    unitColumn: undefined, //  窗口期字段
+  },
 };
 
 const MiniMap: React.FC<any> = (props: any) => {
