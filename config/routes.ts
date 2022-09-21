@@ -50,6 +50,11 @@ export default [
         path: '/analyzehome/operationIndex',
         component: './analyze-home/operation-analyze',
       },
+      {
+        name: '敏捷分析-运营指标分析',
+        path: '/analyzehome/bgsevent',
+        component: './analyze-home/event-analyze',
+      },
       { redirect: '/analyzehome/retained' },
       { component: './404' },
     ],
