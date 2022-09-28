@@ -579,6 +579,7 @@ export const useAdvertiseModel = () => {
       } else if (res.resultCode == '439') {
         // 439 待机回调中
         startLoop(time + 2);
+        // 3 、 5、 7、 9、11、13、 15、 17、 19、 21、 23、
       } else {
         message.error(res?.resultMsg || '未知系统异常');
         setLoading(false);
