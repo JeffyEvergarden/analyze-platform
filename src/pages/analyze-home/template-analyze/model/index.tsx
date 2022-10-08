@@ -256,14 +256,22 @@ export const useAdvertiseModel = () => {
   // 排序方式 // 列名
   const sorter = (columnName: any) => {
     return (a: any, b: any) => {
-      console.log(defaultSortColumn);
-
-      if (defaultSortColumn) {
-        // 默认排序方式  数字大小 -> 活动名称
+      // 优先字段
+      if (defaultSortColumn && typeof defaultSortColumn === 'string') {
+        // 默认排序方式
         let ta = a[defaultSortColumn];
         let tb = b[defaultSortColumn];
         if (ta !== tb) {
           return ta > tb ? 1 : -1;
+        }
+      } else if (Array.isArray(defaultSortColumn)) {
+        for (let i = 0; i < defaultSortColumn.length; i++) {
+          let _name = defaultSortColumn[i];
+          let ta = a[_name];
+          let tb = b[_name];
+          if (ta !== tb) {
+            return ta > tb ? 1 : -1;
+          }
         }
       }
       a = a[columnName];
@@ -385,8 +393,8 @@ export const useAdvertiseModel = () => {
               const currentMetrics: any = item.metricsList?.find(
                 (m: any) => metricsName === m.value,
               );
-              console.log(currentMetrics);
-              console.log(metricsName);
+              // console.log(currentMetrics);
+              // console.log(metricsName);
 
               metricsCode = currentMetrics?.value || metricsName;
               metricsName = currentMetrics?.name || metricsName;

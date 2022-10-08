@@ -45,11 +45,14 @@ interface TemplateAnalyzePageProps {
   moduleType: string; //
   id?: string; // 信息id
   dirId?: string; // 看板id
-  defaultSortColumn?: string;
-  timeColumn?: string;
-  unitColumn?: string;
-  showTime?: boolean;
-  compareTimeFlag?: boolean;
+  defaultSortColumn?: string | string[]; // 默认排序字段
+  timeColumn?: string; // 时间字段
+  unitColumn?: string; // 周期单位
+  showTime?: boolean; // 对比查看 是否显示筛选时间条件
+  compareTimeFlag?: boolean; // 开启时分秒
+  extraTips?: string; // 默认提示
+  needVerifyType?: 'or' | 'and';
+  needVerifyColumn?: any[]; // 提交时需要校验的字段
 }
 
 const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
@@ -65,6 +68,9 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     extraGroupByList,
     defaultSortColumn,
     compareTimeFlag,
+    extraTips,
+    needVerifyType = 'and',
+    needVerifyColumn = [],
   } = props;
 
   const chineseName = ChineseNameMap[moduleType] || '敏捷分析';
@@ -162,6 +168,28 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
       if (!flag) {
         message.warning('获取不到数据库信息');
         return null;
+      }
+      if (Array.isArray(needVerifyColumn) && needVerifyColumn.length > 0) {
+        let columns = globalSearch.childrenList.map((item: any) => item.subject);
+        let needColumnsKey = needVerifyColumn.map((item: any) => item.name);
+        let needColumnsLabel = needVerifyColumn.map((item: any) => item.label);
+        // console.log('进入自定义字段校验环节', needVerifyType, columns, needColumnsKey);
+
+        if (needVerifyType === 'or') {
+          let _index = columns.findIndex((item: any) => needColumnsKey.includes(item));
+          // console.log(_index, '找到的索引');
+          if (_index < 0) {
+            message.warning('全局筛选中请至少选择' + needColumnsLabel.join('、') + ' 中的一个条件');
+            return;
+          }
+        } else if (needVerifyType === 'and') {
+          let _index = columns.findIndex((item: any) => !needColumnsKey.includes(item));
+          // console.log(_index, '找到的索引');
+          if (_index > -1) {
+            message.warning('全局筛选中请选择' + needColumnsLabel[_index] + '筛选条件');
+            return;
+          }
+        }
       }
 
       //汇总
@@ -424,7 +452,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
               </Panel>
 
               {/* 全局筛选 */}
-              <Panel header="全局筛选" key="3" extra={addGlobalBt}>
+              <Panel header={'全局筛选' + `${extraTips}`} key="3" extra={addGlobalBt}>
                 <GlobalSearch
                   cref={GlobalSearchRef}
                   list={filterList}
@@ -433,7 +461,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
                 />
               </Panel>
 
-              <Panel header="对比查看" key="4">
+              <Panel header={'对比查看' + `${extraTips}`} key="4">
                 <CompareSearch
                   cref={CompareSearchRef}
                   list={unionList}

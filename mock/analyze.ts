@@ -41,8 +41,8 @@ const getEventList = (req: any, res: any) => {
         {
           canGroupBy: '1',
           id: '1',
-          code: 'select2',
-          name: '下拉框2',
+          code: 'strategy_name',
+          name: '策略名称',
           dataType: 'string',
           dictCode: 'select2',
           dictValues: [
@@ -99,8 +99,8 @@ const getEventList = (req: any, res: any) => {
         {
           canGroupBy: '1',
           id: '6',
-          code: 'activity_id',
-          name: '活动ID',
+          code: 'strategy_id',
+          name: '策略ID',
           dataType: 'string',
           dictCode: undefined,
           dictValues: [],
