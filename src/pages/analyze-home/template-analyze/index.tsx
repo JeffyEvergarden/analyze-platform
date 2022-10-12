@@ -452,7 +452,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
               </Panel>
 
               {/* 全局筛选 */}
-              <Panel header={'全局筛选' + `${extraTips}`} key="3" extra={addGlobalBt}>
+              <Panel header={'全局筛选' + `${extraTips || ''}`} key="3" extra={addGlobalBt}>
                 <GlobalSearch
                   cref={GlobalSearchRef}
                   list={filterList}
@@ -461,7 +461,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
                 />
               </Panel>
 
-              <Panel header={'对比查看' + `${extraTips}`} key="4">
+              <Panel header={'对比查看' + `${extraTips || ''}`} key="4">
                 <CompareSearch
                   cref={CompareSearchRef}
                   list={unionList}
