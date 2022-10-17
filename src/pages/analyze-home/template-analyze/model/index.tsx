@@ -132,7 +132,7 @@ export const useFilterModel = () => {
   const setFilter = (formValues: any, eventDataList: any) => {
     let len = 0;
     let tempObj: any = {}; //用于统计不同指标次数
-    let tempMap: any = {};
+    let tempMap: any = {}; // key值存对象
     let tempArr: Set<any> = new Set(); //存放去重的数组
     let resultArr: any = []; //结果数组
     let compareArr: any = []; //对比并集
@@ -152,6 +152,7 @@ export const useFilterModel = () => {
       list.forEach((ele: any) => {
         tempObj[ele.value] = tempObj[ele.value] ? tempObj[ele.value] + 1 : 1;
         if (!tempMap[ele.value]) {
+          // 对象映射
           tempMap[ele.value] = ele;
         }
       });
@@ -159,7 +160,7 @@ export const useFilterModel = () => {
     const setArr: any = Object.keys(tempMap).map((key) => tempMap[key]);
     const _extraList = extraList.filter((item: any) => {
       // 找出多出的字段增加到
-      return !tempMap[item.key];
+      return !tempMap[item.value];
     });
     compareArr = [..._extraList, ...setArr]; //取并集 且增加扩展字段
 

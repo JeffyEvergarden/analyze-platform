@@ -105,6 +105,15 @@ const getEventList = (req: any, res: any) => {
           dictCode: undefined,
           dictValues: [],
         },
+        {
+          canGroupBy: '1',
+          id: '7',
+          code: 'advertchannel',
+          name: '广告投放渠道',
+          dataType: 'string',
+          dictCode: undefined,
+          dictValues: [],
+        },
       ],
       metrics: [
         {
