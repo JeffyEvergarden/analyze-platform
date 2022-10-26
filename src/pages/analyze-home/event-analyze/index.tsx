@@ -21,6 +21,7 @@ const BgsEventAnalyze = (props: any) => {
           label: '策略名称',
         },
       ]}
+      showTime={false}
       {...props}
     />
   );

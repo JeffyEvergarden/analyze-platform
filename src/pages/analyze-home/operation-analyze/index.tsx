@@ -22,6 +22,7 @@ const OperationAnalyze = (props: any) => {
       defaultSortColumn={[]}
       extraGroupByList={[]}
       timeColumn=""
+      showTime={false}
       compareTimeFlag={false}
       {...props}
     />
