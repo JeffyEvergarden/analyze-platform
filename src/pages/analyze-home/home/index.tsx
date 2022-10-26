@@ -51,7 +51,7 @@ const HomePage: React.FC = (props: any) => {
                 提额&调价分析
               </Menu.Item>
               <Menu.Item key="/analyzehome/operationIndex" icon={<DesktopOutlined />}>
-                运营指标分析
+                常规运营指标分析
               </Menu.Item>
               <Menu.Item key="/analyzehome/bgsevent" icon={<WindowsOutlined />}>
                 新策略事件分析（底表开发中）

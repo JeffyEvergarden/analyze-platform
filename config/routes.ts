@@ -51,7 +51,7 @@ export default [
         component: './analyze-home/operation-analyze',
       },
       {
-        name: '敏捷分析-运营指标分析',
+        name: '敏捷分析-常规运营指标分析',
         path: '/analyzehome/bgsevent',
         component: './analyze-home/event-analyze',
       },
