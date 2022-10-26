@@ -54,7 +54,7 @@ const HomePage: React.FC = (props: any) => {
                 运营指标分析
               </Menu.Item>
               <Menu.Item key="/analyzehome/bgsevent" icon={<WindowsOutlined />}>
-                bgs事件分析
+                新策略事件分析（底表开发中）
               </Menu.Item>
             </Menu>
           </div>
