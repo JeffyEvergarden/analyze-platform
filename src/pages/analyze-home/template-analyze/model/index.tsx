@@ -568,7 +568,7 @@ export const useAdvertiseModel = () => {
 
   // 3.开始轮询
   const startLoop = (time: any) => {
-    if (time > 20) {
+    if (time > 40) {
       // 当这次查询时长超过20s取消
       setLoading(false);
       message.warning('查询超时异常');
