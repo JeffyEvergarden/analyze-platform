@@ -217,11 +217,20 @@ const numberRender = (text: any) => {
 
 const percentRender = (text: any) => {
   if (isNaN(text)) {
-    return '-';
+    return text;
   } else {
     return (Number(text) * 100).toFixed(2) + '%';
   }
 };
+
+const spPercentRender = (text: any) => {
+  if (isNaN(text)) {
+    return text;
+  } else {
+    return Number(text).toFixed(2) + '%';
+  }
+};
+
 // ----------------------------
 
 // 获取广告分析数据
@@ -245,6 +254,8 @@ export const useAdvertiseModel = () => {
   const [hadProcessedData, setHadProcessedData] = useState<any[]>([]); // 已加工数据
 
   const [defaultSortColumn, setDefaultSortColumn] = useState<any>('');
+
+  const [spPercentColumn, setSpPercentColumn] = useState<any>([]); // 特殊处理的百分比字段
 
   //合计list
   const [summary, setSummary] = useState<any>({});
@@ -333,13 +344,19 @@ export const useAdvertiseModel = () => {
             if (i < 5) {
               extra.fixed = 'left';
             }
+
+            let title = _titleList.find((i: any) => i.value === item)?.name || '';
             dynamicTableColumn.push({
               ...extra,
-              title: _titleList.find((i: any) => i.value === item)?.name || '',
+              title: title,
               dataIndex: item,
               sortDirection: ['descend', 'ascend'],
               sorter: sorter(item),
-              render: normalRender,
+              render: title.endsWith('率')
+                ? spPercentColumn.includes(item)
+                  ? spPercentRender
+                  : percentRender
+                : normalRender,
             });
           }
         });
@@ -420,7 +437,7 @@ export const useAdvertiseModel = () => {
             dataIndex: titleName,
             sortDirection: ['descend', 'ascend'],
             sorter: sorter(titleName),
-            render: normalRender,
+            render: titleRealName.endsWith('率') ? percentRender : normalRender,
           });
           diyColumnList.push({
             value: titleName,
@@ -638,6 +655,7 @@ export const useAdvertiseModel = () => {
     hadProcessedColumn,
     hadProcessedData,
     setDefaultSortColumn,
+    setSpPercentColumn,
   };
 };
 

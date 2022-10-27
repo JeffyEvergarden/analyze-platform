@@ -38,6 +38,7 @@ const getList = async (req: any, res: any) => {
       return {
         activity_id: 'fate',
         activity_name: '命运冠位指定' + index,
+        credit_rate: 26.3,
         [time_field]: '2022-01-13T10:13:00.000',
         [key]: Number((Math.random() * 1000).toFixed(0)),
         // [key]: '2022-01-13T10:13:00.000',
@@ -59,7 +60,7 @@ const getList = async (req: any, res: any) => {
           //   label: key,
           // },
         ],
-        groupby: ['activity_id', 'activity_name', time_field],
+        groupby: ['activity_id', 'activity_name', 'credit_rate', time_field],
         adhoc_filters: [
           {
             subject: 'event_type',

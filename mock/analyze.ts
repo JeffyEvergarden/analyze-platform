@@ -114,6 +114,15 @@ const getEventList = (req: any, res: any) => {
           dictCode: undefined,
           dictValues: [],
         },
+        {
+          canGroupBy: '1',
+          id: '7',
+          code: 'credit_rate',
+          name: '授信利率',
+          dataType: 'string',
+          dictCode: undefined,
+          dictValues: [],
+        },
       ],
       metrics: [
         {
@@ -303,6 +312,15 @@ const getBehaviorList = (req: any, res: any) => {
           code: 'number',
           name: '数字框',
           dataType: 'numbric',
+          dictCode: undefined,
+          dictValues: [],
+        },
+        {
+          canGroupBy: '1',
+          id: '2',
+          code: 'credit_rate',
+          name: '授信利率',
+          dataType: 'string',
           dictCode: undefined,
           dictValues: [],
         },

@@ -53,6 +53,7 @@ interface TemplateAnalyzePageProps {
   extraTips?: string; // 默认提示
   needVerifyType?: 'or' | 'and';
   needVerifyColumn?: any[]; // 提交时需要校验的字段
+  spPercentColumn?: any[]; // 特殊处理利率字段 这些字段直接 + '%' 而非 *100 + '%'
 }
 
 const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
@@ -71,6 +72,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     extraTips,
     needVerifyType = 'and',
     needVerifyColumn = [],
+    spPercentColumn = [],
   } = props;
 
   const chineseName = ChineseNameMap[moduleType] || '敏捷分析';
@@ -113,6 +115,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     hadProcessedColumn,
     hadProcessedData,
     setDefaultSortColumn,
+    setSpPercentColumn,
   } = useAdvertiseModel();
 
   const [moduleData, setModuleData] = useState<any>({});
@@ -291,6 +294,8 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     if (defaultSortColumn) {
       setDefaultSortColumn(defaultSortColumn); // 设置数据加工默认排序字段
     }
+    // 设置特殊处理字段
+    setSpPercentColumn(spPercentColumn);
     getSqlBaseInfo({ theme: moduleType }); // 获取配置
     init();
   }, []);
