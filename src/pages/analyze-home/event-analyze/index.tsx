@@ -22,6 +22,8 @@ const BgsEventAnalyze = (props: any) => {
         },
       ]}
       showTime={false}
+      // event_occur_time // 事件发生日期
+      unitColumn={'interval_second'} // 窗口期字段
       {...props}
     />
   );

@@ -135,6 +135,10 @@ export const timeUnitList: any[] = [
     name: '小时',
     value: 'hour',
   },
+  // {
+  //   name: '分钟',
+  //   value: 'minute',
+  // },
 ];
 
 // 标题列表
