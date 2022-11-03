@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useImperativeHandle } from 'react';
 import { useModel, useLocation, history } from 'umi';
 import {
   Space,
@@ -40,6 +40,7 @@ const { Option } = Select;
 
 interface TemplateAnalyzePageProps {
   type: 'create' | 'read';
+  cref?: any;
   defaultGroupBy?: any[]; // 对比查看默认分组
   extraGroupByList?: any[];
   moduleType: string; //
@@ -54,6 +55,7 @@ interface TemplateAnalyzePageProps {
   needVerifyType?: 'or' | 'and';
   needVerifyColumn?: any[]; // 提交时需要校验的字段
   spPercentColumn?: any[]; // 特殊处理利率字段 这些字段直接 + '%' 而非 *100 + '%'
+  extraGolabelList?: any[]; // 全局筛选额外需固定要的查询参数
 }
 
 const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
@@ -65,6 +67,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     defaultGroupBy,
     timeColumn = 'event_occur_time', // 时间字段
     unitColumn = 'dekta_time', //  窗口期字段
+    cref,
     showTime = true,
     extraGroupByList,
     defaultSortColumn,
@@ -73,6 +76,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     needVerifyType = 'and',
     needVerifyColumn = [],
     spPercentColumn = [],
+    extraGolabelList = [],
   } = props;
 
   const chineseName = ChineseNameMap[moduleType] || '敏捷分析';
@@ -91,7 +95,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
 
   const { eventList, fieldMap, getPreConfig } = useSearchParamsModel();
   const { baseInfo, getSqlBaseInfo } = useBaseModel();
-  const { filterList, unionList, setFilter, setExtraList } = useFilterModel();
+  const { filterList, unionList, setFilter, setExtraList, setExtraGolabelList } = useFilterModel();
 
   useEffect(() => {
     if (extraGroupByList) {
@@ -100,6 +104,24 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
       setExtraList([]);
     }
   }, [extraGroupByList]);
+
+  useEffect(() => {
+    if (extraGolabelList && extraGolabelList.length > 0) {
+      console.log('extraGolabelList', extraGolabelList);
+      setExtraGolabelList(extraGolabelList);
+    }
+  }, [extraGolabelList]);
+
+  useImperativeHandle(cref, () => {
+    return {
+      setStaticForm: (info: any) => {
+        (StatisticSearchRef.current as any).setForm(info);
+      },
+      setGlobalForm: (info: any) => {
+        GlobalSearchRef.current.setForm(info);
+      },
+    };
+  });
 
   const {
     loading, // loading

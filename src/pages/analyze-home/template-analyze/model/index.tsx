@@ -129,6 +129,8 @@ export const useFilterModel = () => {
   const [unionList, setUnionList] = useState<any[]>([]); // 并集
   const [extraList, setExtraList] = useState<any[]>([]);
 
+  const [extraGolabelList, setExtraGolabelList] = useState<any>([]);
+
   const setFilter = (formValues: any, eventDataList: any) => {
     let len = 0;
     let tempObj: any = {}; //用于统计不同指标次数
@@ -162,6 +164,12 @@ export const useFilterModel = () => {
       // 找出多出的字段增加到
       return !tempMap[item.value];
     });
+
+    const _extraGolabelList: any[] = extraGolabelList.filter((item: any) => {
+      // 找出多出的字段增加到
+      return !tempMap[item.value];
+    });
+
     compareArr = [..._extraList, ...setArr]; //取并集 且增加扩展字段
 
     // 过滤出
@@ -169,8 +177,10 @@ export const useFilterModel = () => {
       return tempObj[item.value] === len;
     });
     // 输出个数
-    console.log(tempObj);
-    setFilterList([...resultArr]); // 交集
+    console.log(extraGolabelList);
+    console.log(_extraGolabelList);
+    console.log([...resultArr, ..._extraGolabelList]);
+    setFilterList([...resultArr, ..._extraGolabelList]); // 交集
     setUnionList(compareArr); // 并集
 
     console.log(resultArr, compareArr);
@@ -181,6 +191,7 @@ export const useFilterModel = () => {
     unionList,
     setFilter,
     setExtraList,
+    setExtraGolabelList,
   };
 };
 
