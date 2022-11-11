@@ -25,6 +25,7 @@ const OperationAnalyze = (props: any) => {
       showTime={false}
       compareTimeFlag={false}
       // 放款利率、授信利率
+      needGlobal={false}
       spPercentColumn={['credit_rate', 'loan_rate', 'nvl(store_rate,int_rate)']}
       {...props}
     />

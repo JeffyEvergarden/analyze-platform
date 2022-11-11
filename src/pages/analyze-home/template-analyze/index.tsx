@@ -56,6 +56,7 @@ interface TemplateAnalyzePageProps {
   needVerifyColumn?: any[]; // 提交时需要校验的字段
   spPercentColumn?: any[]; // 特殊处理利率字段 这些字段直接 + '%' 而非 *100 + '%'
   extraGolabelList?: any[]; // 全局筛选额外需固定要的查询参数
+  needGlobal?: boolean;
 }
 
 const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
@@ -65,6 +66,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     dirId,
     moduleType,
     defaultGroupBy,
+    needGlobal = true,
     timeColumn = 'event_occur_time', // 时间字段
     unitColumn = 'dekta_time', //  窗口期字段
     cref,
@@ -236,7 +238,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
         message.warning('请至少添加一个选择统计事件');
         return null;
       }
-      if (globalSearch.childrenList.length === 0) {
+      if (needGlobal && globalSearch.childrenList.length === 0) {
         message.warning('请至少添加一个全局筛选事件');
         return null;
       }
@@ -356,7 +358,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
       message.warning('请至少添加一个选择统计事件');
       return null;
     }
-    if (globalSearch.childrenList.length === 0) {
+    if (needGlobal && globalSearch.childrenList.length === 0) {
       message.warning('请至少添加一个全局筛选事件');
       return null;
     }
