@@ -11,7 +11,11 @@ import {
 // 定制组件
 import Condition from '../common/Condition';
 import InnerFormItem from '../common/InnerFormItem';
-import { statisticNumbericList, statisticDefaultList } from '../../model/const';
+import {
+  statisticNumbericList,
+  statisticDefaultList,
+  statisticNumbericListForImpala,
+} from '../../model/const';
 import { propcessInitForm } from '../../../model/util';
 import style from './style.less';
 
@@ -22,6 +26,7 @@ interface StatisticComponentProps {
   fieldMap: any;
   setFilter?: any;
   showTime?: boolean;
+  datasourceType?: string;
 }
 // 通用方法
 const trim = (text: any) => {
@@ -46,7 +51,7 @@ const { Option } = Select;
 
 const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
   const [form] = Form.useForm();
-  const { cref, eventList, fieldMap, initData, setFilter, showTime = true } = props;
+  const { cref, eventList, fieldMap, initData, setFilter, showTime = true, datasourceType } = props;
 
   // 修改事件 （传入序号） 一级属性
   const changeEvent = (val: any, opt: any, index: any) => {
@@ -219,10 +224,16 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
     });
   };
 
-  const ThirdSelectItem = (flag: boolean) => {
+  const ThirdSelectItem = (flag: boolean, datasourceType?: any) => {
+    let _statisticNumbericList = statisticNumbericList;
+
+    if (datasourceType === 'impala') {
+      _statisticNumbericList = statisticNumbericListForImpala;
+    }
+
     return flag ? (
       <>
-        {statisticNumbericList?.map((item, i) => (
+        {_statisticNumbericList?.map((item, i) => (
           <Option key={i} value={item.value}>
             {item.name}
           </Option>
@@ -348,7 +359,9 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                           fieldKey={[field.fieldKey, 'fnName']}
                           style={{ width: '150px' }}
                         >
-                          <Select placeholder="请选择">{ThirdSelectItem(isNumber)}</Select>
+                          <Select placeholder="请选择">
+                            {ThirdSelectItem(isNumber, datasourceType)}
+                          </Select>
                         </FormItem>
                       </Condition>
 

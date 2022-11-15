@@ -56,6 +56,25 @@ export const statisticNumbericList: any[] = [
   },
 ];
 
+export const statisticNumbericListForImpala: any[] = [
+  {
+    name: '求和',
+    value: 'SUM',
+  },
+  {
+    name: '最大',
+    value: 'MAX',
+  },
+  {
+    name: '最小',
+    value: 'MIN',
+  },
+  {
+    name: '次均',
+    value: 'AVG',
+  },
+];
+
 // 筛选框 - 数据库属性 - 默认统计方式
 export const statisticDefaultList: any[] = [
   {

@@ -26,6 +26,7 @@ const OperationAnalyze = (props: any) => {
       compareTimeFlag={false}
       // 放款利率、授信利率
       needGlobal={false}
+      datasourceType={'impala'}
       spPercentColumn={['credit_rate', 'loan_rate', 'nvl(store_rate,int_rate)']}
       {...props}
     />

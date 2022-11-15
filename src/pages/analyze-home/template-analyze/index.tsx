@@ -57,6 +57,7 @@ interface TemplateAnalyzePageProps {
   spPercentColumn?: any[]; // 特殊处理利率字段 这些字段直接 + '%' 而非 *100 + '%'
   extraGolabelList?: any[]; // 全局筛选额外需固定要的查询参数
   needGlobal?: boolean;
+  datasourceType?: string; // 'es' | 'impala' | 'hive'
 }
 
 const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => {
@@ -79,6 +80,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
     needVerifyColumn = [],
     spPercentColumn = [],
     extraGolabelList = [],
+    datasourceType = 'es',
   } = props;
 
   const chineseName = ChineseNameMap[moduleType] || '敏捷分析';
@@ -477,6 +479,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
                   eventList={eventList}
                   setFilter={setFilter}
                   showTime={showTime}
+                  datasourceType={datasourceType}
                 />
               </Panel>
 
