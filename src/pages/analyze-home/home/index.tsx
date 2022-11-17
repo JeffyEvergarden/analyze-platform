@@ -51,7 +51,7 @@ const HomePage: React.FC = (props: any) => {
     <Menu.SubMenu key="sub-item" title="其他...">
       <Menu.Item key="activity">子活动转化分析</Menu.Item>
       <Menu.Item key="ynf">活动分析</Menu.Item>
-      <Menu.Item key="sub-activity">广告分析</Menu.Item>
+      <Menu.Item key="sub_activity">广告分析</Menu.Item>
     </Menu.SubMenu>
   );
   return (
