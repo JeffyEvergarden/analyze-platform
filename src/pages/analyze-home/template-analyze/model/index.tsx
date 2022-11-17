@@ -487,8 +487,9 @@ export const useAdvertiseModel = () => {
       //去重 把重复的列过滤
       setDynamicColumns(dynamicTableColumn); //去重
       setDiyColumn(diyColumnList); // diy可选列
+      let _groupBy = groupby[0] || defaultSortColumn || '-';
       let summaryObj: any = {
-        [defaultSortColumn]: '合计',
+        [_groupBy]: '合计',
       };
       map.forEach((name: any) => {
         if (groupby.indexOf(name) > -1) {
