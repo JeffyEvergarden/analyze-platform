@@ -499,7 +499,7 @@ const TemplateAnalyzePage: React.FC<any> = (props: TemplateAnalyzePageProps) => 
                   list={unionList}
                   setFilter={setTitle}
                   compareTimeFlag={compareTimeFlag}
-                  defaultGroupBy
+                  defaultGroupBy={defaultGroupBy}
                 />
               </Panel>
             </Collapse>

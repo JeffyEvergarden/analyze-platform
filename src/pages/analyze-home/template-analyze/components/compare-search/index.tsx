@@ -109,11 +109,18 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   }, [list]);
 
   useEffect(() => {
+    const _defaultGroupBy = Array.isArray(defaultGroupBy) ? defaultGroupBy : [];
     if (computedList.length > 0) {
       let groupVal = form.getFieldValue('groupBy') || [];
+      console.log(groupVal, _defaultGroupBy);
+      if (groupVal?.length < 1) {
+        groupVal = _defaultGroupBy;
+      }
       let keys = computedList.map((item: any) => {
         return item.value;
       });
+      console.log('------------');
+      console.log(keys, groupVal);
       groupVal = groupVal.filter((item: any) => {
         return keys.includes(item);
       });
@@ -126,12 +133,10 @@ const CompareSearch: React.FC<any> = (props: CompareSearchProps) => {
   // 初始化
   useEffect(() => {
     // 数据初始化
-
-    const _defaultGroupBy = Array.isArray(defaultGroupBy) ? defaultGroupBy : [];
-
-    form.setFieldsValue({
-      groupBy: _defaultGroupBy,
-    });
+    // const _defaultGroupBy = Array.isArray(defaultGroupBy) ? defaultGroupBy : [];
+    // form.setFieldsValue({
+    //   groupBy: _defaultGroupBy,
+    // });
   }, []);
 
   useEffect(() => {

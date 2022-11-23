@@ -39,7 +39,7 @@ const BgsEventAnalyze = (props: any) => {
   return (
     <TemplateAnalyze
       moduleType={moduleType}
-      defaultGroupBy={[]}
+      defaultGroupBy={['strategy_name']}
       defaultSortColumn={[]}
       extraGroupByList={[]}
       extraTips="         (请至少选择策略ID和策略名称中的一个作为筛选/分组条件)"
