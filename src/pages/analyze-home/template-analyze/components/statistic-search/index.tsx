@@ -311,7 +311,7 @@ const StatisticComponent: React.FC<any> = (props: StatisticComponentProps) => {
                         rules={[{ required: true, message: '请选择事件' }]}
                         name={[field.fieldKey, 'event']}
                         fieldKey={[field.fieldKey, 'event']}
-                        style={{ width: '200px' }}
+                        style={{ width: '270px' }}
                       >
                         <Select
                           placeholder="请选择事件"
